@@ -7,7 +7,7 @@ import { withRouter } from "react-router";
 import { handleResponse } from "../services/fack.backend";
 import { Login,LOGIN,YourName,Password,RememberMe } from '../constant';
 
-const Signin = ({ history }) => {
+const SystemSignin = ({ history }) => {
 
     const [email, setEmail] = useState("test@gmail.com");
     const [password, setPassword] = useState("test123");
@@ -100,4 +100,4 @@ const Signin = ({ history }) => {
     );
 };
 
-export default withRouter(Signin);
+export default withRouter(SystemSignin);

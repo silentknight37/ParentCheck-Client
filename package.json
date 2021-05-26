@@ -1,8 +1,8 @@
 {
-  "name": "endless",
+  "name": "parentCheck",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://react.pixelstrap.com/endless/",
+  "homepage": "https://react.pixelstrap.com/",
   "dependencies": {
     "@auth0/auth0-react": "^1.1.0",
     "@fullcalendar/daygrid": "^4.4.2",

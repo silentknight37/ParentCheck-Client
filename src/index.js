@@ -192,6 +192,7 @@ import Invoice from './components/applications/ecommerce-app/invoice';
 import Checkout from './components/applications/ecommerce-app/checkout';
 import todoFirebase from './components/applications/todo-firebase-app/todo-firebase';
 import Signin from './auth/signin';
+import SystemSignin from './auth/systemsignin';
 import ContactApp from './components/applications/contact-app/contactApp';
 import ProductList from './components/applications/ecommerce-app/product-list';
 import Payment from './components/applications/ecommerce-app/payment';
@@ -263,6 +264,7 @@ const Root = () => {
                 <BrowserRouter basename={`/`}>
                         <Switch>
                             <Route path={`${process.env.PUBLIC_URL}/login`} component={Signin} />
+                            <Route path={`${process.env.PUBLIC_URL}/parent-check/login`} component={SystemSignin} />
                             <Route path={`${process.env.PUBLIC_URL}/pages/login`} component={Login} />
                             <Route path={`${process.env.PUBLIC_URL}/pages/loginWithBgImg`} component={LoginWithBgImg} />
                             <Route path={`${process.env.PUBLIC_URL}/pages/loginWithVideo`} component={LoginWithVideo} />
