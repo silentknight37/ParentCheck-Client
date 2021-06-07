@@ -1,16 +1,15 @@
 import React, { useState ,Fragment } from 'react';
-import logo from '../../../assets/images/logo-white.png';
+import logo from '../../../assets/images/logo/compact-logo.png';
 import Language from './language';
 import UserMenu from './userMenu';
 import Notification from './notification';
 import SearchHeader from './searchHeader';
 import { Link } from 'react-router-dom';
-import { AlignLeft, Maximize, Bell, MessageCircle, MoreHorizontal } from 'react-feather';
-import {EN} from '../../../constant'
+import { AlignLeft, Maximize, Bell, MoreHorizontal } from 'react-feather';
+import {Institute} from '../../../constant'
 
 const Header = () => {
   const [sidebar, setSidebar] = useState(false);
-  const [rightSidebar, setRightSidebar] = useState(true);
   const [headerbar, setHeaderbar] = useState(true);
 
  const openCloseSidebar = () => {
@@ -22,16 +21,6 @@ const Header = () => {
       setSidebar(!sidebar)
       document.querySelector(".page-main-header").classList.add('open');
       document.querySelector(".page-sidebar").classList.add('open'); 
-    }
-  }
-
-  function showRightSidebar() {
-    if (rightSidebar) {
-      setRightSidebar(!rightSidebar)
-      document.querySelector(".right-sidebar").classList.add('show');
-    } else {
-      setRightSidebar(!rightSidebar)
-      document.querySelector(".right-sidebar").classList.remove('show');
     }
   }
 
@@ -89,7 +78,7 @@ const Header = () => {
               </li>
               <li className="onhover-dropdown">
                 <a className="txt-dark" href="#javascript">
-                  <h6>{EN}</h6></a>
+                  <h6>{Institute}</h6></a>
                 <Language />
               </li>
               <li className="onhover-dropdown">
@@ -97,12 +86,6 @@ const Header = () => {
                 <Bell />
                 <span className="dot"></span>
                 <Notification />
-              </li>
-              <li>
-                <a href="#javascript" onClick={showRightSidebar}>
-                  <MessageCircle />
-                  <span className="dot"></span>
-                </a>
               </li>
               <UserMenu />
             </ul>

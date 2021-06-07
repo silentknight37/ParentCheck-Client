@@ -3,19 +3,19 @@
 ==========================**/
 //urls
 $url_0: url(../../images/other-images/auth-layer.png);
-$url_1: url(../../images/other-images/auth-bg-1.jpg);
+$url_1: url(../../images/other-images/login-bg.jpg);
 
 %auth-mixin1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 80vh !important;
 }
 .button-auth {
   margin: 0 -10px;
 }
 .authentication-main {
-  background: $light-color;
+  background: rgba(246, 247, 251,0.6) !important;
   padding: 15px 100px;
   .auth-innerright {
     @extend %auth-mixin1;
@@ -55,12 +55,12 @@ $url_1: url(../../images/other-images/auth-bg-1.jpg);
   }
 }
 .auth-bg {
-  background: $url_1;
+  background: $url_1 !important;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 50px 100px;
+  padding: 0px 100px !important;
 }
 .auth-bg-video {
   display: flex;
