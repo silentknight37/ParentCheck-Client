@@ -2,17 +2,17 @@ import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import Timeline1 from './timeline1';
 import VerticalTimelineComp from './verticalTimelineComp';
-import {Examples} from "../../constant";
+import {ClassRoom} from "../../constant";
 const Timeline = () => {
     return (
         <Fragment>
-            <Breadcrumb title="Timeline 1" parent="Timeline" />
+            <Breadcrumb title={ClassRoom} parent={ClassRoom} />
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-12">
                         <div className="card">
                             <div className="card-header">
-                                <h5>{Examples} {"1"}</h5>
+                                <h5>{ClassRoom}</h5>
                             </div>
                             <div className="card-body">
                                 <Timeline1 />
@@ -22,7 +22,7 @@ const Timeline = () => {
                     <div className="col-sm-12">
                         <div className="card">
                             <div className="card-header">
-                                <h5>{Examples} {"2"}</h5>
+                                <h5>{ClassRoom}</h5>
                             </div>
                             <div className="card-body">
                                 <VerticalTimelineComp />

@@ -4,7 +4,7 @@ import man from '../assets/images/dashboard/user.png';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withRouter } from "react-router";
-import { handleResponse } from "../services/fack.backend";
+import { handleResponse } from "../services/service.backend";
 import { Login,LOGIN,YourName,Password,RememberMe } from '../constant';
 
 const SystemSignin = ({ history }) => {
@@ -37,7 +37,7 @@ const SystemSignin = ({ history }) => {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
           setValue(man);
           localStorage.setItem('token', user);
-          window.location.href = `${process.env.PUBLIC_URL}/dashboard/default`
+          window.location.href = `${process.env.PUBLIC_URL}/sysdashboard`
           return user;
         });
       }

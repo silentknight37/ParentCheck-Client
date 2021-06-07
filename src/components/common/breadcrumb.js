@@ -16,7 +16,7 @@ const Breadcrumb = props => {
                                 <h3>{breadcrumb.title}</h3>
                                 <ol className="breadcrumb pull-right">
                                     <li className="breadcrumb-item">
-                                        <Link to={`${process.env.PUBLIC_URL}/dashboard/default`}>
+                                        <Link to={`${process.env.PUBLIC_URL}/dashboard`}>
                                             <Home />
                                         </Link>
                                     </li>

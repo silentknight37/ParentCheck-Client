@@ -9,6 +9,16 @@ form {
           color: $danger-color;
         }
       }
+      textarea {
+        ~  span {
+          color: $danger-color;
+        }
+      }
+      #description-wrapper {
+        ~  span {
+          color: $danger-color;
+        }
+      }
     }
     .input-group {
       span {

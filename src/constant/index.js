@@ -1421,7 +1421,7 @@ export const UsersTableHeader =  ["Project Name","Date","Status","Price",""]
 export const Update =  "Update"
 
 // Calendar
-export const BasicCalendars =  "Basic Calendar"
+export const Calendars =  "Calendar"
 export const Dragging_Event =  "DRAGGING EVENT"
 
 // Maps
@@ -1528,7 +1528,7 @@ export const  MixLayout  = "Mix Layout"
 export const  SidebarBackgroundSetting  = "Sidebar background setting"
 export const  Pattern  = "Pattern"
 export const  Border  = "Border"
-
-
+export const  Institute ="Institute"
+export const  ClassRoom ="Class Room"
 
 
