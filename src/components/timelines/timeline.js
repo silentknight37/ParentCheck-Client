@@ -15,16 +15,6 @@ const Timeline = () => {
                                 <h5>{ClassRoom}</h5>
                             </div>
                             <div className="card-body">
-                                <Timeline1 />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-sm-12">
-                        <div className="card">
-                            <div className="card-header">
-                                <h5>{ClassRoom}</h5>
-                            </div>
-                            <div className="card-body">
                                 <VerticalTimelineComp />
                             </div>
                         </div>

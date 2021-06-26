@@ -1,16 +1,13 @@
 import {Jwt_token} from '../data/config'
 export const configureBackend = () => {
-    //debugger;
     let users = [{ email: 'test@gmail.com', password: 'test123'}];
     let realFetch = window.fetch;
     window.fetch = function (url, opts) {
-        //debugger;
-        url=`https://localhost:5001/api/${url}`
+        url=`https://localhost:44357/api/${url}`
         const isLoggedIn = true;//opts.headers['Authorization'] === `Bearer ${Jwt_token}`;
         return new Promise((resolve, reject) => {
             // wrap in timeout to simulate server api call
             setTimeout(() => {
-                //debugger;
                 // authenticate - public
                 if (url.endsWith('/users/authenticate') && opts.method === 'POST') {
                     const params = opts.body;

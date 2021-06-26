@@ -20,7 +20,7 @@ const Breadcrumb = props => {
                                             <Home />
                                         </Link>
                                     </li>
-                                    <li className="breadcrumb-item">{breadcrumb.parent}</li>
+                                    {breadcrumb.isParentShow && (<li className="breadcrumb-item" ><Link to={breadcrumb.parentLink}>{breadcrumb.parent}</Link></li>)}
                                     <li className="breadcrumb-item active">{breadcrumb.title}</li>
                                 </ol>
                             </div>

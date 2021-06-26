@@ -24,8 +24,9 @@ class Calender extends React.Component {
             toDate: null,
             subject: null,
             description: null,
+            type:null,
             isSubmited: false,
-            isValidSubmit: false,
+            isValidSubmit: true,
             eventDate:new Date().toDateString()
         };
     }
@@ -39,16 +40,17 @@ class Calender extends React.Component {
             eventDate: date
         });
         const calanderEventsList = [];
-        debugger
+        
 
         return fetch(`calender/event?requestedDate=${date}&eventType=0`)
             .then(handleResponse)
             .then(response => {
 
                 response.calenderEvents.map(i =>
-
-                    calanderEventsList.push({ id: i.id, start: new Date(i.fromDate), end: new Date(i.toDate), title: i.subject, color: i.colorCode, eventDetails: i.description })
+                    calanderEventsList.push({ id: i.id, start: new Date(i.fromDate), end: new Date(i.toDate), title: i.subject, color: i.colorCode, eventDetails: i.description,type:i.type })
                 )
+
+                
                 this.setState({
                     calanderEvents: calanderEventsList
                 });
@@ -76,6 +78,7 @@ class Calender extends React.Component {
             toDate: null,
             subject: null,
             description: null,
+            type:null,
             isSubmited: false
         });
     }
@@ -87,7 +90,10 @@ class Calender extends React.Component {
     }
 
     handleChange(changeObject) {
-        this.setState(changeObject)
+        this.setState(changeObject);
+        this.setState({
+            isSubmited: false
+        });
     }
 
     handleEditorChange = (evt) => {
@@ -97,6 +103,7 @@ class Calender extends React.Component {
     }
 
     submitEvent = async (e) => {
+        debugger
         e.preventDefault();
         this.setState({
             isSubmited: true
@@ -113,7 +120,7 @@ class Calender extends React.Component {
                     fromDate: this.state.fromDate,
                     toDate: this.state.toDate,
                     subject: this.state.subject,
-                    description: this.state.description,
+                    description: this.state.description,    
                     type: 1
                 })
             })
@@ -185,15 +192,14 @@ class Calender extends React.Component {
     }
 
     validate = async () => {
-        var valid = (!this.state.fromDate && !this.state.toDate && this.state.toDate < this.state.fromDate && !this.state.subject && !this.state.description)
+        var valid = (this.state.fromDate!=null && this.state.toDate!=null && new Date(this.state.toDate) <= new Date(this.state.fromDate) && this.state.subject!=null && this.state.description!=null)
 
         this.setState({
-            isValidSubmit: !valid
+            isValidSubmit: valid
         });
     }
 
     getEventForMonth=(newDate,view,action)=>{
-        debugger
         this.getEvent(newDate.toDateString());
     }
 
@@ -201,7 +207,7 @@ class Calender extends React.Component {
         return (
             <div>
                 <Fragment>
-                    <Breadcrumb parent="Calender" title="Calender" />
+                    <Breadcrumb parent="Calender" title="Calender" isParentShow={false}/>
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-sm-12">
@@ -284,7 +290,7 @@ class Calender extends React.Component {
 
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="danger" onClick={this.removeCalander}>Remove</Button>
+                            {this.state.selectedEvent.type===1 &&(<Button color="danger" onClick={this.removeCalander}>Remove</Button>)}
                             <Button color="secondary" onClick={this.handleModalToggle}>Close</Button>
                         </ModalFooter>
                     </Modal>)
