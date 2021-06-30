@@ -25,16 +25,23 @@ class Calender extends React.Component {
             subject: null,
             description: null,
             isSubmited: false,
-            isValidSubmit: false
+            isValidSubmit: false,
+            eventDate:new Date().toDateString()
         };
     }
 
     componentDidMount = async () => {
-        await this.getEvent();
+        await this.getEvent(new Date().toDateString());
     }
-    getEvent = async () => {
+    getEvent = async (date) => {
+
+        this.setState({
+            eventDate: date
+        });
         const calanderEventsList = [];
-        return fetch(`calender/event`)
+        debugger
+
+        return fetch(`calender/event?requestedDate=${date}&eventType=0`)
             .then(handleResponse)
             .then(response => {
 
@@ -120,7 +127,7 @@ class Calender extends React.Component {
                     }
 
                     toast.success(response.Value.SuccessMessage)
-                    this.getEvent();
+                    this.getEvent(this.state.eventDate);
                     this.setState({
                         isPersonalEventOpen: false
                     });
@@ -166,7 +173,7 @@ class Calender extends React.Component {
                 }
 
                 toast.success(response.Value.SuccessMessage)
-                this.getEvent();
+                this.getEvent(this.state.eventDate);
                 this.setState({
                     isPersonalEventOpen: false,
                     isEventOpen:false
@@ -185,6 +192,11 @@ class Calender extends React.Component {
         });
     }
 
+    getEventForMonth=(newDate,view,action)=>{
+        debugger
+        this.getEvent(newDate.toDateString());
+    }
+
     render() {
         return (
             <div>
@@ -199,6 +211,7 @@ class Calender extends React.Component {
                                     </div>
                                     <div className="card-body">
                                         <Calendar
+                                        onNavigate={(newDate,view,action)=>this.getEventForMonth(newDate,view,action)}
                                             localizer={localizer}
                                             scrollToTime={new Date(1970, 1, 1, 6)}
                                             defaultDate={new Date()}
