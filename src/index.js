@@ -17,8 +17,10 @@ import { Auth0Provider } from '@auth0/auth0-react'
 import Dashboard from './components/dashboard/dashboard';
 import Project from './components/dashboard/project/project';
 
-// timeline
-import Timeline from './components/timelines/timeline';
+// class-room
+import Subjects from './components/class-room/subjects';
+import Chapters from './components/class-room/chapters';
+import TopicContent from './components/class-room/topicContent';
 
 // Calender
 import Calender from './components/calender/calender';
@@ -131,7 +133,9 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/dashboard`} component={Dashboard} />
                                     <Route path={`${process.env.PUBLIC_URL}/sysdashboard`} component={Project} />
 
-                                    <Route path={`${process.env.PUBLIC_URL}/class-room`} component={Timeline} />
+                                    <Route path={`${process.env.PUBLIC_URL}/subjects`} component={Subjects} />
+                                    <Route path={`${process.env.PUBLIC_URL}/content/:topicId`} component={TopicContent} />
+                                    <Route path={`${process.env.PUBLIC_URL}/chapters/:subjectId`} component={Chapters} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/library`} component={FileManager} />
 

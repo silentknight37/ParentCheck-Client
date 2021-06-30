@@ -44,7 +44,7 @@ export const MENUITEMS = [
         ]
     },
     {
-        title: 'Class Room', icon: BookOpen, type: 'link', path: '/class-room', active: false, bookmark: true
+        title: 'Class Room', icon: BookOpen, type: 'link', path: '/subjects', active: false, bookmark: true
     },
     {
         title: 'Library', icon: Book, type: 'link', path: '/library', active: false, bookmark: true
