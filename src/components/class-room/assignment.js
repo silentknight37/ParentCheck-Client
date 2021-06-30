@@ -3,7 +3,7 @@ import 'react-vertical-timeline-component/style.min.css';
 import { toast } from 'react-toastify';
 import SweetAlert from 'sweetalert2'
 import { handleResponse } from "../../services/service.backend";
-
+import DataTable from 'react-data-table-component'
 const ContentType = {
     Text: 1,
     Video: 2,
@@ -18,8 +18,13 @@ class Assignment extends React.Component {
         this.state = {
             files: null,
             fileName: null,
+            assignmentStatus: null,
+            assignmentCompleteData: null,
             assignmentUploadedFileIds: null,
-            submitedAssignmentFile: []
+            submitedAssignmentFile: [],
+            selectedRows: null,
+            toggleCleared: false,
+            assignmentComplete:false
         };
     }
 
@@ -34,23 +39,85 @@ class Assignment extends React.Component {
         return fetch(`classRoom/getSubmitedAssignmentFile?id=${id}`)
             .then(handleResponse)
             .then(response => {
-                response.subjectChapters.map(i =>
-                    submitedAssignmentFileList.push({ id: i.id, chapterText: i.chapterText, topicCount: i.topicCount })
+                this.setState({
+                    assignmentStatus: response.status,
+                    assignmentCompleteData: response.completeDate,
+                    assignmentComplete:response.assignmentCompleted
+                });
+                response.submissionDocuments.map(i =>
+                    submitedAssignmentFileList.push({ id: i.id, fileName: i.fileName, url: i.url, enFileName: i.enFileName, submissionId: i.submissionId })
                 )
                 this.setState({
-                    submitedAssignmentFile: submitedAssignmentFileList
+                    submitedAssignmentFile: submitedAssignmentFileList,
+                    toggleCleared: false,
+                    selectedRows: null
                 });
             });
     }
+    handleRowSelected = (rows) => {
+        this.setState({
+            selectedRows: rows
+        });
+    }
 
-    showAssignmentSubmition = (record) => {
+    handleDelete = async () => {
+        this.setState({
+            toggleCleared: true
+        });
+        this.state.selectedRows.selectedRows.map(async (i) =>
+            await fetch("classRoom/removeAssignmentFile", {
+                "method": "POST",
+                "headers": {
+                    "content-type": "application/json",
+                    "accept": "application/json"
+                },
+                "body": JSON.stringify({
+                    id: i.id,
+                    enFileName: i.enFileName,
+                    submissionId: i.submissionId
+                })
+            })
+                .then(response => response.json())
+                .then(async (response) => {
+
+                    await this.getSubmitedAssignmentFile(this.props.assignment.id);
+                })
+                .catch(err => {
+                    toast.error(err)
+                }));
+
+        this.setState({
+            toggleCleared: true,
+            selectedRows: null
+        });
+    }
+
+    showAssignmentSubmition = () => {
+
+        const columns = [
+            {
+                name: 'File Name',
+                selector: 'fileName',
+                sortable: false,
+                center: true,
+            }
+        ];
+
         return (
             <div>
-                <div className="col-lg-2 col-md-2 mb-3" >
-                    <a href={record.url} rel="noopener noreferrer" target="_blank">{record.fileName}</a>
-                </div>
-                <div className="col-lg-2 col-md-2 mb-3" >
-                    <button className="btn btn-primary mr-2" style={{ width: "auto" }} type="button" onClick={() => this.removeFile(record.id)}>Remove</button>
+                <div className="col-12" >
+                    <div className="card-body datatable-react">
+                        <DataTable
+                            columns={columns}
+                            data={this.state.submitedAssignmentFile}
+                            striped={false}
+                            center={true}
+                            selectableRows={!this.state.assignmentComplete}
+                            onSelectedRowsChange={this.handleRowSelected}
+                            clearSelectedRows={this.state.toggleCleared}
+                        />
+                        {this.state.selectedRows && this.state.selectedRows.selectedCount > 0 && (<button className="btn btn-danger mt-2 float-right" style={{ width: "auto" }} type="button" onClick={() => this.handleDelete()}>Remove</button>)}
+                    </div>
                 </div>
             </div>
         );
@@ -123,7 +190,7 @@ class Assignment extends React.Component {
     }
 
     uploadAssignmentFile = async (id) => {
-        var uploadedList = [];
+        debugger
         var files = this.state.files;
 
         for (let i = 0; i < files.length; i++) {
@@ -137,16 +204,19 @@ class Assignment extends React.Component {
                 body: formData
             })
                 .then(response => response.json())
-                .then(response => {
-                    uploadedList.push(response.id)
+                .then(async (response) => {
+
+
                 })
                 .catch(err => {
                     toast.error(err)
                 });
         };
-
+        await this.getSubmitedAssignmentFile(id);
+        this.fileInput.value = "";
         this.setState({
-            assignmentUploadedFileIds: uploadedList
+            toggleCleared: false,
+            selectedRows: null
         });
     }
 
@@ -183,38 +253,33 @@ class Assignment extends React.Component {
     }
 
     completeAssignmentSubmition = async (id) => {
-        if (this.state.files.length === this.state.assignmentUploadedFileIds.length) {
-            await fetch("classRoom/submitAssignment", {
-                "method": "POST",
-                "headers": {
-                    "content-type": "application/json",
-                    "accept": "application/json"
-                },
-                "body": JSON.stringify({
-                    assignmentId: id
-                })
+        await fetch("classRoom/completeAssignment", {
+            "method": "POST",
+            "headers": {
+                "content-type": "application/json"
+            },
+            "body": JSON.stringify({
+                id: this.props.assignment.id
             })
-                .then(response => response.json())
-                .then(response => {
-                    if (!response.Value.Created) {
-                        toast.error(response.Value.Error.Message)
-                        return;
-                    }
-                    toast.success(response.Value.SuccessMessage)
-                    this.getEvent(this.state.eventDate);
-                    this.setState({
-                        isPersonalEventOpen: false
-                    });
-                })
-                .catch(err => {
-                    toast.error(err)
-                });
-        }
+        })
+            .then(response => response.json())
+            .then(async (response) => {
+                if (!response.Value.Created) {
+                    toast.error(response.Value.Error.Message)
+                    return;
+                }
+                toast.success(response.Value.SuccessMessage)
+                await this.getSubmitedAssignmentFile(this.props.assignment.id);
+            })
+            .catch(err => {
+                toast.error(err)
+            });
     }
 
     generateContent = (assignment) => {
         var openDate = new Date(assignment.openDate);
         var closeDate = new Date(assignment.closeDate);
+        debugger;
         return (
             <div>
                 <h5>
@@ -243,12 +308,13 @@ class Assignment extends React.Component {
                     </div>
                 )}
                 <form className="form theme-form">
+                    {!this.state.assignmentComplete && (
                     <div className="card-body">
                         <div className="row">
                             <div className="col">
                                 <div className="form-group">
                                     <label>Submit Assignment</label>
-                                    <input className="form-control" multiple type="file" onChange={this.setFile} />
+                                    <input className="form-control" multiple type="file" onChange={this.setFile} ref={ref => this.fileInput = ref} />
                                 </div>
                                 <div className="form-group">
                                     <button className="btn btn-primary mr-2" style={{ width: "auto" }} type="button" onClick={() => this.uploadFile(assignment.id)}>Add</button>
@@ -257,20 +323,37 @@ class Assignment extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {this.state.submitedAssignmentFile.length>0 &&
+                    )}
+                    {this.state.submitedAssignmentFile.length > 0 &&
                         (
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="col">
-
+                            <div>
+                                <div className="card-body">
+                                    <div className="row">
+                                        <div className="col">
+                                            <div className="row">
+                                                <p className="col-6">
+                                                    <b>Assignment Status : {this.state.assignmentStatus}</b>
+                                                </p>
+                                                {this.state.assignmentComplete && (<p className="col-6">
+                                                    <b>Assignment Completed Date : {new Date(this.state.assignmentCompleteData).toDateString()}</b>
+                                                </p>)}
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-12">
+                                                    {this.showAssignmentSubmition()}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                {!this.state.assignmentComplete && (<div className="card-footer">
+                                    <button className="btn btn-primary" style={{ width: "auto" }} type="button" onClick={() => this.completeAssignment(assignment.id)}>Complete Assignment</button>
+                                </div>)
+                                }
                             </div>
                         )
                     }
-                    <div className="card-footer">
-                        <button className="btn btn-primary" style={{ width: "auto" }} type="button" onClick={() => this.completeAssignment(assignment.id)}>Complete Assignment</button>
-                    </div>
+
                 </form>
             </div>
         )

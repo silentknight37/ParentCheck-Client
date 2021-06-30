@@ -84,7 +84,6 @@ class Content extends React.Component {
     }
 
     getAssignment = () => {
-        debugger;
         return this.props.isAssignmentAssign===true && this.props.assignment!=null && (
             <div>
                 <hr />
