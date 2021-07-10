@@ -18,6 +18,7 @@ import Dashboard from './components/dashboard/dashboard';
 import Project from './components/dashboard/project/project';
 
 // class-room
+import ClassRoomOverview from './components/class-room/class-room-overview';
 import Subjects from './components/class-room/subjects';
 import Chapters from './components/class-room/chapters';
 import TopicContent from './components/class-room/topicContent';
@@ -54,6 +55,9 @@ import EmailDefault from './components/applications/email-app/emailDefault';
 import Signin from './auth/signin';
 import SystemSignin from './auth/systemsignin';
 import FileManager from './components/applications/file-manager/file-manager'
+
+import AddSupportTicket from './components/support-ticket/addSupportTicket';
+import DetailTicket from './components/support-ticket/detailTicket';
 import SupportTicket from './components/support-ticket/supportTicket';
 import MySupportTickets from './components/support-ticket/mysupportTickets';
 
@@ -133,6 +137,7 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/dashboard`} component={Dashboard} />
                                     <Route path={`${process.env.PUBLIC_URL}/sysdashboard`} component={Project} />
 
+                                    <Route path={`${process.env.PUBLIC_URL}/class-room-overview`} component={ClassRoomOverview} />
                                     <Route path={`${process.env.PUBLIC_URL}/subjects`} component={Subjects} />
                                     <Route path={`${process.env.PUBLIC_URL}/content/:topicId`} component={TopicContent} />
                                     <Route path={`${process.env.PUBLIC_URL}/chapters/:subjectId`} component={Chapters} />
@@ -143,6 +148,8 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/advance/sweetAlert`} component={SweetAlert} />
                                     <Route path={`${process.env.PUBLIC_URL}/base/modalComponent`} component={ModalComponent} />
 
+                                    <Route path={`${process.env.PUBLIC_URL}/support/new-ticket`} component={AddSupportTicket} />
+                                    <Route path={`${process.env.PUBLIC_URL}/support/detail-ticket/:ticketId`} component={DetailTicket} />
                                     <Route path={`${process.env.PUBLIC_URL}/support/users-tickets`} component={SupportTicket} />
                                     <Route path={`${process.env.PUBLIC_URL}/support/my-ticket`} component={MySupportTickets} />
 

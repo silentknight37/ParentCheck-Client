@@ -44,7 +44,10 @@ export const MENUITEMS = [
         ]
     },
     {
-        title: 'Class Room', icon: BookOpen, type: 'link', path: '/subjects', active: false, bookmark: true
+        title: 'Class Room', icon: BookOpen, type: 'sub', active: false, children: [
+            { path: '/class-room-overview', title: 'Class Room Overview', type: 'link' },
+            { path: '/subjects', title: 'Text Book', type: 'link' }
+        ]
     },
     {
         title: 'Library', icon: Book, type: 'link', path: '/library', active: false, bookmark: true
@@ -57,7 +60,7 @@ export const MENUITEMS = [
     },
     {
         title: 'Support Ticket', icon: HelpCircle, type: 'sub', active: false, children: [
-            { path: '/support/new ticket', title: 'New Ticket', type: 'link' },
+            { path: '/support/new-ticket', title: 'New Ticket', type: 'link' },
             { path: '/support/my-ticket', title: 'My Ticket', type: 'link' },
             { path: '/support/users-tickets', title: 'Users Tickets', type: 'link' },
         ]

@@ -24,10 +24,10 @@ class Calender extends React.Component {
             toDate: null,
             subject: null,
             description: null,
-            type:null,
+            type: null,
             isSubmited: false,
-            isValidSubmit: true,
-            eventDate:new Date().toDateString()
+            isValidSubmit: false,
+            eventDate: new Date().toDateString()
         };
     }
 
@@ -40,17 +40,17 @@ class Calender extends React.Component {
             eventDate: date
         });
         const calanderEventsList = [];
-        
+
 
         return fetch(`calender/event?requestedDate=${date}&eventType=0`)
             .then(handleResponse)
             .then(response => {
 
                 response.calenderEvents.map(i =>
-                    calanderEventsList.push({ id: i.id, start: new Date(i.fromDate), end: new Date(i.toDate), title: i.subject, color: i.colorCode, eventDetails: i.description,type:i.type })
+                    calanderEventsList.push({ id: i.id, start: new Date(i.fromDate), end: new Date(i.toDate), title: i.subject, color: i.colorCode, eventDetails: i.description, type: i.type })
                 )
 
-                
+
                 this.setState({
                     calanderEvents: calanderEventsList
                 });
@@ -78,7 +78,7 @@ class Calender extends React.Component {
             toDate: null,
             subject: null,
             description: null,
-            type:null,
+            type: null,
             isSubmited: false
         });
     }
@@ -103,13 +103,12 @@ class Calender extends React.Component {
     }
 
     submitEvent = async (e) => {
-        debugger
         e.preventDefault();
         this.setState({
             isSubmited: true
         });
-        this.validate()
-        if (this.state.isValidSubmit) {
+
+        if (this.validate()) {
             await fetch("calender/eventCreate", {
                 "method": "POST",
                 "headers": {
@@ -120,7 +119,7 @@ class Calender extends React.Component {
                     fromDate: this.state.fromDate,
                     toDate: this.state.toDate,
                     subject: this.state.subject,
-                    description: this.state.description,    
+                    description: this.state.description,
                     type: 1
                 })
             })
@@ -138,6 +137,7 @@ class Calender extends React.Component {
                     this.setState({
                         isPersonalEventOpen: false
                     });
+                    this.handlePeronalModalToggle();
                 })
                 .catch(err => {
                     toast.error(err)
@@ -183,7 +183,7 @@ class Calender extends React.Component {
                 this.getEvent(this.state.eventDate);
                 this.setState({
                     isPersonalEventOpen: false,
-                    isEventOpen:false
+                    isEventOpen: false
                 });
             })
             .catch(err => {
@@ -191,15 +191,35 @@ class Calender extends React.Component {
             });
     }
 
-    validate = async () => {
-        var valid = (this.state.fromDate!=null && this.state.toDate!=null && new Date(this.state.toDate) <= new Date(this.state.fromDate) && this.state.subject!=null && this.state.description!=null)
+    validate = () => {
+        if (this.state.fromDate === null || this.state.fromDate === "") {
+            return false;
+        }
+
+        if (this.state.toDate === null || this.state.toDate === "") {
+            return false;
+        }
+
+        if (new Date(this.state.toDate).getTime() < new Date(this.state.fromDate).getTime()) {
+            return false;
+        }
+
+        if (this.state.subject === null || this.state.subject === "") {
+            return false;
+        }
+
+        if (this.state.description === null || this.state.description === "") {
+            return false;
+        }
 
         this.setState({
-            isValidSubmit: valid
+            isValidSubmit: true
         });
+
+        return true;
     }
 
-    getEventForMonth=(newDate,view,action)=>{
+    getEventForMonth = (newDate, view, action) => {
         this.getEvent(newDate.toDateString());
     }
 
@@ -207,7 +227,7 @@ class Calender extends React.Component {
         return (
             <div>
                 <Fragment>
-                    <Breadcrumb parent="Calender" title="Calender" isParentShow={false}/>
+                    <Breadcrumb parent="Calender" title="Calender" isParentShow={false} />
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-sm-12">
@@ -217,7 +237,7 @@ class Calender extends React.Component {
                                     </div>
                                     <div className="card-body">
                                         <Calendar
-                                        onNavigate={(newDate,view,action)=>this.getEventForMonth(newDate,view,action)}
+                                            onNavigate={(newDate, view, action) => this.getEventForMonth(newDate, view, action)}
                                             localizer={localizer}
                                             scrollToTime={new Date(1970, 1, 1, 6)}
                                             defaultDate={new Date()}
@@ -290,7 +310,7 @@ class Calender extends React.Component {
 
                         </ModalBody>
                         <ModalFooter>
-                            {this.state.selectedEvent.type===1 &&(<Button color="danger" onClick={this.removeCalander}>Remove</Button>)}
+                            {this.state.selectedEvent.type === 1 && (<Button color="danger" onClick={this.removeCalander}>Remove</Button>)}
                             <Button color="secondary" onClick={this.handleModalToggle}>Close</Button>
                         </ModalFooter>
                     </Modal>)
