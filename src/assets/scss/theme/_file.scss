@@ -81,7 +81,7 @@
     h6 {
         opacity: 0.9;
     }
-    font-family: $font-nunito;
+    font-family: $font-work-sans;
 }
 .file-content {
     .ellips {
@@ -138,9 +138,8 @@
             width: calc(25% - 30px);
             display: inline-block;
             position: relative;
-            + .file-box {
-                margin-left: 5px;
-            }
+            margin: 5px;
+            
             .file-top {
                 height: 100px;
                 background-color: #fff;

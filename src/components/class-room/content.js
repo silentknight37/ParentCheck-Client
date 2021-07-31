@@ -29,7 +29,7 @@ class Content extends React.Component {
 
     getContentAudios = (contentDocument) => {
         return (
-            <audio style={{ width: "100%" }} controls preload="none">
+            <audio style={{ width: "100%" }} controls controlsList="nodownload" preload="none">
                 <source src={contentDocument.url} type="audio/ogg" />
                 Your browser does not support the audio element.
             </audio>
@@ -38,7 +38,7 @@ class Content extends React.Component {
 
     getContentVideos = (contentDocument) => {
         return (
-            <video style={{ width: "100%" }} controls preload="none">
+            <video style={{ width: "100%" }} controls controlsList="nodownload" preload="none">
                 <source src={contentDocument.url} type="audio/ogg" />
                 Your browser does not support the audio element.
             </video>

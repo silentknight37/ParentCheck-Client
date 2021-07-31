@@ -41,7 +41,6 @@ class DetailTicket extends React.Component {
   }
 
   submitEvent = async (e) => {
-    debugger
     e.preventDefault();
     this.setState({
       isSubmited: true

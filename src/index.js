@@ -52,9 +52,10 @@ import ModalComponent from './components/base/modalComponent';
 
 // Import Applications Components
 import EmailDefault from './components/applications/email-app/emailDefault';
+import SMS from './components/applications/email-app/sms';
 import Signin from './auth/signin';
 import SystemSignin from './auth/systemsignin';
-import FileManager from './components/applications/file-manager/file-manager'
+import Library from './components/applications/file-manager/library'
 
 import AddSupportTicket from './components/support-ticket/addSupportTicket';
 import DetailTicket from './components/support-ticket/detailTicket';
@@ -142,7 +143,7 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/content/:topicId`} component={TopicContent} />
                                     <Route path={`${process.env.PUBLIC_URL}/chapters/:subjectId`} component={Chapters} />
 
-                                    <Route path={`${process.env.PUBLIC_URL}/library`} component={FileManager} />
+                                    <Route path={`${process.env.PUBLIC_URL}/library`} component={Library} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/calendar`} component={Calender} />
                                     <Route path={`${process.env.PUBLIC_URL}/advance/sweetAlert`} component={SweetAlert} />
@@ -154,6 +155,7 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/support/my-ticket`} component={MySupportTickets} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/Communication/email`} component={EmailDefault} />
+                                    <Route path={`${process.env.PUBLIC_URL}/Communication/sms`} component={SMS} />
                                 </App>
                              :
                                 <Redirect to={`${process.env.PUBLIC_URL}/login`} />

@@ -76,7 +76,7 @@ export const MENUITEMS = [
     },
     {
         title: 'Communication', icon: Mail, type: 'sub', active: false, children: [
-            { path: '/Communication/send-notification', title: 'Send Notification', type: 'link' },
+            { path: '/Communication/sms', title: 'Sms', type: 'link' },
             { path: '/Communication/email', title: 'Email', type: 'link' },
         ]
     }
