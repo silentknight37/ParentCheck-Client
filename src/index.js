@@ -52,7 +52,9 @@ import ModalComponent from './components/base/modalComponent';
 
 // Import Applications Components
 import EmailDefault from './components/applications/email-app/emailDefault';
+import EmailDetail from './components/applications/email-app/emailDetail';
 import SMS from './components/applications/email-app/sms';
+import Template from './components/applications/email-app/template';
 import Signin from './auth/signin';
 import SystemSignin from './auth/systemsignin';
 import Library from './components/applications/file-manager/library'
@@ -66,6 +68,7 @@ import MySupportTickets from './components/support-ticket/mysupportTickets';
 import configDB from './data/customizer/config'
 
 import Callback from './auth/callback'
+import { template } from 'lodash';
 
 // setup backend
 configureBackend();
@@ -155,7 +158,9 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/support/my-ticket`} component={MySupportTickets} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/Communication/email`} component={EmailDefault} />
+                                    <Route path={`${process.env.PUBLIC_URL}/Communication/emailDetail/:id/:type`} component={EmailDetail} />
                                     <Route path={`${process.env.PUBLIC_URL}/Communication/sms`} component={SMS} />
+                                    <Route path={`${process.env.PUBLIC_URL}/Communication/template`} component={Template} />
                                 </App>
                              :
                                 <Redirect to={`${process.env.PUBLIC_URL}/login`} />

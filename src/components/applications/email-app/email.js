@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { NoMailFound } from '../../../constant';
 import CKEditors from "react-ckeditor-component";
+import createLink from '../../../helpers/createLink';
+import { Link } from 'react-router-dom';
 var images = require.context('../../../assets/images', true);
 
 
@@ -17,17 +19,20 @@ class Email extends React.Component {
             messageOutbox: [],
             boxType: 'Inbox',
             isEmailSendOpen: false,
+            isRequestEmailSendOpen: false,
             isEmailOpen: false,
             selectedOpenEmail: null,
             subject: null,
             message: null,
+            template: null,
             isSubmited: false,
             isValidSubmit: false,
             isGroup: false,
             searchUser: null,
             toUsers: [],
             toGroups: [],
-            userContact: []
+            userContact: [],
+            templates: []
         };
     }
 
@@ -35,6 +40,21 @@ class Email extends React.Component {
         await this.getInbox();
         await this.getOutbox();
         await this.getToUsers();
+        await this.getTemplate();
+    }
+
+    getTemplate = async () => {
+        const templatesList = [];
+        return fetch(`communication/getCommunicationTemplate`)
+            .then(handleResponse)
+            .then(response => {
+                response.templates.map(i =>
+                    templatesList.push({ id: i.id, name: i.name, content: i.content, isSenderTemplate: i.isSenderTemplate, isActive: i.isActive })
+                )
+                this.setState({
+                    templates: templatesList,
+                });
+            });
     }
 
     getInbox = async () => {
@@ -43,7 +63,7 @@ class Email extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
-                    messagesList.push({ id: i.id, date: new Date(i.date).toDateString(), subject: i.subject, message: i.message, toUser: i.toUser, fromUser: i.fromUser, type: i.type })
+                    messagesList.push({ id: i.id, date: new Date(i.date).toDateString(), subject: i.subject, message: i.message, toUser: i.toUser, fromUser: i.fromUser, type: i.type, templateId: i.templateId, templateName: i.templateName, templateContent: i.templateContent })
                 )
                 this.setState({
                     messageInbox: messagesList,
@@ -100,10 +120,10 @@ class Email extends React.Component {
         return (
             <div>
                 <div className="media" key={1} >
-                    <div className="media-body" onClick={() => this.openEmailModalToggle(data)}>
+                    <Link className="media-body" to={createLink('/Communication/emailDetail/:id/:type', { id: data.id, type: this.state.boxType == "Inbox" ? 1 : 2 })}>
                         <h6>{data.fromUser}  <small className="f-right"><span className="digits">({data.date})</span></small></h6>
                         <p>{data.subject},</p>
-                    </div>
+                    </Link>
                 </div>
 
             </div>
@@ -137,8 +157,30 @@ class Email extends React.Component {
         });
     }
 
+    handleTemplateChange(e) {
+        this.stateRequestFormText.value = "";
+        var template = e["e"][0];
+        if (template) {
+            this.setState({
+                template: template
+            });
+
+            if (template.isSenderTemplate) {
+                this.stateRequestFormText.value = template.content
+            }
+        }
+        else {
+            this.setState({
+                template: null
+            });
+        }
+
+        this.setState({
+            isSubmited: false
+        });
+    }
+
     submitEmail = async () => {
-        debugger;
         this.setState({
             isSubmited: true
         });
@@ -152,7 +194,7 @@ class Email extends React.Component {
                 },
                 "body": JSON.stringify({
                     subject: this.state.subject,
-                    messageText: this.state.message,
+                    messageText: this.stateText.value,
                     toUsers: this.state.toUsers,
                     toGroups: this.state.toGroups,
                     isGroup: this.state.isGroup,
@@ -166,16 +208,79 @@ class Email extends React.Component {
                         toast.error(response.Value.Error.Message)
                         return;
                     }
+                    this.setState({
+                        isSubmited: false,
+                        isEmailSendOpen: false,
+                        subject: null,
+                        message: null,
+                        template: null,
+                        isGroup: false,
+                        toUsers: [],
+                        toGroups: []
+                    });
 
+                    this.stateText.value = "";
                     toast.success(response.Value.SuccessMessage)
 
                     await this.getInbox();
                     await this.getOutbox();
 
+
+                })
+                .catch(err => {
+                    toast.error(err)
+                });
+        }
+    }
+
+    submitRequestFormEmail = async () => {
+        debugger
+        this.setState({
+            isSubmited: true
+        });
+
+        if (this.validateRequestForm()) {
+            await fetch("communication/composeCommunication", {
+                "method": "POST",
+                "headers": {
+                    "content-type": "application/json",
+                    "accept": "application/json"
+                },
+                "body": JSON.stringify({
+                    subject: this.state.subject,
+                    messageText: this.stateRequestFormText.value,
+                    toUsers: this.state.toUsers,
+                    toGroups: this.state.toGroups,
+                    isGroup: this.state.isGroup,
+                    templateId: this.state.template.id,
+                    communicationType: 5,
+                })
+            })
+                .then(response => response.json())
+                .then(async (response) => {
+
+                    if (!response.Value.Created) {
+                        toast.error(response.Value.Error.Message)
+                        return;
+                    }
                     this.setState({
                         isSubmited: false,
-                        isEmailSendOpen: false
+                        isRequestEmailSendOpen: false,
+                        subject: null,
+                        message: null,
+                        template: null,
+                        isGroup: false,
+                        toUsers: [],
+                        toGroups: []
                     });
+
+                    this.stateRequestFormText.value = "";
+                    toast.success(response.Value.SuccessMessage)
+
+                    await this.getInbox();
+                    await this.getOutbox();
+
+
                 })
                 .catch(err => {
                     toast.error(err)
@@ -188,11 +293,35 @@ class Email extends React.Component {
             return false;
         }
 
-        if (this.state.message === null || this.state.message === "") {
+        if (this.stateText.value === null || this.stateText.value === "") {
             return false;
         }
 
         if (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) {
+            return false;
+        }
+
+        this.setState({
+            isValidSubmit: true
+        });
+
+        return true;
+    }
+
+    validateRequestForm = () => {
+        if (this.state.subject === null || this.state.subject === "") {
+            return false;
+        }
+
+        if (this.stateRequestFormText.value === null || this.stateRequestFormText.value === "") {
+            return false;
+        }
+
+        if (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) {
+            return false;
+        }
+
+        if (this.state.template === null || this.state.template === "") {
             return false;
         }
 
@@ -215,7 +344,14 @@ class Email extends React.Component {
         });
     }
 
+    openRequestFormModalToggle = () => {
+        this.setState({
+            isRequestEmailSendOpen: true
+        });
+    }
+
     openEmailModalToggle = (data) => {
+        debugger
         this.setState({
             isEmailOpen: true,
             selectedOpenEmail: data
@@ -229,6 +365,13 @@ class Email extends React.Component {
         });
     }
 
+    handleRequestFormEmailSendModalToggle = () => {
+        this.setState({
+            isRequestEmailSendOpen: false,
+            isSubmited: false
+        });
+    }
+
     handleEmailModalToggle = () => {
         this.setState({
             isEmailOpen: false
@@ -236,26 +379,54 @@ class Email extends React.Component {
     }
 
     handleChange(changeObject) {
-        debugger
         this.setState(changeObject);
         this.setState({
             isSubmited: false
         });
     }
 
-    handleEditorChange(evt) {
-       
-        var data=evt.editor.getData();
-        debugger
+    handleEditorChange() {
+        var l = this.stateText.value;
+
         this.setState({
             isSubmited: false
         });
     }
 
+    stateText = {
+        value: ""
+    }
+
+    stateRequestFormText = {
+        value: ""
+    }
+    getHtmlContent() {
+        return (
+            <div dangerouslySetInnerHTML={{ __html: this.state.selectedOpenEmail.message }} />
+        );
+    }
+
+
     render() {
 
         const inboxList = [];
         const outboxList = [];
+
+        const onChange = (evt) => {
+            debugger
+            const newContent = evt.editor.getData();
+            if (!(newContent == "" && this.stateText.value == "")) {
+                this.stateText.value = newContent;
+            }
+        }
+
+        const onRequestFormChange = (evt) => {
+            debugger
+            const newContent = evt.editor.getData();
+            if (!(newContent == "" && this.stateRequestFormText.value == "")) {
+                this.stateRequestFormText.value = newContent;
+            }
+        }
 
         this.state.messageInbox.map((data, i) => {
             inboxList.push(
@@ -280,7 +451,8 @@ class Email extends React.Component {
                                 </div>
                                 <div className="card-body">
                                     <div className="card-header">
-                                        <Button color="primary" onClick={this.openModalToggle}>Send Email</Button>
+                                        <Button color="primary mr-2" onClick={this.openModalToggle}>Send Email</Button>
+                                        <Button color="primary" onClick={this.openRequestFormModalToggle}>Send Request Form</Button>
                                     </div>
                                     <div className="email-wrap">
                                         <div className="row">
@@ -424,11 +596,11 @@ class Email extends React.Component {
                                                                 <div className="form-group col-12">
                                                                     <label className="col-form-label pt-0" htmlFor="message">{"Message"}</label>
                                                                     <CKEditors id="message"
-                                                                        events={(change)=>{
-                                                                            debugger;
+                                                                        events={{
+                                                                            "change": onChange
                                                                         }}
                                                                     />
-                                                                    <span>{this.state.isSubmited && !this.state.message && 'Description is required'}</span>
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -442,60 +614,96 @@ class Email extends React.Component {
                                     }
 
                                     {
-                                        this.state.selectedOpenEmail && (
-                                            <Modal isOpen={this.state.isEmailOpen} toggle={this.handleEmailModalToggle} size="lg">
-                                                <ModalHeader toggle={this.handleEmailModalToggle}>
-                                                    <div className="email-right-aside">
-                                                        <div className="email-body radius-left">
-                                                            <div className="pl-0">
-                                                                <div className="tab-content">
-                                                                    <div role="tabpanel" aria-labelledby="pills-darkprofile-tab">
-                                                                        <div className="email-content">
-                                                                            <div className="email-top">
-                                                                                <div className="row">
-                                                                                    <div className="col-md-12 xl-100 col-sm-12">
-                                                                                        <div className="media">
-                                                                                            <div className="media-body">
-                                                                                                <p><small ><span className="digits">{this.state.selectedOpenEmail.date}</span></small></p>
-                                                                                                <h6>From : {this.state.selectedOpenEmail.fromUser} </h6>
+                                        <Modal isOpen={this.state.isRequestEmailSendOpen} toggle={this.handleRequestFormEmailSendModalToggle} size="lg">
+                                            <ModalHeader toggle={this.handleRequestFormEmailSendModalToggle}>
 
-                                                                                                <p>To : {this.state.selectedOpenEmail.toUser}</p>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                            </ModalHeader>
+                                            <ModalBody>
+                                                <div className="card-body">
+                                                    <form className="theme-form needs-validation" noValidate="">
+                                                        <div className="card-body">
+                                                            <div className="form-row">
+                                                                <div className="form-group col-12">
+
+                                                                    <label htmlFor="option-user">
+                                                                        <input className="radio_animated" id="option-user" type="radio" name="rdo-ani" defaultChecked onChange={e => this.handleRadioChange({ isGroup: false }, false)} />
+                                                                        {Option} {"To Users"}
+                                                                    </label>
+                                                                    <br />
+                                                                    <label htmlFor="option-group">
+                                                                        <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
+                                                                        {Option} {"To Groups"}
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="form-row">
+                                                                <div className="form-group col-12">
+                                                                    {!this.state.isGroup && (
+                                                                        <Typeahead
+                                                                            id="user-typeahead"
+                                                                            labelKey="fullName"
+                                                                            multiple
+                                                                            options={this.state.userContact}
+                                                                            placeholder="Choose a users..."
+                                                                            onChange={e => this.handleToChange({ e })}
+                                                                        />
+                                                                    )}
+                                                                    {this.state.isGroup && (
+                                                                        <Typeahead
+                                                                            id="group-typeahead"
+                                                                            labelKey="value"
+                                                                            multiple
+                                                                            options={this.state.userContact}
+                                                                            placeholder="Choose a users..."
+                                                                            onChange={e => this.handleToChange({ e })}
+                                                                        />
+                                                                    )}
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="form-row">
+                                                                <div className="form-group col-12">
+                                                                    <label className="col-form-label pt-0" htmlFor="subject">{"Subject"}</label>
+                                                                    <input className="form-control" id="subject" type="text" aria-describedby="subject" onChange={e => this.handleChange({ subject: e.target.value })} placeholder="Subject" />
+                                                                    <span>{this.state.isSubmited && !this.state.subject && 'Subject is required'}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="form-row">
+                                                                <div className="form-group col-12">
+                                                                    <label className="col-form-label pt-0" htmlFor="template-typeahead">{"Request Form"}</label>
+                                                                    <Typeahead
+                                                                        id="template-typeahead"
+                                                                        labelKey="name"
+                                                                        options={this.state.templates}
+                                                                        placeholder="Choose a users..."
+                                                                        onChange={e => this.handleTemplateChange({ e })}
+                                                                    />
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.template == null && 'Request Form is required'}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="form-row">
+                                                                <div className="form-group col-12">
+                                                                    <label className="col-form-label pt-0" htmlFor="message">{"Message"}</label>
+                                                                    <CKEditors id="message"
+                                                                        content={this.stateRequestFormText.value}
+                                                                        events={{
+                                                                            "change": onRequestFormChange
+                                                                        }}
+                                                                    />
+
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </ModalHeader>
-                                                <ModalBody>
-                                                    <div className="email-right-aside">
-                                                        <div className="email-body radius-left">
-                                                            <div className="pl-0">
-                                                                <div className="tab-content">
-
-                                                                    <div role="tabpanel" aria-labelledby="pills-darkprofile-tab">
-                                                                        <div className="email-content">
-                                                                            <div className="email-wrapper">
-                                                                                <p>{this.state.selectedOpenEmail.message}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </ModalBody>
-                                                <ModalFooter>
-                                                    <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submitSMS(e)}>{'Reply'}</button>
-                                                </ModalFooter>
-                                            </Modal>
-                                        )
+                                                    </form>
+                                                </div>
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={() => this.submitRequestFormEmail()}>{'Submit'}</button>
+                                            </ModalFooter>
+                                        </Modal>
                                     }
+
+
                                 </div>
                             </div>
                         </div>

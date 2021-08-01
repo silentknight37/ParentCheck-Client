@@ -20,20 +20,21 @@ export const MENUITEMS = [
     },
     {
         title: 'System Security', icon: Settings, type: 'sub', active: false, children: [
-            { path: '/system/role-management', title: 'Role Management', type: 'link' },
+            // { path: '/system/role-management', title: 'Role Management', type: 'link' },
             { path: '/system/user-management', title: 'User Management', type: 'link' },
             { path: '/system/institute-management', title: 'Institute Management', type: 'link' },
-            { path: '/system/package-management', title: 'Package Management', type: 'link' },
-            { path: '/system/user-activity-log', title: 'User Activity log', type: 'link' },
+            // { path: '/system/package-management', title: 'Package Management', type: 'link' },
+            // { path: '/system/user-activity-log', title: 'User Activity log', type: 'link' },
         ]
     },
     {
         title: 'Institute Setting', icon: Settings, type: 'sub', active: false, children: [
-            { path: '/institute/role-management', title: 'Role Management', type: 'link' },
+            // { path: '/institute/role-management', title: 'Role Management', type: 'link' },
             { path: '/institute/user-management', title: 'User Management', type: 'link' },
             { path: '/institute/class-management', title: 'Class Management', type: 'link' },
             { path: '/institute/subject-management', title: 'Subject Management', type: 'link' },
             { path: '/institute/academic-year-management', title: 'Academic Management', type: 'link' },
+            { path: '/institute/term-management', title: 'Term Management', type: 'link' },
         ]
     },
     {
@@ -46,14 +47,12 @@ export const MENUITEMS = [
     {
         title: 'Class Room', icon: BookOpen, type: 'sub', active: false, children: [
             { path: '/class-room-overview', title: 'Class Room Overview', type: 'link' },
-            { path: '/subjects', title: 'Text Book', type: 'link' }
+            { path: '/subjects', title: 'Text Book', type: 'link' },
+            { path: '/student-attendant', title: 'Student Attendant', type: 'link' },
         ]
     },
     {
         title: 'Library', icon: Book, type: 'link', path: '/library', active: false, bookmark: true
-    },
-    {
-        title: 'Student Attendant', icon: UserCheck, type: 'link', path: '/student-attendant', active: false, bookmark: true
     },
     {
         title: 'Calendar', icon: Calendar, type: 'link', path: '/calendar', active: false, bookmark: true
@@ -78,6 +77,7 @@ export const MENUITEMS = [
         title: 'Communication', icon: Mail, type: 'sub', active: false, children: [
             { path: '/Communication/sms', title: 'Sms', type: 'link' },
             { path: '/Communication/email', title: 'Email', type: 'link' },
+            { path: '/Communication/template', title: 'Template', type: 'link' },
         ]
     }
 ]

@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { handleResponse } from "../../services/service.backend";
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import createLink from '../../helpers/createLink';
 
 class DetailTicket extends React.Component {
   constructor(props) {
@@ -152,7 +153,7 @@ class DetailTicket extends React.Component {
 
     return this.state.detailTicket && (
       <Fragment>
-        <Breadcrumb title="New Support Ticket" parent="Support Ticket" isParentShow={false} />
+        <Breadcrumb title="New Support Ticket" parent="My Tickets" parentLink={createLink('/support/my-ticket')} isParentShow={true} />
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-12">
