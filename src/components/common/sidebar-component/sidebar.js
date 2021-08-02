@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import logo from '../../../assets/images/endless-logo.png';
-import logo_compact from '../../../assets/images/logo/compact-logo.png';
+import logo from '../../../assets/images//logo_without_bg.png';
+import logo_compact from '../../../assets/images/logo_without_bg.png';
 import { MENUITEMS } from '../../../components/common/sidebar-component/menu';
 import { Link } from 'react-router-dom';
 import { translate } from 'react-switch-lang';
@@ -182,7 +182,7 @@ const Sidebar = (props) => {
                     <div className="logo-wrapper compactLogo">
                         <Link to={`${process.env.PUBLIC_URL}/dashboard/default`}>
                             <img className="blur-up lazyloaded" src={logo_compact} alt="" />
-                            <img className="blur-up lazyloaded" src={logo} alt="" />
+                            <img className="blur-up lazyloaded" width="150px"  src={logo} alt="" />
                         </Link>
                     </div>
                 </div>

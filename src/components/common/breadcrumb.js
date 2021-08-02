@@ -13,7 +13,6 @@ const Breadcrumb = props => {
                     <div className="row">
                         <div className="col">
                             <div className="page-header-left">
-                                <h3>{breadcrumb.title}</h3>
                                 <ol className="breadcrumb pull-right">
                                     <li className="breadcrumb-item">
                                         <Link to={`${process.env.PUBLIC_URL}/dashboard`}>

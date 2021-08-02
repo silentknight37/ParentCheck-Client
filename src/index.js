@@ -18,6 +18,7 @@ import Dashboard from './components/dashboard/dashboard';
 import Project from './components/dashboard/project/project';
 
 // class-room
+import ClassRoomOverview from './components/class-room/class-room-overview';
 import Subjects from './components/class-room/subjects';
 import Chapters from './components/class-room/chapters';
 import TopicContent from './components/class-room/topicContent';
@@ -51,9 +52,15 @@ import ModalComponent from './components/base/modalComponent';
 
 // Import Applications Components
 import EmailDefault from './components/applications/email-app/emailDefault';
+import EmailDetail from './components/applications/email-app/emailDetail';
+import SMS from './components/applications/email-app/sms';
+import Template from './components/applications/email-app/template';
 import Signin from './auth/signin';
 import SystemSignin from './auth/systemsignin';
-import FileManager from './components/applications/file-manager/file-manager'
+import Library from './components/applications/file-manager/library'
+
+import AddSupportTicket from './components/support-ticket/addSupportTicket';
+import DetailTicket from './components/support-ticket/detailTicket';
 import SupportTicket from './components/support-ticket/supportTicket';
 import MySupportTickets from './components/support-ticket/mysupportTickets';
 
@@ -61,6 +68,7 @@ import MySupportTickets from './components/support-ticket/mysupportTickets';
 import configDB from './data/customizer/config'
 
 import Callback from './auth/callback'
+import { template } from 'lodash';
 
 // setup backend
 configureBackend();
@@ -133,20 +141,26 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/dashboard`} component={Dashboard} />
                                     <Route path={`${process.env.PUBLIC_URL}/sysdashboard`} component={Project} />
 
+                                    <Route path={`${process.env.PUBLIC_URL}/class-room-overview`} component={ClassRoomOverview} />
                                     <Route path={`${process.env.PUBLIC_URL}/subjects`} component={Subjects} />
                                     <Route path={`${process.env.PUBLIC_URL}/content/:topicId`} component={TopicContent} />
                                     <Route path={`${process.env.PUBLIC_URL}/chapters/:subjectId`} component={Chapters} />
 
-                                    <Route path={`${process.env.PUBLIC_URL}/library`} component={FileManager} />
+                                    <Route path={`${process.env.PUBLIC_URL}/library`} component={Library} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/calendar`} component={Calender} />
                                     <Route path={`${process.env.PUBLIC_URL}/advance/sweetAlert`} component={SweetAlert} />
                                     <Route path={`${process.env.PUBLIC_URL}/base/modalComponent`} component={ModalComponent} />
 
+                                    <Route path={`${process.env.PUBLIC_URL}/support/new-ticket`} component={AddSupportTicket} />
+                                    <Route path={`${process.env.PUBLIC_URL}/support/detail-ticket/:ticketId`} component={DetailTicket} />
                                     <Route path={`${process.env.PUBLIC_URL}/support/users-tickets`} component={SupportTicket} />
                                     <Route path={`${process.env.PUBLIC_URL}/support/my-ticket`} component={MySupportTickets} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/Communication/email`} component={EmailDefault} />
+                                    <Route path={`${process.env.PUBLIC_URL}/Communication/emailDetail/:id/:type`} component={EmailDetail} />
+                                    <Route path={`${process.env.PUBLIC_URL}/Communication/sms`} component={SMS} />
+                                    <Route path={`${process.env.PUBLIC_URL}/Communication/template`} component={Template} />
                                 </App>
                              :
                                 <Redirect to={`${process.env.PUBLIC_URL}/login`} />

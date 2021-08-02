@@ -190,7 +190,6 @@ class Assignment extends React.Component {
     }
 
     uploadAssignmentFile = async (id) => {
-        debugger
         var files = this.state.files;
 
         for (let i = 0; i < files.length; i++) {
@@ -279,7 +278,7 @@ class Assignment extends React.Component {
     generateContent = (assignment) => {
         var openDate = new Date(assignment.openDate);
         var closeDate = new Date(assignment.closeDate);
-        debugger;
+
         return (
             <div>
                 <h5>
@@ -331,10 +330,12 @@ class Assignment extends React.Component {
                                     <div className="row">
                                         <div className="col">
                                             <div className="row">
-                                                <p className="col-6">
+                                                <p className="col-12">
                                                     <b>Assignment Status : {this.state.assignmentStatus}</b>
                                                 </p>
-                                                {this.state.assignmentComplete && (<p className="col-6">
+                                            </div>
+                                            <div className="row">
+                                                {this.state.assignmentComplete && (<p className="col-12">
                                                     <b>Assignment Completed Date : {new Date(this.state.assignmentCompleteData).toDateString()}</b>
                                                 </p>)}
                                             </div>

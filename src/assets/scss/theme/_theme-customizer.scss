@@ -60,7 +60,7 @@
   right: -330px;
   background-color: $white;
   z-index: 999;
-  font-family: $font-nunito;
+  font-family: $font-work-sans, $font-serif;
   transition: all 0.3s ease;
   &.open{
     right: 0px;
