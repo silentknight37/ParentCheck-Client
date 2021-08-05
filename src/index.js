@@ -19,6 +19,7 @@ import Project from './components/dashboard/project/project';
 
 // class-room
 import ClassRoomOverview from './components/class-room/class-room-overview';
+import StudentAttendant from './components/class-room/studentAttendant';
 import Subjects from './components/class-room/subjects';
 import Chapters from './components/class-room/chapters';
 import TopicContent from './components/class-room/topicContent';
@@ -63,6 +64,8 @@ import AddSupportTicket from './components/support-ticket/addSupportTicket';
 import DetailTicket from './components/support-ticket/detailTicket';
 import SupportTicket from './components/support-ticket/supportTicket';
 import MySupportTickets from './components/support-ticket/mysupportTickets';
+
+import IncidentReport from './components/applications/email-app/incidentReport';
 
 //config data
 import configDB from './data/customizer/config'
@@ -161,6 +164,9 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/Communication/emailDetail/:id/:type`} component={EmailDetail} />
                                     <Route path={`${process.env.PUBLIC_URL}/Communication/sms`} component={SMS} />
                                     <Route path={`${process.env.PUBLIC_URL}/Communication/template`} component={Template} />
+
+                                    <Route path={`${process.env.PUBLIC_URL}/incident-report`} component={IncidentReport} />
+                                    <Route path={`${process.env.PUBLIC_URL}/student-attendant`} component={StudentAttendant} />
                                 </App>
                              :
                                 <Redirect to={`${process.env.PUBLIC_URL}/login`} />
