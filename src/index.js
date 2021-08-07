@@ -66,6 +66,11 @@ import SupportTicket from './components/support-ticket/supportTicket';
 import MySupportTickets from './components/support-ticket/mysupportTickets';
 
 import IncidentReport from './components/applications/email-app/incidentReport';
+import InvoiceType from './components/payment/invoiceType';
+import Invoices from './components/payment/invoices';
+import GenerateInvoices from './components/payment/generate-invoices';
+import InvoiceDetails from './components/payment/invoicesDetails';
+import GenerateInvoiceDetails from './components/payment/generateinvoiceDetails';
 
 //config data
 import configDB from './data/customizer/config'
@@ -167,6 +172,13 @@ const Root = () => {
 
                                     <Route path={`${process.env.PUBLIC_URL}/incident-report`} component={IncidentReport} />
                                     <Route path={`${process.env.PUBLIC_URL}/student-attendant`} component={StudentAttendant} />
+
+                                    <Route path={`${process.env.PUBLIC_URL}/payment/invoiceType`} component={InvoiceType} />
+                                    <Route path={`${process.env.PUBLIC_URL}/payment/invoices`} component={Invoices} />
+                                    <Route path={`${process.env.PUBLIC_URL}/payment/generate-invoices`} component={GenerateInvoices} />
+                                    <Route path={`${process.env.PUBLIC_URL}/payment/invoice/:id`} component={InvoiceDetails} />
+                                    <Route path={`${process.env.PUBLIC_URL}/payment/generate-invoice/:id`} component={GenerateInvoiceDetails} />
+
                                 </App>
                              :
                                 <Redirect to={`${process.env.PUBLIC_URL}/login`} />

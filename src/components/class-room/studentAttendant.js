@@ -69,7 +69,6 @@ class StudentAttendant extends React.Component {
                     response.studentAttendances.map(i =>
                         classStudentAttendanceList.push({ id: i.id, attendance: i.isMarked ? i.isAttendance ? <i className="icofont  icofont-check" style={{ color: "#18c435", fontSize: "25px" }}></i> : <i className="icofont  icofont-close" style={{ color: "#c41835", fontSize: "25px" }}></i> : <div><Button className="btn btn-success mr-2" onClick={() => this.SaveAttendance(true, i.instituteUserId, i.instituteClassId)}><i className="icofont icofont-check" style={{ fontSize: "25px" }}></i></Button><Button className="btn btn-danger" onClick={() => this.SaveAttendance(false, i.instituteUserId, i.instituteClassId)}><i className="icofont icofont-close" style={{ fontSize: "25px" }}></i></Button></div>, isMarked: i.isMarked, recordDate: new Date(i.recordDate).toDateString(), studentUserName: i.studentUserName, className: i.className })
                     )
-                    debugger
                     this.setState({
                         classStudentAttendances: classStudentAttendanceList,
                         isSubmited: false
@@ -102,7 +101,6 @@ class StudentAttendant extends React.Component {
     }
 
     SaveAttendance = async (isAttendance, instituteUserId, instituteClassId) => {
-        debugger
 
         await fetch("classRoom/saveClassStudentAttendance", {
             "method": "POST",

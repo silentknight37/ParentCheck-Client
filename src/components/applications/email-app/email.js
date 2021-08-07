@@ -234,7 +234,6 @@ class Email extends React.Component {
     }
 
     submitRequestFormEmail = async () => {
-        debugger
         this.setState({
             isSubmited: true
         });
@@ -351,7 +350,6 @@ class Email extends React.Component {
     }
 
     openEmailModalToggle = (data) => {
-        debugger
         this.setState({
             isEmailOpen: true,
             selectedOpenEmail: data
@@ -413,7 +411,6 @@ class Email extends React.Component {
         const outboxList = [];
 
         const onChange = (evt) => {
-            debugger
             const newContent = evt.editor.getData();
             if (!(newContent == "" && this.stateText.value == "")) {
                 this.stateText.value = newContent;
@@ -421,7 +418,6 @@ class Email extends React.Component {
         }
 
         const onRequestFormChange = (evt) => {
-            debugger
             const newContent = evt.editor.getData();
             if (!(newContent == "" && this.stateRequestFormText.value == "")) {
                 this.stateRequestFormText.value = newContent;
