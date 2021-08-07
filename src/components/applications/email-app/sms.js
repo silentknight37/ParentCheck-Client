@@ -197,19 +197,19 @@ class SMS extends React.Component {
                 name: 'To Users',
                 selector: 'toUser',
                 sortable: true,
-                wrap:true
+                wrap: true
             },
             {
                 name: 'Subject',
                 selector: 'subject',
                 sortable: true,
-                wrap:true
+                wrap: true
             },
             {
                 name: 'Message',
                 selector: 'message',
                 sortable: true,
-                wrap:true
+                wrap: true
             }
         ];
 
@@ -300,21 +300,22 @@ class SMS extends React.Component {
                                     }
 
                                 </div>
+                                <div className="card-body datatable-react">
+                                    <Card>
+                                        <CardBody>
+                                            <DataTable
+                                                columns={openDataColumns}
+                                                data={this.state.messagesTickets}
+                                                striped={true}
+                                                pagination
+                                                persistTableHead
+                                                responsive={true}
+                                            />
+                                        </CardBody>
+                                    </Card>
+                                </div>
                             </div>
-                            <div className="card-body datatable-react">
-                                <Card>
-                                    <CardBody>
-                                        <DataTable
-                                            columns={openDataColumns}
-                                            data={this.state.messagesTickets}
-                                            striped={true}
-                                            pagination
-                                            persistTableHead
-                                            responsive={true}
-                                        />
-                                    </CardBody>
-                                </Card>
-                            </div>
+
                         </div>
                     </div>
                 </div>

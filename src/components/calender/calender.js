@@ -49,8 +49,6 @@ class Calender extends React.Component {
             eventDate: date
         });
         const calanderEventsList = [];
-
-
         return fetch(`calender/event?requestedDate=${date}&eventType=0`)
             .then(handleResponse)
             .then(response => {
@@ -119,7 +117,6 @@ class Calender extends React.Component {
     }
 
     handleRadioChange = async (changeObject, getType) => {
-        debugger
         if (!getType) {
             await this.getToUsers();
         }
@@ -222,7 +219,6 @@ class Calender extends React.Component {
     }
 
     submitCommunicationEvent = async () => {
-        debugger
         this.setState({
             isSubmited: true
         });
@@ -391,7 +387,6 @@ class Calender extends React.Component {
     }
     render() {
         const onChange = (evt) => {
-            debugger
             const newContent = evt.editor.getData();
             if (!(newContent == "" && this.stateText.value == "")) {
                 this.stateText.value = newContent;

@@ -32,12 +32,12 @@ const Signin = ({ history }) => {
 
         return fetch(`user/authenticate`, requestOptions)
             .then(handleResponse)
-            .then(user => {
+            .then(response => {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 setValue(man);
-                localStorage.setItem('token', user);
+                localStorage.setItem('token', response.user.token);
                 window.location.href = `${process.env.PUBLIC_URL}/dashboard`
-                return user;
+                return response;
             });
     }
 

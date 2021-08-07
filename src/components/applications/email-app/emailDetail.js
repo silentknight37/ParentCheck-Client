@@ -20,7 +20,6 @@ class EmailDetail extends React.Component {
   }
 
   componentDidMount = async () => {
-    debugger
     await this.getDetail(this.props.id, this.props.type);
   }
 
@@ -33,7 +32,6 @@ class EmailDetail extends React.Component {
         response.messages.map(i =>
           messagesList.push({ id: i.id, date: new Date(i.date).toDateString(), subject: i.subject, message: i.message, toUser: i.toUser, fromUser: i.fromUser, type: i.type, templateId: i.templateId, templateName: i.templateName, templateContent: i.templateContent, fromUserId: i.fromUserId })
         )
-        debugger;
         if (messagesList.length > 0) {
           var firstItem = messagesList[0];
           if (firstItem) {
@@ -50,7 +48,6 @@ class EmailDetail extends React.Component {
   }
 
   submitReplyEvent = async (e) => {
-    debugger
     e.preventDefault();
     this.setState({
       isSubmited: true
@@ -124,7 +121,6 @@ class EmailDetail extends React.Component {
 
 
   handleSupportConversations = (data, i) => {
-    debugger;
     var isLastItem = i === this.state.conversations.length - 1;
     if (isLastItem) {
       this.stateRequestFormText.value = data.templateContent;
@@ -164,7 +160,6 @@ class EmailDetail extends React.Component {
     });
 
     const onRequestFormChange = (evt) => {
-      debugger
       const newContent = evt.editor.getData();
       if (!(newContent == "" && this.stateRequestFormText.value == "")) {
         this.stateRequestFormText.value = newContent;

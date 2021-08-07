@@ -69,7 +69,9 @@ export const MENUITEMS = [
     },
     {
         title: 'Payment', icon: DollarSign, type: 'sub', active: false, children: [
-            { path: '/payment/invoice', title: 'Invoice', type: 'link' },
+            { path: '/payment/invoices', title: 'Invoices', type: 'link' },
+            { path: '/payment/generate-invoices', title: 'Generated Invoices', type: 'link' },
+            { path: '/payment/invoiceType', title: 'Invoice Type', type: 'link' },
             { path: '/payment/receipt', title: 'Receipt', type: 'link' },
         ]
     },

@@ -41,7 +41,6 @@ class IncidentReport extends React.Component {
         return fetch(`classRoom/getIncidentReports`)
             .then(handleResponse)
             .then(response => {
-                debugger;
                 response.incidentReports.map(i =>
                     incidentReportList.push({ id: i.id, date: new Date(i.recordDate).toDateString(), subject: i.subject, message: <div dangerouslySetInnerHTML={{ __html: i.message }} />, incidentUserName: i.incidentUserName, responsibleUserName: i.responsibleUserName, type: 1 })
                 )
@@ -78,7 +77,6 @@ class IncidentReport extends React.Component {
     }
 
     submitEmail = async () => {
-        debugger
         this.setState({
             isSubmited: true
         });
@@ -97,7 +95,6 @@ class IncidentReport extends React.Component {
             })
                 .then(response => response.json())
                 .then(async (response) => {
-                    debugger
                     if (!response.Value.Created) {
                         toast.error(response.Value.Error.Message)
                         return;
@@ -155,7 +152,6 @@ class IncidentReport extends React.Component {
     }
 
     openEmailModalToggle = (data) => {
-        debugger
         this.setState({
             isEmailOpen: true,
             selectedOpenEmail: data
