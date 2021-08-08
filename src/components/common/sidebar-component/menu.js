@@ -15,22 +15,22 @@ export const MENUITEMS = [
     {
         title: 'Dashboard', icon: Bookmark, type: 'link', path: '/dashboard', active: false, bookmark: true
     },
-    {
-        title: 'Dashboard', icon: Bookmark, type: 'link', path: '/sysdashboard', active: false, bookmark: true
-    },
-    {
-        title: 'System Security', icon: Settings, type: 'sub', active: false, children: [
-            // { path: '/system/role-management', title: 'Role Management', type: 'link' },
-            { path: '/system/user-management', title: 'User Management', type: 'link' },
-            { path: '/system/institute-management', title: 'Institute Management', type: 'link' },
-            // { path: '/system/package-management', title: 'Package Management', type: 'link' },
-            // { path: '/system/user-activity-log', title: 'User Activity log', type: 'link' },
-        ]
-    },
+    // {
+    //     title: 'Dashboard', icon: Bookmark, type: 'link', path: '/sysdashboard', active: false, bookmark: true
+    // },
+    // {
+    //     title: 'System Security', icon: Settings, type: 'sub', active: false, children: [
+    //         // { path: '/system/role-management', title: 'Role Management', type: 'link' },
+    //         { path: '/system/user-management', title: 'User Management', type: 'link' },
+    //         // { path: '/system/institute-management', title: 'Institute Management', type: 'link' },
+    //         // { path: '/system/package-management', title: 'Package Management', type: 'link' },
+    //         // { path: '/system/user-activity-log', title: 'User Activity log', type: 'link' },
+    //     ]
+    // },
     {
         title: 'Institute Setting', icon: Settings, type: 'sub', active: false, children: [
             // { path: '/institute/role-management', title: 'Role Management', type: 'link' },
-            { path: '/institute/user-management', title: 'User Management', type: 'link' },
+            { path: '/user-management', title: 'User Management', type: 'link' },
             { path: '/institute/class-management', title: 'Class Management', type: 'link' },
             { path: '/institute/subject-management', title: 'Subject Management', type: 'link' },
             { path: '/institute/academic-year-management', title: 'Academic Management', type: 'link' },
@@ -77,9 +77,9 @@ export const MENUITEMS = [
     },
     {
         title: 'Communication', icon: Mail, type: 'sub', active: false, children: [
-            { path: '/Communication/sms', title: 'Sms', type: 'link' },
-            { path: '/Communication/email', title: 'Email', type: 'link' },
-            { path: '/Communication/template', title: 'Template', type: 'link' },
+            { path: '/communication/sms', title: 'Sms', type: 'link' },
+            { path: '/communication/email', title: 'Email', type: 'link' },
+            { path: '/communication/template', title: 'Template', type: 'link' },
         ]
     }
 ]

@@ -2,7 +2,7 @@ import React from 'react';
 import 'react-vertical-timeline-component/style.min.css';
 import { toast } from 'react-toastify';
 import SweetAlert from 'sweetalert2'
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import DataTable from 'react-data-table-component'
 const ContentType = {
     Text: 1,
@@ -35,8 +35,8 @@ class Assignment extends React.Component {
     getSubmitedAssignmentFile = async (id) => {
 
         const submitedAssignmentFileList = [];
-
-        return fetch(`classRoom/getSubmitedAssignmentFile?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`classRoom/getSubmitedAssignmentFile?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 this.setState({
@@ -64,12 +64,15 @@ class Assignment extends React.Component {
         this.setState({
             toggleCleared: true
         });
+        const currentUser = localStorage.getItem('token');
         this.state.selectedRows.selectedRows.map(async (i) =>
+        
             await fetch("classRoom/removeAssignmentFile", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     id: i.id,
@@ -195,10 +198,12 @@ class Assignment extends React.Component {
         for (let i = 0; i < files.length; i++) {
             const formData = new FormData();
             formData.append('file', files[i]);
+            const currentUser = localStorage.getItem('token');
             await fetch("classRoom/uploadAssignmentFile", {
                 method: "POST",
                 headers: {
-                    'AssignmentId': id
+                    'AssignmentId': id,
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 body: formData
             })
@@ -252,10 +257,12 @@ class Assignment extends React.Component {
     }
 
     completeAssignmentSubmition = async (id) => {
+        const currentUser = localStorage.getItem('token');
         await fetch("classRoom/completeAssignment", {
             "method": "POST",
             "headers": {
-                "content-type": "application/json"
+                "content-type": "application/json",
+                "Authorization": `Bearer ${currentUser}`
             },
             "body": JSON.stringify({
                 id: this.props.assignment.id

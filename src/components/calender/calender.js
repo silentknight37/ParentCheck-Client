@@ -4,7 +4,7 @@ import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/sass/styles.scss';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import event_banner from '../../assets/images/calender/calender_event_banner.jpeg';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
@@ -49,15 +49,14 @@ class Calender extends React.Component {
             eventDate: date
         });
         const calanderEventsList = [];
-        return fetch(`calender/event?requestedDate=${date}&eventType=0`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`calender/event?requestedDate=${date}&eventType=0`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
                 response.calenderEvents.map(i =>
                     calanderEventsList.push({ id: i.id, start: new Date(i.fromDate), end: new Date(i.toDate), title: i.subject, color: i.colorCode, eventDetails: i.description, type: i.type })
                 )
-
-
                 this.setState({
                     calanderEvents: calanderEventsList
                 });
@@ -65,7 +64,8 @@ class Calender extends React.Component {
     }
     getToUsers = async () => {
         const userContactList = [];
-        return fetch(`reference/getAllUserContacts?sendType=${1}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getAllUserContacts?sendType=${1}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
@@ -79,8 +79,8 @@ class Calender extends React.Component {
 
     getToGroups = async () => {
         const groupList = [];
-
-        return fetch(`reference/getReference?id=${3}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${3}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -182,11 +182,13 @@ class Calender extends React.Component {
         });
 
         if (this.validate()) {
+            const currentUser = localStorage.getItem('token');
             await fetch("calender/eventCreate", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     fromDate: this.state.fromDate,
@@ -224,11 +226,13 @@ class Calender extends React.Component {
         });
 
         if (this.validateEvent()) {
+            const currentUser = localStorage.getItem('token')
             await fetch("communication/composeCommunication", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     subject: this.state.subject,
@@ -289,12 +293,13 @@ class Calender extends React.Component {
     }
 
     removeCalanderEvent = async (e) => {
-
+        const currentUser = localStorage.getItem('token');
         await fetch("calender/eventRemove", {
             "method": "POST",
             "headers": {
                 "content-type": "application/json",
-                "accept": "application/json"
+                "accept": "application/json",
+                "Authorization": `Bearer ${currentUser}`
             },
             "body": JSON.stringify({
                 id: this.state.selectedEvent.id

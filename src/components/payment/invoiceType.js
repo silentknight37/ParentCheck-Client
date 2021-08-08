@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
 import { Card, CardBody } from 'reactstrap'
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
@@ -28,7 +28,8 @@ class InvoiceType extends React.Component {
 
     getInvoiceType = async () => {
         const invoiceTypesList = [];
-        return fetch(`payment/getInvoiceTypes`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`payment/getInvoiceTypes`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.invoiceTypes.map(i =>
@@ -56,11 +57,13 @@ class InvoiceType extends React.Component {
             isSubmited: true
         });
         if (this.validate()) {
+            const currentUser = localStorage.getItem('token');
             await fetch("payment/saveInvoiceType", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     id:this.state.id,

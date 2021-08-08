@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import createLink from '../../helpers/createLink';
 import { Link } from 'react-router-dom';
 import { Col, Card, CardBody } from 'reactstrap';
@@ -27,8 +27,8 @@ class StudentAttendant extends React.Component {
 
     getClass = async (id) => {
         const classList = [];
-
-        return fetch(`reference/getReference?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -63,7 +63,8 @@ class StudentAttendant extends React.Component {
         });
 
         if (this.validate()) {
-            return fetch(`classRoom/getClassStudentAttendances?classId=${this.state.classId}&recordDate=${this.state.recordDate}`)
+            const requestOptions = { method: 'GET', headers: authHeader() };
+            return fetch(`classRoom/getClassStudentAttendances?classId=${this.state.classId}&recordDate=${this.state.recordDate}`,requestOptions)
                 .then(handleResponse)
                 .then(response => {
                     response.studentAttendances.map(i =>
@@ -101,12 +102,13 @@ class StudentAttendant extends React.Component {
     }
 
     SaveAttendance = async (isAttendance, instituteUserId, instituteClassId) => {
-
+        const currentUser = localStorage.getItem('token');
         await fetch("classRoom/saveClassStudentAttendance", {
             "method": "POST",
             "headers": {
                 "content-type": "application/json",
-                "accept": "application/json"
+                "accept": "application/json",
+                "Authorization": `Bearer ${currentUser}`
             },
             "body": JSON.stringify({
                 instituteUserId: instituteUserId,

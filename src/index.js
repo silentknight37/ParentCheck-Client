@@ -28,25 +28,9 @@ import TopicContent from './components/class-room/topicContent';
 import Calender from './components/calender/calender';
 
 // pages 
-import Login from './pages/login';
-import LoginWithBgImg from './pages/loginWithBgImg';
-import LoginWithVideo from './pages/loginWithVideo';
-import Signup from './pages/signup';
-import SignupWithImg from './pages/signupWithImg';
-import SignupWithVideo from './pages/signupWithVideo';
 import UnlockUser from './pages/unlockUser';
 import ForgetPwd from './pages/forgetPwd';
 import ResetPwd from './pages/resetPwd';
-import ComingSoon from './pages/comingsoon';
-import ComingSoonImg from './pages/comingsoonImg';
-import ComingSoonVideo from './pages/comingsoonVideo';
-import Maintenance from './pages/maintenance';
-import Error400 from './pages/errors/error400';
-import Error401 from './pages/errors/error401';
-import Error403 from './pages/errors/error403';
-import Error404 from './pages/errors/error404';
-import Error500 from './pages/errors/error500';
-import Error503 from './pages/errors/error503';
 
 import SweetAlert from './components/advance/sweetAlert';
 import ModalComponent from './components/base/modalComponent';
@@ -72,11 +56,13 @@ import GenerateInvoices from './components/payment/generate-invoices';
 import InvoiceDetails from './components/payment/invoicesDetails';
 import GenerateInvoiceDetails from './components/payment/generateinvoiceDetails';
 
+import UserManagement from './components/settings/user-management';
+
+
 //config data
 import configDB from './data/customizer/config'
 
 import Callback from './auth/callback'
-import { template } from 'lodash';
 
 // setup backend
 configureBackend();
@@ -118,25 +104,9 @@ const Root = () => {
                         <Switch>
                             <Route path={`${process.env.PUBLIC_URL}/login`} component={Signin} />
                             <Route path={`${process.env.PUBLIC_URL}/parent-check/login`} component={SystemSignin} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/login`} component={Login} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/loginWithBgImg`} component={LoginWithBgImg} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/loginWithVideo`} component={LoginWithVideo} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/signup`} component={Signup} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/signupWithImg`} component={SignupWithImg} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/signupWithVideo`} component={SignupWithVideo} />
                             <Route path={`${process.env.PUBLIC_URL}/pages/unlockUser`} component={UnlockUser} />
                             <Route path={`${process.env.PUBLIC_URL}/pages/forgetPwd`} component={ForgetPwd} />
                             <Route path={`${process.env.PUBLIC_URL}/pages/resetPwd`} component={ResetPwd} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/comingsoon`} component={ComingSoon} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/comingsoonImg`} component={ComingSoonImg} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/comingsoonVideo`} component={ComingSoonVideo} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/maintenance`} component={Maintenance} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/errors/error400`} component={Error400} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/errors/error401`} component={Error401} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/errors/error403`} component={Error403} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/errors/error404`} component={Error404} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/errors/error500`} component={Error500} />
-                            <Route path={`${process.env.PUBLIC_URL}/pages/errors/error503`} component={Error503} />
                             <Route  path={`${process.env.PUBLIC_URL}/callback`} render={() => <Callback/>} />
                             
                             {currentUser !== null || authenticated || jwt_token ?
@@ -165,10 +135,10 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/support/users-tickets`} component={SupportTicket} />
                                     <Route path={`${process.env.PUBLIC_URL}/support/my-ticket`} component={MySupportTickets} />
 
-                                    <Route path={`${process.env.PUBLIC_URL}/Communication/email`} component={EmailDefault} />
-                                    <Route path={`${process.env.PUBLIC_URL}/Communication/emailDetail/:id/:type`} component={EmailDetail} />
-                                    <Route path={`${process.env.PUBLIC_URL}/Communication/sms`} component={SMS} />
-                                    <Route path={`${process.env.PUBLIC_URL}/Communication/template`} component={Template} />
+                                    <Route path={`${process.env.PUBLIC_URL}/communication/email`} component={EmailDefault} />
+                                    <Route path={`${process.env.PUBLIC_URL}/communication/emailDetail/:id/:type`} component={EmailDetail} />
+                                    <Route path={`${process.env.PUBLIC_URL}/communication/sms`} component={SMS} />
+                                    <Route path={`${process.env.PUBLIC_URL}/communication/template`} component={Template} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/incident-report`} component={IncidentReport} />
                                     <Route path={`${process.env.PUBLIC_URL}/student-attendant`} component={StudentAttendant} />
@@ -178,6 +148,9 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/payment/generate-invoices`} component={GenerateInvoices} />
                                     <Route path={`${process.env.PUBLIC_URL}/payment/invoice/:id`} component={InvoiceDetails} />
                                     <Route path={`${process.env.PUBLIC_URL}/payment/generate-invoice/:id`} component={GenerateInvoiceDetails} />
+
+                                    <Route path={`${process.env.PUBLIC_URL}/user-management`} component={UserManagement} />
+
 
                                 </App>
                              :

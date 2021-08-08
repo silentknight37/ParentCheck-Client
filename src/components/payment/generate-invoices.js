@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
 import { Card, CardBody } from 'reactstrap'
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import createLink from '../../helpers/createLink';
@@ -41,7 +41,8 @@ class GenerateInvoices extends React.Component {
 
     getGeneratedInvoice = async () => {
         const invoicesList = [];
-        return fetch(`payment/getGeneratedInvoices`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`payment/getGeneratedInvoices`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.invoices.map(i =>
@@ -55,8 +56,8 @@ class GenerateInvoices extends React.Component {
 
     getInvoiceType = async (id) => {
         const invoiceTypeList = [];
-
-        return fetch(`reference/getReference?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -71,7 +72,8 @@ class GenerateInvoices extends React.Component {
 
     getToUsers = async () => {
         const userContactList = [];
-        return fetch(`reference/getAllUserContacts?sendType=${2}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getAllUserContacts?sendType=${2}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
@@ -85,8 +87,8 @@ class GenerateInvoices extends React.Component {
 
     getToGroups = async () => {
         const groupList = [];
-
-        return fetch(`reference/getReference?id=${3}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${3}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -132,11 +134,13 @@ class GenerateInvoices extends React.Component {
             isSubmited: true
         });
         if (this.validate()) {
+            const currentUser = localStorage.getItem('token');
             await fetch("payment/generateInvoice", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     invoiceTitle: this.state.invoiceTitle,

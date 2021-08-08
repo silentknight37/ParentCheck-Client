@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../../common/breadcrumb';
 import { toast } from 'react-toastify';
-import { handleResponse } from "../../../services/service.backend";
+import { handleResponse,authHeader } from "../../../services/service.backend";
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import createLink from '../../../helpers/createLink';
@@ -25,7 +25,8 @@ class EmailDetail extends React.Component {
 
   getDetail = async (id, type) => {
     const messagesList = [];
-    return fetch(`communication/getDetailCommunication?id=${id}&type=${type}`)
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(`communication/getDetailCommunication?id=${id}&type=${type}`,requestOptions)
       .then(handleResponse)
       .then(response => {
 
@@ -54,11 +55,13 @@ class EmailDetail extends React.Component {
     });
 
     if (this.validate()) {
+      const currentUser = localStorage.getItem('token');
       await fetch("communication/replyCommunication", {
         "method": "POST",
         "headers": {
           "content-type": "application/json",
-          "accept": "application/json"
+          "accept": "application/json",
+          "Authorization": `Bearer ${currentUser}`
         },
         "body": JSON.stringify({
           id: this.props.id,
@@ -168,7 +171,7 @@ class EmailDetail extends React.Component {
 
     return (
       <Fragment>
-        <Breadcrumb title="Email Details" parent="Email" parentLink={createLink('/Communication/email')} isParentShow={true} />
+        <Breadcrumb title="Email Details" parent="Email" parentLink={createLink('/communication/email')} isParentShow={true} />
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-12">

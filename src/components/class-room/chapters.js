@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { ListGroup, ListGroupItem } from 'reactstrap'
@@ -30,8 +30,8 @@ class Chapters extends React.Component {
     getChapters = async (id) => {
 
         const chaptersList = [];
-
-        return fetch(`classRoom/subjectChapter?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`classRoom/subjectChapter?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 this.setState({
@@ -55,8 +55,8 @@ class Chapters extends React.Component {
     getTopics = async (id) => {
 
         const topicsList = [];
-
-        return fetch(`classRoom/chapterTopics?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`classRoom/chapterTopics?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 this.setState({

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../../common/breadcrumb';
-import { handleResponse } from "../../../services/service.backend";
+import { handleResponse,authHeader } from "../../../services/service.backend";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toast } from 'react-toastify';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -38,7 +38,8 @@ class IncidentReport extends React.Component {
 
     getIncidentReports = async () => {
         const incidentReportList = [];
-        return fetch(`classRoom/getIncidentReports`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`classRoom/getIncidentReports`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.incidentReports.map(i =>
@@ -51,7 +52,8 @@ class IncidentReport extends React.Component {
     }
     getToUsers = async () => {
         const userContactList = [];
-        return fetch(`reference/getAllUserContacts?sendType=${1}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getAllUserContacts?sendType=${1}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
@@ -81,11 +83,13 @@ class IncidentReport extends React.Component {
             isSubmited: true
         });
         if (this.validate()) {
+            const currentUser = localStorage.getItem('token');
             await fetch("classRoom/saveIncidentReport", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     subject: this.state.subject,

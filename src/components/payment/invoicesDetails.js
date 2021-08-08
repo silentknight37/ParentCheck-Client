@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
 import { Card, CardBody } from 'reactstrap'
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader} from "../../services/service.backend";
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import createLink from '../../helpers/createLink';
@@ -29,7 +29,8 @@ class InvoiceDetails extends React.Component {
 
     getInvoiceDetail = async (id) => {
         const invoicesList = [];
-        return fetch(`payment/getUserInvoiceDetail?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`payment/getUserInvoiceDetail?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 

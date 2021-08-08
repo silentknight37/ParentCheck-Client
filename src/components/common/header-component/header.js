@@ -76,17 +76,17 @@ const Header = () => {
                   <Maximize />
                 </a>
               </li>
-              <li className="onhover-dropdown">
+              {/* <li className="onhover-dropdown">
                 <a className="txt-dark" href="#javascript">
                   <h6>{Institute}</h6></a>
                 <Language />
-              </li>
-              <li className="onhover-dropdown">
+              </li> */}
+              {/* <li className="onhover-dropdown">
                 <Notification />
                 <Bell />
                 <span className="dot"></span>
                 <Notification />
-              </li>
+              </li> */}
               <UserMenu />
             </ul>
             <div className="d-lg-none mobile-toggle pull-right" onClick={() => setHeaderbar(!headerbar)}><MoreHorizontal/></div>

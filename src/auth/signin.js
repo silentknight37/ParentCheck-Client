@@ -6,7 +6,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { withRouter } from "react-router";
 import { handleResponse } from "../services/service.backend";
-import { Login, LOGIN, YourName, Password, RememberMe} from '../constant';
+import { Login, LOGIN, YourName, Password, RememberMe } from '../constant';
+import { toast } from 'react-toastify';
 const Signin = ({ history }) => {
 
     const [email, setEmail] = useState("");
@@ -33,11 +34,20 @@ const Signin = ({ history }) => {
         return fetch(`user/authenticate`, requestOptions)
             .then(handleResponse)
             .then(response => {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                setValue(man);
-                localStorage.setItem('token', response.user.token);
-                window.location.href = `${process.env.PUBLIC_URL}/dashboard`
-                return response;
+                debugger
+                if (response.user.isValid) {
+                    // store user details and jwt token in local storage to keep user logged in between page refreshes
+                    setValue(man);
+                    localStorage.setItem('token', response.user.token);
+                    localStorage.setItem('roleId', response.user.roleId);
+                    localStorage.setItem('fullName', response.user.fullName);
+                    localStorage.setItem('instituteId', response.user.instituteId);
+                    window.location.href = `${process.env.PUBLIC_URL}/dashboard`
+                    return response;
+                }
+
+                toast.error("Invalid credentials. Please try again")
+                return;
             });
     }
 

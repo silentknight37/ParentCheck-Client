@@ -1,9 +1,9 @@
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 //const now = new Date()
 const calanderEvents=[];
 const getEvent = async () => {
-        
-  return fetch(`calender/event`)
+  const requestOptions = { method: 'GET', headers: authHeader() };
+  return fetch(`calender/event`,requestOptions)
    .then(handleResponse)
    .then(response => {
 
