@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../../common/breadcrumb';
-import { handleResponse } from "../../../services/service.backend";
+import { handleResponse,authHeader } from "../../../services/service.backend";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toast } from 'react-toastify';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -45,7 +45,8 @@ class Email extends React.Component {
 
     getTemplate = async () => {
         const templatesList = [];
-        return fetch(`communication/getCommunicationTemplate`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`communication/getCommunicationTemplate`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.templates.map(i =>
@@ -59,7 +60,8 @@ class Email extends React.Component {
 
     getInbox = async () => {
         const messagesList = [];
-        return fetch(`communication/getCommunicationInbox`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`communication/getCommunicationInbox`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
@@ -73,7 +75,8 @@ class Email extends React.Component {
 
     getOutbox = async () => {
         const messagesList = [];
-        return fetch(`communication/getCommunicationOutbox`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`communication/getCommunicationOutbox`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
@@ -88,7 +91,8 @@ class Email extends React.Component {
 
     getToUsers = async () => {
         const userContactList = [];
-        return fetch(`reference/getAllUserContacts?sendType=${1}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getAllUserContacts?sendType=${1}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
@@ -102,8 +106,8 @@ class Email extends React.Component {
 
     getToGroups = async () => {
         const groupList = [];
-
-        return fetch(`reference/getReference?id=${3}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${3}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -120,7 +124,7 @@ class Email extends React.Component {
         return (
             <div>
                 <div className="media" key={1} >
-                    <Link className="media-body" to={createLink('/Communication/emailDetail/:id/:type', { id: data.id, type: this.state.boxType == "Inbox" ? 1 : 2 })}>
+                    <Link className="media-body" to={createLink('/communication/emailDetail/:id/:type', { id: data.id, type: this.state.boxType == "Inbox" ? 1 : 2 })}>
                         <h6>{data.fromUser}  <small className="f-right"><span className="digits">({data.date})</span></small></h6>
                         <p>{data.subject},</p>
                     </Link>
@@ -186,11 +190,13 @@ class Email extends React.Component {
         });
 
         if (this.validate()) {
+            const currentUser = localStorage.getItem('token');
             await fetch("communication/composeCommunication", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     subject: this.state.subject,
@@ -239,11 +245,13 @@ class Email extends React.Component {
         });
 
         if (this.validateRequestForm()) {
+            const currentUser = localStorage.getItem('token');
             await fetch("communication/composeCommunication", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     subject: this.state.subject,

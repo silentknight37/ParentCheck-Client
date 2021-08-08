@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
-import Breadcrumb from '../../common/breadcrumb';
+import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
 import { Card, CardBody } from 'reactstrap'
-import { handleResponse,authHeader } from "../../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import CKEditors from "react-ckeditor-component";
 import { Link } from 'react-router-dom';
-class Template extends React.Component {
+class UserManagement extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +30,7 @@ class Template extends React.Component {
     getTemplate = async () => {
         const templatesList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`communication/getAllCommunicationTemplate`)
+        return fetch(`communication/getAllCommunicationTemplate`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.templates.map(i =>
@@ -174,17 +174,17 @@ class Template extends React.Component {
 
         return (
             <Fragment>
-                <Breadcrumb title="Template" parent="Template" />
+                <Breadcrumb title="User Management" parent="User Management" />
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="card">
                                 <div className="card-header">
-                                    <h5>{"Template"}</h5>
+                                    <h5>{"User Management"}</h5>
                                 </div>
                                 <div className="card-body">
                                     <div className="card-header">
-                                        <Button color="primary" onClick={this.openModalToggle}>Add Template</Button>
+                                        <Button color="primary" onClick={this.openModalToggle}>Add User</Button>
                                     </div>
                                     {
                                         <Modal isOpen={this.state.isSmsSendOpen} toggle={this.handleModalToggle} size="lg">
@@ -265,4 +265,4 @@ class Template extends React.Component {
     }
 };
 
-export default Template;
+export default UserManagement;

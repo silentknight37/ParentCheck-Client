@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import createLink from '../../helpers/createLink';
 import { Link } from 'react-router-dom';
 import { Col, Card, CardBody } from 'reactstrap';
@@ -8,7 +8,6 @@ import { Accordion } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { Button} from 'reactstrap';
 import { toast } from 'react-toastify';
-import DatePicker from "react-datepicker";
 
 class ClassRoomOverview extends React.Component {
     constructor(props) {
@@ -38,11 +37,13 @@ class ClassRoomOverview extends React.Component {
 
     getClassRoomOverview = async () => {
         const classRoomOverviewList = [];
+        const currentUser = localStorage.getItem('token');
         await fetch("classRoom/filterClassRoom", {
             "method": "POST",
             "headers": {
                 "content-type": "application/json",
-                "accept": "application/json"
+                "accept": "application/json",
+                "Authorization": `Bearer ${currentUser}`
             },
             "body": JSON.stringify({
                 fromDate: this.state.fromDate,
@@ -76,8 +77,8 @@ class ClassRoomOverview extends React.Component {
 
     getSubjects = async (id) => {
         const subjectsList = [];
-
-        return fetch(`reference/getReference?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -92,8 +93,8 @@ class ClassRoomOverview extends React.Component {
 
     getInstituteTerms = async (id) => {
         const instituteTermsList = [];
-
-        return fetch(`reference/getReference?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -165,11 +166,13 @@ class ClassRoomOverview extends React.Component {
         });
 
         if (this.validate()) {
+            const currentUser = localStorage.getItem('token');
             await fetch("classRoom/filterClassRoom", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
-                    "accept": "application/json"
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
                     fromDate: this.state.fromDate,

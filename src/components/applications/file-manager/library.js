@@ -3,7 +3,7 @@ import Breadcrumb from '../../common/breadcrumb'
 import { Container, Row, Col, Card, CardHeader, CardBody, Form, FormGroup, Input } from 'reactstrap'
 import { Home, Globe } from 'react-feather';
 import errorImg from '../../../assets/images/search-not-found.png';
-import { handleResponse } from "../../../services/service.backend";
+import { handleResponse,authHeader } from "../../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import SweetAlert from 'sweetalert2'
 import { toast } from 'react-toastify';
@@ -49,8 +49,8 @@ class Library extends React.Component {
 
   getLibrary = async () => {
     const LibraryList = [];
-
-    return fetch(`classRoom/getLibrary`)
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(`classRoom/getLibrary`,requestOptions)
       .then(handleResponse)
       .then(response => {
         response.libraries.map(i =>
@@ -189,10 +189,13 @@ class Library extends React.Component {
     for (let i = 0; i < files.length; i++) {
       const formData = new FormData();
       formData.append('file', files[i]);
+
+      const currentUser = localStorage.getItem('token');
       await fetch("classRoom/uploadFile", {
         method: "POST",
         headers: {
-          'libraryDescription': this.state.libraryDescription
+          'libraryDescription': this.state.libraryDescription,
+          "Authorization": `Bearer ${currentUser}`
         },
         body: formData
       })

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import Content from './content';
 import createLink from '../../helpers/createLink';
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -28,8 +28,8 @@ class Timeline extends React.Component {
     getTopicContent = async (id) => {
 
         const topicContentsList = [];
-
-        return fetch(`classRoom/topicsContent?id=${id}`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`classRoom/topicsContent?id=${id}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 this.setState({

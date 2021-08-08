@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import { toast } from 'react-toastify';
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import createLink from '../../helpers/createLink';
@@ -24,7 +24,8 @@ class DetailTicket extends React.Component {
 
   getDetailTickets = async (id) => {
     const conversationList = [];
-    return fetch(`support/getDetailTickets?id=${id}`)
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(`support/getDetailTickets?id=${id}`,requestOptions)
       .then(handleResponse)
       .then(response => {
         this.setState({
@@ -48,11 +49,13 @@ class DetailTicket extends React.Component {
     });
 
     if (this.validate()) {
+      const currentUser = localStorage.getItem('token');
       await fetch("support/replySupport", {
         "method": "POST",
         "headers": {
           "content-type": "application/json",
-          "accept": "application/json"
+          "accept": "application/json",
+          "Authorization": `Bearer ${currentUser}`
         },
         "body": JSON.stringify({
           ticketId: this.props.ticketId,

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import createLink from '../../helpers/createLink';
 import { Link } from 'react-router-dom';
 class Subjects extends React.Component {
@@ -19,8 +19,8 @@ class Subjects extends React.Component {
     getSubjects = async () => {
 
         const subjectsList = [];
-
-        return fetch(`classRoom/userSubjects`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`classRoom/userSubjects`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 this.setState({

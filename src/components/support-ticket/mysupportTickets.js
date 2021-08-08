@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
 import { Card, CardBody, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
-import { handleResponse } from "../../services/service.backend";
+import { handleResponse,authHeader } from "../../services/service.backend";
 import createLink from '../../helpers/createLink';
 import { Link } from 'react-router-dom';
 
@@ -26,8 +26,8 @@ class MySupportTickets extends React.Component {
 
     getOpenTickets = async () => {
         const supportTicketList = [];
-
-        return fetch(`support/getOpenTickets`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`support/getOpenTickets`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -55,8 +55,8 @@ class MySupportTickets extends React.Component {
 
     getCloseTickets = async () => {
         const supportTicketList = [];
-
-        return fetch(`support/getCloseTickets`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`support/getCloseTickets`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -71,8 +71,8 @@ class MySupportTickets extends React.Component {
 
     getReviewTickets = async () => {
         const supportTicketList = [];
-
-        return fetch(`support/getAssignTickets`)
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`support/getAssignTickets`,requestOptions)
             .then(handleResponse)
             .then(response => {
 
