@@ -1,25 +1,27 @@
 import React, { Fragment } from 'react';
-import Breadcrumb from '../../common/breadcrumb';
+import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
 import { Card, CardBody } from 'reactstrap'
-import { handleResponse,authHeader } from "../../../services/service.backend";
+import { handleResponse, authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import CKEditors from "react-ckeditor-component";
 import { Link } from 'react-router-dom';
-class Template extends React.Component {
+class Academic extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             id: 0,
-            name: null,
-            isSenderTemplate: false,
+            yearAcademic: null,
+            fromDate: null,
+            toDate: null,
             isActive: true,
             isSubmited: false,
             isValidSubmit: false,
             iconWithTab: '1',
-            templates: [],
+            academicYear: [],
             isTemplateEditorOpen: false,
+            isEdit: false
         };
     }
 
@@ -28,16 +30,16 @@ class Template extends React.Component {
     }
 
     getTemplate = async () => {
-        const templatesList = [];
+        const academicYearList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`communication/getAllCommunicationTemplate`,requestOptions)
+        return fetch(`setting/getAcademicYear`, requestOptions)
             .then(handleResponse)
             .then(response => {
-                response.templates.map(i =>
-                    templatesList.push({ id: i.id, name: i.name, content: i.content, isSenderTemplate: i.isSenderTemplate ? "True" : "False", isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-note"></i></Link> })
+                response.academics.map(i =>
+                    academicYearList.push({ id: i.id, yearAcademic: i.yearAcademic, fromDate: new Date(i.fromDate).toDateString(), toDate: new Date(i.toDate).toDateString(), isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
                 )
                 this.setState({
-                    templates: templatesList,
+                    academicYear: academicYearList,
                 });
             });
     }
@@ -45,23 +47,24 @@ class Template extends React.Component {
     selectedTemplate = (data) => {
         this.setState({
             id: data.id,
-            name: data.name,
-            isSenderTemplate: data.isSenderTemplate,
-            isActive: data.isActive
+            yearAcademic: data.yearAcademic,
+            fromDate: data.fromDate,
+            toDate: data.toDate,
+            isActive: data.isActive,
+            isEdit: true
         });
 
-        this.stateText.value = data.content;
         this.openModalToggle();
     }
-    submitSMS = async (e) => {
+    submit = async (e) => {
         e.preventDefault();
         this.setState({
             isSubmited: true
         });
-
+        debugger
         if (this.validate()) {
             const currentUser = localStorage.getItem('token');
-            await fetch("communication/saveCommunicationTemplate", {
+            await fetch("setting/saveAcademicYear", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
@@ -69,10 +72,10 @@ class Template extends React.Component {
                     "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
-                    Id: this.state.id,
-                    name: this.state.name,
-                    content: this.stateText.value,
-                    isSenderTemplate: this.state.isSenderTemplate,
+                    id: this.state.id,
+                    yearAcademic: +this.state.yearAcademic,
+                    fromDate: this.state.fromDate,
+                    toDate: this.state.toDate,
                     isActive: this.state.isActive
                 })
             })
@@ -90,7 +93,8 @@ class Template extends React.Component {
 
                     this.setState({
                         isSubmited: false,
-                        isSmsSendOpen: false
+                        isSmsSendOpen: false,
+                        isEdit: false
                     });
                 })
                 .catch(err => {
@@ -108,7 +112,8 @@ class Template extends React.Component {
     handleModalToggle = () => {
         this.setState({
             isSmsSendOpen: false,
-            isSubmited: false
+            isSubmited: false,
+            isEdit:false
         });
     }
 
@@ -121,11 +126,19 @@ class Template extends React.Component {
 
 
     validate = () => {
-        if (this.state.subject === null || this.state.subject === "") {
+        if (this.state.yearAcademic === null || this.state.yearAcademic === "") {
             return false;
         }
 
-        if (this.stateText.value === null || this.stateText.value === "") {
+        if (this.state.fromDate === null || this.state.fromDate === "") {
+            return false;
+        }
+
+        if (this.state.toDate === null || this.state.toDate === "") {
+            return false;
+        }
+
+        if (new Date(this.state.toDate).getTime() < new Date(this.state.fromDate).getTime()) {
             return false;
         }
 
@@ -136,27 +149,23 @@ class Template extends React.Component {
         return true;
     }
 
-    stateText = {
-        value: ""
-    }
-
     render() {
-        const onChange = (evt) => {
-            const newContent = evt.editor.getData();
-            if (!(newContent == "" && this.stateText.value == "")) {
-                this.stateText.value = newContent;
-            }
-        }
 
         const openDataColumns = [
             {
-                name: 'Name',
-                selector: 'name',
+                name: 'Year Academic',
+                selector: 'yearAcademic',
                 sortable: true
             },
             {
-                name: 'Sender Template',
-                selector: 'isSenderTemplate',
+                name: 'From Date',
+                selector: 'fromDate',
+                sortable: true,
+                wrap: true
+            },
+            {
+                name: 'To Date',
+                selector: 'toDate',
                 sortable: true,
                 wrap: true
             },
@@ -174,17 +183,17 @@ class Template extends React.Component {
 
         return (
             <Fragment>
-                <Breadcrumb title="Template" parent="Template" />
+                <Breadcrumb title="Academic Year" parent="Academic Year" />
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="card">
                                 <div className="card-header">
-                                    <h5>{"Template"}</h5>
+                                    <h5>{"Academic Year"}</h5>
                                 </div>
                                 <div className="card-body">
                                     <div className="card-header">
-                                        <Button color="primary" onClick={this.openModalToggle}>Add Template</Button>
+                                        <Button color="primary" onClick={this.openModalToggle}>Add Academic Year</Button>
                                     </div>
                                     {
                                         <Modal isOpen={this.state.isSmsSendOpen} toggle={this.handleModalToggle} size="lg">
@@ -197,31 +206,31 @@ class Template extends React.Component {
                                                         <div className="card-body">
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="name">{"Name"}</label>
-                                                                    <input className="form-control" id="name" type="text" aria-describedby="name" value={this.state.name} onChange={e => this.handleChange({ name: e.target.value })} placeholder="Name" />
-                                                                    <span>{this.state.isSubmited && !this.state.name && 'name is required'}</span>
+                                                                    <label className="col-form-label pt-0" htmlFor="yearAcademic">{"Academic Year"}</label>
+                                                                    <input className="form-control" id="yearAcademic" disabled={this.state.isEdit} type="number" aria-describedby="yearAcademic" value={this.state.yearAcademic} onChange={e => this.handleChange({ yearAcademic: e.target.value })} placeholder="Academic Year" />
+                                                                    <span>{this.state.isSubmited && !this.state.yearAcademic && 'Academic Year is required'}</span>
                                                                 </div>
                                                             </div>
-                                                            <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="content">{"Content"}</label>
-                                                                    <CKEditors id="content"
-                                                                        content={this.stateText.value}
-                                                                        events={{
-                                                                            "change": onChange
-                                                                        }}
-                                                                    />
-                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.stateText.value && 'Name is required'}</span>
+                                                            {!this.state.isEdit && (
+                                                                <div>
+                                                                    <div className="form-row">
+                                                                        <div className="form-group">
+                                                                            <label className="col-form-label pt-0" htmlFor="fromDate">{"From Date"}</label>
+                                                                            <input className="form-control" id="fromDate" onChange={e => this.handleChange({ fromDate: e.target.value })} type="date" aria-describedby="fromDate" defaultValue={this.state.fromDate} />
+                                                                            <span>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="form-row">
+                                                                        <div className="form-group">
+                                                                            <label className="col-form-label pt-0" htmlFor="toDate">{"To Date"}</label>
+                                                                            <input className="form-control" id="toDate" type="date" aria-describedby="toDate" onChange={e => this.handleChange({ toDate: e.target.value })} defaultValue={this.state.fromDate} />
+                                                                            <span>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
+                                                                            <span>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
+                                                                            <span>{this.state.isSubmited && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    <label className="d-block" htmlFor="isSenderTemplate">
-                                                                        <input checked={this.state.isSenderTemplate} className="checkbox_animated" id="isSenderTemplate" type="checkbox" onChange={e => this.handleChange({ isSenderTemplate: !this.state.isSenderTemplate })} />
-                                                                        {Option} {"Sender Template"}
-                                                                    </label>
-                                                                </div>
-                                                            </div>
+                                                            )}
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
                                                                     <label className="d-block" htmlFor="isActive">
@@ -235,25 +244,17 @@ class Template extends React.Component {
                                                 </div>
                                             </ModalBody>
                                             <ModalFooter>
-                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submitSMS(e)}>{'Submit'}</button>
+                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submit(e)}>{'Submit'}</button>
                                             </ModalFooter>
                                         </Modal>
                                     }
-
-                                </div>
-                                <div className="card-body datatable-react">
-                                    <Card>
-                                        <CardBody>
-                                            <DataTable
-                                                columns={openDataColumns}
-                                                data={this.state.templates}
-                                                striped={true}
-                                                pagination
-                                                persistTableHead
-                                                responsive={true}
-                                            />
-                                        </CardBody>
-                                    </Card>
+                                    <DataTable
+                                        columns={openDataColumns}
+                                        data={this.state.academicYear}
+                                        striped={true}
+                                        pagination
+                                        responsive={true}
+                                    />
                                 </div>
                             </div>
 
@@ -265,4 +266,4 @@ class Template extends React.Component {
     }
 };
 
-export default Template;
+export default Academic;

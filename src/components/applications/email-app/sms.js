@@ -250,7 +250,7 @@ class SMS extends React.Component {
                                                                     <br />
                                                                     <label htmlFor="edo-ani1">
                                                                         <input className="radio_animated" id="edo-ani1" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
-                                                                        {Option} {"To Groups"}
+                                                                        {Option} {"To Group"}
                                                                     </label>
                                                                 </div>
                                                             </div>

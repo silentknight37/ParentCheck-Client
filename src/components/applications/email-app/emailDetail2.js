@@ -550,7 +550,7 @@ class EmailDetail extends React.Component {
                                                                     <br />
                                                                     <label htmlFor="option-group">
                                                                         <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
-                                                                        {Option} {"To Groups"}
+                                                                        {Option} {"To Group"}
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -626,7 +626,7 @@ class EmailDetail extends React.Component {
                                                                     <br />
                                                                     <label htmlFor="option-group">
                                                                         <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
-                                                                        {Option} {"To Groups"}
+                                                                        {Option} {"To Group"}
                                                                     </label>
                                                                 </div>
                                                             </div>

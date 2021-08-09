@@ -1,64 +1,66 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
-import { Card, CardBody } from 'reactstrap'
-import { handleResponse,authHeader } from "../../services/service.backend";
+import { handleResponse, authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
-class InvoiceType extends React.Component {
+class Subject extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id:0,
-            invoiceType: null,
-            terms: false,
+            id: 0,
+            subject: null,
+            descriptionText: null,
             isActive: true,
             isSubmited: false,
             isValidSubmit: false,
             iconWithTab: '1',
-            invoiceTypes: [],
-            isInvoiceTypeEditorOpen: false,
+            subjects: [],
+            isTemplateEditorOpen: false,
+            isEdit: false
         };
     }
 
     componentDidMount = async () => {
-        await this.getInvoiceType();
+        await this.getSubject();
     }
 
-    getInvoiceType = async () => {
-        const invoiceTypesList = [];
+    getSubject = async () => {
+        const subjectList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`payment/getInvoiceTypes`,requestOptions)
+        return fetch(`setting/getSubject`, requestOptions)
             .then(handleResponse)
             .then(response => {
-                response.invoiceTypes.map(i =>
-                    invoiceTypesList.push({ id: i.id, invoiceType: i.invoiceType, terms: i.terms, isActive: i.isActive?"True":"False",action:<Link className="btn btn-light" onClick={()=>this.selectedInvoiceType(i)}><i className="icofont icofont-ui-note"></i></Link> })
+                response.subjects.map(i =>
+                    subjectList.push({ id: i.id, subject: i.subject, descriptionText: i.descriptionText, isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
                 )
                 this.setState({
-                    invoiceTypes: invoiceTypesList,
+                    subjects: subjectList,
                 });
             });
     }
 
-    selectedInvoiceType=(data)=>{
+    selectedTemplate = (data) => {
         this.setState({
-            id:data.id,
-            invoiceType: data.invoiceType,
-            terms:data.terms,
-            isActive:data.isActive
+            id: data.id,
+            subject: data.subject,
+            descriptionText: data.descriptionText,
+            isActive: data.isActive,
+            isEdit: true
         });
 
         this.openModalToggle();
     }
-    submitSMS = async (e) => {
+    submit = async (e) => {
         e.preventDefault();
         this.setState({
             isSubmited: true
         });
+        debugger
         if (this.validate()) {
             const currentUser = localStorage.getItem('token');
-            await fetch("payment/saveInvoiceType", {
+            await fetch("setting/saveSubject", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
@@ -66,9 +68,9 @@ class InvoiceType extends React.Component {
                     "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
-                    id:this.state.id,
-                    typeText: this.state.invoiceType,
-                    terms: parseInt(this.state.terms),
+                    id: this.state.id,
+                    subject: this.state.subject,
+                    descriptionText: this.state.descriptionText,
                     isActive: this.state.isActive
                 })
             })
@@ -82,11 +84,12 @@ class InvoiceType extends React.Component {
 
                     toast.success(response.Value.SuccessMessage)
 
-                    await this.getInvoiceType();
+                    await this.getSubject();
 
                     this.setState({
                         isSubmited: false,
-                        isSmsSendOpen: false
+                        isSmsSendOpen: false,
+                        isEdit: false
                     });
                 })
                 .catch(err => {
@@ -104,7 +107,8 @@ class InvoiceType extends React.Component {
     handleModalToggle = () => {
         this.setState({
             isSmsSendOpen: false,
-            isSubmited: false
+            isSubmited: false,
+            isEdit: false
         });
     }
 
@@ -117,11 +121,7 @@ class InvoiceType extends React.Component {
 
 
     validate = () => {
-        if (this.state.invoiceType === null || this.state.invoiceType === "") {
-            return false;
-        }
-
-        if (this.state.terms === null || this.state.terms === "") {
+        if (this.state.subject === null || this.state.subject === "") {
             return false;
         }
 
@@ -133,15 +133,16 @@ class InvoiceType extends React.Component {
     }
 
     render() {
+
         const openDataColumns = [
             {
-                name: 'Invoice Type',
-                selector: 'invoiceType',
+                name: 'Subject',
+                selector: 'subject',
                 sortable: true
             },
             {
-                name: 'Terms',
-                selector: 'terms',
+                name: 'Description',
+                selector: 'descriptionText',
                 sortable: true,
                 wrap: true
             },
@@ -159,17 +160,17 @@ class InvoiceType extends React.Component {
 
         return (
             <Fragment>
-                <Breadcrumb title="Invoice Type" parent="Invoice Type" />
+                <Breadcrumb title="Subject" parent="Subject" />
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="card">
                                 <div className="card-header">
-                                    <h5>{"Invoice Type"}</h5>
+                                    <h5>{"Subject"}</h5>
                                 </div>
                                 <div className="card-body">
                                     <div className="card-header">
-                                        <Button color="primary" onClick={this.openModalToggle}>Add Invoice Type</Button>
+                                        <Button color="primary" onClick={this.openModalToggle}>Add Subject</Button>
                                     </div>
                                     {
                                         <Modal isOpen={this.state.isSmsSendOpen} toggle={this.handleModalToggle} size="lg">
@@ -182,16 +183,16 @@ class InvoiceType extends React.Component {
                                                         <div className="card-body">
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="name">{"Name"}</label>
-                                                                    <input className="form-control" id="invoiceType" type="text" aria-describedby="invoiceType" value={this.state.invoiceType} onChange={e => this.handleChange({ invoiceType: e.target.value })} placeholder="Name" />
-                                                                    <span>{this.state.isSubmited && !this.state.invoiceType && 'name is required'}</span>
+                                                                    <label className="col-form-label pt-0" htmlFor="subject">{"Subject"}</label>
+                                                                    <input className="form-control" id="subject" type="text" aria-describedby="subject" value={this.state.subject} onChange={e => this.handleChange({ subject: e.target.value })} placeholder="Subject" />
+                                                                    <span>{this.state.isSubmited && !this.state.subject && 'Subject is required'}</span>
                                                                 </div>
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="name">{"Name"}</label>
-                                                                    <input className="form-control" id="terms" type="number" min="0" max="12" aria-describedby="terms" value={this.state.terms} onChange={e => this.handleChange({ terms: e.target.value })} placeholder="Number Of Terms" />
-                                                                    <span>{this.state.isSubmited && !this.state.terms && 'terms is required'}</span>
+                                                                    <label className="col-form-label pt-0" htmlFor="descriptionText">{"Description"}</label>
+                                                                    <textarea className="form-control" rows="5" cols="12" id="descriptionText" value={this.state.descriptionText} placeholder="Description" onChange={e => this.handleChange({ descriptionText: e.target.value })}></textarea>
+                                                                    <span>{this.state.isSubmited && !this.state.descriptionText && 'Description is required'}</span>
                                                                 </div>
                                                             </div>
                                                             <div className="form-row">
@@ -207,27 +208,20 @@ class InvoiceType extends React.Component {
                                                 </div>
                                             </ModalBody>
                                             <ModalFooter>
-                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submitSMS(e)}>{'Submit'}</button>
+                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submit(e)}>{'Submit'}</button>
                                             </ModalFooter>
                                         </Modal>
                                     }
-
+                                    <DataTable
+                                        columns={openDataColumns}
+                                        data={this.state.subjects}
+                                        striped={true}
+                                        pagination
+                                        responsive={true}
+                                    />
                                 </div>
                             </div>
-                            <div className="card-body datatable-react">
-                                <Card>
-                                    <CardBody>
-                                        <DataTable
-                                            columns={openDataColumns}
-                                            data={this.state.invoiceTypes}
-                                            striped={true}
-                                            pagination
-                                            persistTableHead
-                                            responsive={true}
-                                        />
-                                    </CardBody>
-                                </Card>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -236,4 +230,4 @@ class InvoiceType extends React.Component {
     }
 };
 
-export default InvoiceType;
+export default Subject;

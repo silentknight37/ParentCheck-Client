@@ -57,6 +57,12 @@ import InvoiceDetails from './components/payment/invoicesDetails';
 import GenerateInvoiceDetails from './components/payment/generateinvoiceDetails';
 
 import UserManagement from './components/settings/user-management';
+import AcademicYear from './components/settings/academic';
+import Term from './components/settings/term';
+import InstituteClass from './components/settings/instituteClass';
+import ClassSubjectStudentManagment from './components/settings/classSubjectManagment';
+import Subject from './components/settings/subject';
+import StudentManagment from './components/settings/studentManagment';
 
 
 //config data
@@ -150,6 +156,12 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/payment/generate-invoice/:id`} component={GenerateInvoiceDetails} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/user-management`} component={UserManagement} />
+                                    <Route path={`${process.env.PUBLIC_URL}/academic-year-management`} component={AcademicYear} />
+                                    <Route path={`${process.env.PUBLIC_URL}/term-management`} component={Term} />
+                                    <Route path={`${process.env.PUBLIC_URL}/class-management`} component={InstituteClass} />
+                                    <Route path={`${process.env.PUBLIC_URL}/class-management/:id`} component={ClassSubjectStudentManagment} />
+                                    <Route path={`${process.env.PUBLIC_URL}/subject-management`} component={Subject} />
+                                    <Route path={`${process.env.PUBLIC_URL}/enroll-management`} component={StudentManagment} />
 
 
                                 </App>

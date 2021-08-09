@@ -223,6 +223,7 @@ class Library extends React.Component {
   }
 
   render() {
+    const roleId = localStorage.getItem('roleId');
     const fileList = [];
     this.state.Library.filter((data) => {
       if (this.state.searchTerm == null) {
@@ -258,7 +259,7 @@ class Library extends React.Component {
           <Container fluid={true}>
             <Row>
               <Col>
-                <Button color="primary mt-2 mb-2" onClick={this.openModalToggle}>Upload File</Button>
+                {(roleId==2 || roleId==4 || roleId==5) && (<Button color="primary mt-2 mb-2" onClick={this.openModalToggle}>Upload File</Button>)}
 
                 {
                   <Modal isOpen={this.state.isFileUploadpen} toggle={this.handleModalToggle} size="lg">

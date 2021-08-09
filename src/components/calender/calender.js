@@ -391,6 +391,7 @@ class Calender extends React.Component {
         );
     }
     render() {
+        const roleId = localStorage.getItem('roleId');
         const onChange = (evt) => {
             const newContent = evt.editor.getData();
             if (!(newContent == "" && this.stateText.value == "")) {
@@ -407,7 +408,7 @@ class Calender extends React.Component {
                                 <div className="card">
                                     <div className="card-header">
                                         <Button color="primary mr-2" onClick={this.openPeronalModalToggle}>Add Personal Tasks</Button>
-                                        <Button color="primary " onClick={this.openModalToggle}>Add Event</Button>
+                                        {(roleId==2 || roleId==4 || roleId==5) && ( <Button color="primary " onClick={this.openModalToggle}>Add Event</Button>)}
                                     </div>
                                     {
                                         <Modal isOpen={this.state.isEmailSendOpen} toggle={this.handleEmailSendModalToggle} size="lg">
@@ -428,7 +429,7 @@ class Calender extends React.Component {
                                                                     <br />
                                                                     <label htmlFor="option-group">
                                                                         <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
-                                                                        {Option} {"To Groups"}
+                                                                        {Option} {"To Group"}
                                                                     </label>
                                                                 </div>
                                                             </div>

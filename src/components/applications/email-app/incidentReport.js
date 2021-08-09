@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../../common/breadcrumb';
-import { handleResponse,authHeader } from "../../../services/service.backend";
+import { handleResponse, authHeader } from "../../../services/service.backend";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toast } from 'react-toastify';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -39,7 +39,7 @@ class IncidentReport extends React.Component {
     getIncidentReports = async () => {
         const incidentReportList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`classRoom/getIncidentReports`,requestOptions)
+        return fetch(`classRoom/getIncidentReports`, requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.incidentReports.map(i =>
@@ -53,7 +53,7 @@ class IncidentReport extends React.Component {
     getToUsers = async () => {
         const userContactList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getAllUserContacts?sendType=${1}`,requestOptions)
+        return fetch(`reference/getAllUserContacts?sendType=${1}`, requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
@@ -195,7 +195,7 @@ class IncidentReport extends React.Component {
     }
 
     render() {
-
+        const roleId = localStorage.getItem('roleId');
         const onChange = (evt) => {
             const newContent = evt.editor.getData();
             if (!(newContent == "" && this.stateText.value == "")) {
@@ -245,18 +245,18 @@ class IncidentReport extends React.Component {
                                     <h5>{"Incident Report"}</h5>
                                 </div>
                                 <div className="card-body">
-                                    <div className="card-header">
-                                        <Button color="primary mr-2" onClick={this.openModalToggle}>Send Report</Button>
-                                    </div>
-                                    <div className="card-body datatable-react">
-                                        <DataTable
-                                            columns={openDataColumns}
-                                            data={this.state.incidentReports}
-                                            striped={true}
-                                            pagination
-                                            responsive={true}
-                                        />
-                                    </div>
+                                    {(roleId == 2 || roleId == 4 || roleId == 5) && (
+                                        <div className="card-header">
+                                            <Button color="primary mr-2" onClick={this.openModalToggle}>Send Report</Button>
+                                        </div>
+                                    )}
+                                    <DataTable
+                                        columns={openDataColumns}
+                                        data={this.state.incidentReports}
+                                        striped={true}
+                                        pagination
+                                        responsive={true}
+                                    />
                                     {
                                         <Modal isOpen={this.state.isEmailSendOpen} toggle={this.handleEmailSendModalToggle} size="lg">
                                             <ModalHeader toggle={this.handleEmailSendModalToggle}>

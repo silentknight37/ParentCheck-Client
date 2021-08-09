@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
 import { Card, CardBody } from 'reactstrap'
-import { handleResponse,authHeader } from "../../services/service.backend";
+import { handleResponse, authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import CKEditors from "react-ckeditor-component";
@@ -12,32 +12,57 @@ class UserManagement extends React.Component {
         super(props);
         this.state = {
             id: 0,
-            name: null,
-            isSenderTemplate: false,
+            firstName: null,
+            lastName: null,
+            roleId: null,
+            studentUserId: null,
+            parentUserid: null,
+            classTeacherUserId: null,
+            headTeacherUserId: null,
+            communicationGroup: null,
+            username: null,
+            dateOfBirth: null,
             isActive: true,
             isSubmited: false,
             isValidSubmit: false,
-            iconWithTab: '1',
-            templates: [],
+            instituteUsers: [],
             isTemplateEditorOpen: false,
+            communicationGroup: []
         };
     }
 
     componentDidMount = async () => {
-        await this.getTemplate();
+        await this.getInstituteUsers();
+        await this.getCommunicationGroup(3);
     }
 
-    getTemplate = async () => {
-        const templatesList = [];
+    getInstituteUsers = async () => {
+        const instituteUserList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`communication/getAllCommunicationTemplate`,requestOptions)
+        return fetch(`setting/getUsers`, requestOptions)
             .then(handleResponse)
             .then(response => {
-                response.templates.map(i =>
-                    templatesList.push({ id: i.id, name: i.name, content: i.content, isSenderTemplate: i.isSenderTemplate ? "True" : "False", isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-note"></i></Link> })
+                response.instituteUsers.map(i =>
+                    instituteUserList.push({ id: i.id, firstName: i.firstName, lastName: i.lastName, role: i.role, dateOfBirth: new Date(i.dateOfBirth).toDateString(), userName: i.userName, isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
                 )
                 this.setState({
-                    templates: templatesList,
+                    instituteUsers: instituteUserList,
+                });
+            });
+    }
+
+    getCommunicationGroup = async (id) => {
+        const communicationGroupList = [];
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${id}`,requestOptions)
+            .then(handleResponse)
+            .then(response => {
+
+                response.references.map(i =>
+                    communicationGroupList.push({ id: i.id, value: i.value })
+                )
+                this.setState({
+                    communicationGroup: communicationGroupList,
                 });
             });
     }
@@ -53,7 +78,7 @@ class UserManagement extends React.Component {
         this.stateText.value = data.content;
         this.openModalToggle();
     }
-    submitSMS = async (e) => {
+    submitInstituteUser = async (e) => {
         e.preventDefault();
         this.setState({
             isSubmited: true
@@ -86,7 +111,7 @@ class UserManagement extends React.Component {
 
                     toast.success(response.Value.SuccessMessage)
 
-                    await this.getTemplate();
+                    await this.getInstituteUsers();
 
                     this.setState({
                         isSubmited: false,
@@ -136,32 +161,50 @@ class UserManagement extends React.Component {
         return true;
     }
 
-    stateText = {
-        value: ""
+    handleSelectOptions = (refVal) => {
+        return (
+            <option value={refVal.id}>{refVal.value}</option>
+        );
     }
 
     render() {
-        const onChange = (evt) => {
-            const newContent = evt.editor.getData();
-            if (!(newContent == "" && this.stateText.value == "")) {
-                this.stateText.value = newContent;
-            }
-        }
 
+        const communicationGroupList = [];
+        this.state.communicationGroup.forEach(refVal => {
+            communicationGroupList.push(
+                this.handleSelectOptions(
+                    refVal
+                )
+            );
+        });
         const openDataColumns = [
             {
-                name: 'Name',
-                selector: 'name',
+                name: 'First Name',
+                selector: 'firstName',
                 sortable: true
             },
             {
-                name: 'Is Sender Template',
-                selector: 'isSenderTemplate',
-                sortable: true,
-                wrap: true
+                name: 'Last Name',
+                selector: 'lastName',
+                sortable: true
             },
             {
-                name: 'Is Active',
+                name: 'Role',
+                selector: 'role',
+                sortable: true
+            },
+            {
+                name: 'Date Of Birth',
+                selector: 'dateOfBirth',
+                sortable: true
+            },
+            {
+                name: 'User Name',
+                selector: 'userName',
+                sortable: true
+            },
+            {
+                name: 'Active',
                 selector: 'isActive',
                 sortable: true,
                 wrap: true
@@ -196,37 +239,50 @@ class UserManagement extends React.Component {
                                                     <form className="theme-form needs-validation" noValidate="">
                                                         <div className="card-body">
                                                             <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="name">{"Name"}</label>
-                                                                    <input className="form-control" id="name" type="text" aria-describedby="name" value={this.state.name} onChange={e => this.handleChange({ name: e.target.value })} placeholder="Name" />
-                                                                    <span>{this.state.isSubmited && !this.state.name && 'name is required'}</span>
+                                                                <div className="form-group col-6">
+                                                                    <label className="col-form-label pt-0" htmlFor="firstName">{"First Name"}</label>
+                                                                    <input className="form-control" id="firstName" type="text" aria-describedby="firstName" value={this.state.firstName} onChange={e => this.handleChange({ firstName: e.target.value })} placeholder="First Name" />
+                                                                    <span>{this.state.isSubmited && !this.state.firstName && 'First Name is required'}</span>
+                                                                </div>
+                                                                <div className="form-group col-6">
+                                                                    <label className="col-form-label pt-0" htmlFor="lastName">{"Last Name"}</label>
+                                                                    <input className="form-control" id="lastName" type="text" aria-describedby="lastName" value={this.state.lastName} onChange={e => this.handleChange({ lastName: e.target.value })} placeholder="Last Name" />
+                                                                    <span>{this.state.isSubmited && !this.state.lastName && 'Last Name is required'}</span>
                                                                 </div>
                                                             </div>
                                                             <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="content">{"Content"}</label>
-                                                                    <CKEditors id="content"
-                                                                        content={this.stateText.value}
-                                                                        events={{
-                                                                            "change": onChange
-                                                                        }}
-                                                                    />
-                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.stateText.value && 'Name is required'}</span>
+                                                                <div className="form-group col-6">
+                                                                    <label className="col-form-label pt-0" htmlFor="dateOfBirth">{"Date Of Birth"}</label>
+                                                                    <input className="form-control" data-date-format="YYYY MMMM DD" id="dateOfBirth" onChange={e => this.handleChange({ dateOfBirth: e.target.value })} type="date" aria-describedby="dateOfBirth" placeholder="Date Of Birth" />
+                                                                    <span>{this.state.isSubmited && !this.state.dateOfBirth && 'Date of birth is required'}</span>
+                                                                </div>
+                                                                <div className="form-group col-6">
+                                                                    <label className="col-form-label pt-0" htmlFor="username">{"User Name"}</label>
+                                                                    <input className="form-control" id="username" type="email" aria-describedby="username" value={this.state.username} onChange={e => this.handleChange({ username: e.target.value })} placeholder="User Name" />
+                                                                    <span>{this.state.isSubmited && !this.state.username && 'User Name is required'}</span>
                                                                 </div>
                                                             </div>
                                                             <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    <label className="d-block" htmlFor="isSenderTemplate">
-                                                                        <input checked={this.state.isSenderTemplate} className="checkbox_animated" id="isSenderTemplate" type="checkbox" onChange={e => this.handleChange({ isSenderTemplate: !this.state.isSenderTemplate })} />
-                                                                        {Option} {"Is Sender Template"}
-                                                                    </label>
+                                                                <div className="form-group col-6">
+                                                                    <label htmlFor="communicationGroup">{'Communication Group'}</label>
+                                                                    <select onChange={e => this.handleChange({ communicationGroup: e.target.value })} className="form-control digits" defaultValue="0">
+                                                                        <option value={0}>All</option>
+                                                                        {communicationGroupList}
+                                                                    </select>
+                                                                </div>
+                                                                <div className="form-group col-6">
+                                                                    <label htmlFor="exampleFormControlSelect9">{'Terms'}</label>
+                                                                    <select className="form-control digits" defaultValue="0">
+                                                                        <option value={0}>All</option>
+                                                                        {communicationGroupList}
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
                                                                     <label className="d-block" htmlFor="isActive">
                                                                         <input checked={this.state.isActive} className="checkbox_animated" id="isActive" type="checkbox" onChange={e => this.handleChange({ isActive: !this.state.isActive })} />
-                                                                        {Option} {"Is Active"}
+                                                                        {Option} {"Active"}
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -235,25 +291,17 @@ class UserManagement extends React.Component {
                                                 </div>
                                             </ModalBody>
                                             <ModalFooter>
-                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submitSMS(e)}>{'Submit'}</button>
+                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submitInstituteUser(e)}>{'Submit'}</button>
                                             </ModalFooter>
                                         </Modal>
                                     }
-
-                                </div>
-                                <div className="card-body datatable-react">
-                                    <Card>
-                                        <CardBody>
-                                            <DataTable
-                                                columns={openDataColumns}
-                                                data={this.state.templates}
-                                                striped={true}
-                                                pagination
-                                                persistTableHead
-                                                responsive={true}
-                                            />
-                                        </CardBody>
-                                    </Card>
+                                    <DataTable
+                                        columns={openDataColumns}
+                                        data={this.state.instituteUsers}
+                                        striped={true}
+                                        pagination
+                                        responsive={true}
+                                    />
                                 </div>
                             </div>
 
