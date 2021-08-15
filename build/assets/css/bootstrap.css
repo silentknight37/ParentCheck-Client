@@ -1,0 +1,20 @@
+/* Error: compound selectors may no longer be extended.
+ * Consider `@extend .dropdown-item, .active` instead.
+ * See http://bit.ly/ExtendCompound for details.
+ * 
+ *    ,
+ * 16 |     @extend .dropdown-item.active;
+ *    |             ^^^^^^^^^^^^^^^^^^^^^
+ *    '
+ *   E:\Project\ParentCheck-Client\src\assets\scss\bootstrap\_typeaheadjs.scss 16:13  root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: compound selectors may no longer be extended.\a Consider `@extend .dropdown-item, .active` instead.\aSee http://bit.ly/ExtendCompound for details.\a\a    \2577 \a 16 \2502      @extend .dropdown-item.active;\a    \2502              ^^^^^^^^^^^^^^^^^^^^^\a    \2575 \a   E:\\Project\\ParentCheck-Client\\src\\assets\\scss\\bootstrap\\_typeaheadjs.scss 16:13  root stylesheet";
+}

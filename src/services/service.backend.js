@@ -3,7 +3,8 @@ export const configureBackend = () => {
     let users = [{ email: 'test@gmail.com', password: 'test123'}];
     let realFetch = window.fetch;
     window.fetch = function (url, opts) {
-        url=`https://localhost:44357/api/${url}`
+        url=`https://api.parentcheck.lk/api/${url}`
+        //url=`https://localhost:44357/api/${url}`
         const isLoggedIn = true;//opts.headers['Authorization'] === `Bearer ${Jwt_token}`;
         return new Promise((resolve, reject) => {
             // wrap in timeout to simulate server api call
@@ -45,7 +46,6 @@ export const configureBackend = () => {
 }
 
 export function handleResponse(response) {
-    debugger
     return response.text().then(text => {
         const data = text && JSON.parse(text);
         if (!response.ok) {

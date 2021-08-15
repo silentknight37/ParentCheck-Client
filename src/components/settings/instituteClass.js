@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import DataTable from 'react-data-table-component'
-import { Card, CardBody } from 'reactstrap'
 import { handleResponse, authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { UncontrolledTooltip } from 'reactstrap';
+import createLink from '../../helpers/createLink';
 class InstituteClass extends React.Component {
     constructor(props) {
         super(props);
@@ -39,7 +40,20 @@ class InstituteClass extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.academicClasses.map(i =>
-                    academicClassList.push({ id: i.id, className: i.className, yearAcademic: i.yearAcademic, responsibleUserId: i.responsibleUserId, responsibleUser: i.responsibleUser, isActive: i.isActive ? "True" : "False", action: <div><Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link><Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-book-alt"></i></Link></div> })
+                    academicClassList.push({
+                        id: i.id, className: i.className, yearAcademic: i.yearAcademic, responsibleUserId: i.responsibleUserId, responsibleUser: i.responsibleUser, isActive: i.isActive ? "True" : "False", action: 
+                        <div>
+                            <Link className="btn btn-light" id="btn_Edit" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link>
+                            <UncontrolledTooltip placement="top" target="btn_Edit">
+                                {"Edit"}
+                            </UncontrolledTooltip>
+                            
+                            <Link className="btn btn-light" id="btn_time_table" to={createLink('/class-subject-management/:id', { id: i.id })}><i className="icofont icofont-book-alt"></i></Link>
+                            <UncontrolledTooltip placement="top" target="btn_time_table">
+                                {"Setup Subjects"}
+                            </UncontrolledTooltip>
+                        </div>
+                    })
                 )
                 this.setState({
                     academicClasses: academicClassList,
@@ -207,11 +221,6 @@ class InstituteClass extends React.Component {
 
         const openDataColumns = [
             {
-                name: 'Academic Year',
-                selector: 'yearAcademic',
-                sortable: true
-            },
-            {
                 name: 'Class',
                 selector: 'className',
                 sortable: true
@@ -231,7 +240,7 @@ class InstituteClass extends React.Component {
             {
                 name: 'Action',
                 selector: 'action',
-                center:true
+                center: true
             }
         ];
 
@@ -287,7 +296,7 @@ class InstituteClass extends React.Component {
                                                                         <option value={0}>All</option>
                                                                         {responsibleUserList}
                                                                     </select>
-                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (!this.state.responsibleUserId || this.state.responsibleUserId==0) && 'Responsible User is required'}</span>
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (!this.state.responsibleUserId || this.state.responsibleUserId == 0) && 'Responsible User is required'}</span>
                                                                 </div>
                                                             </div>
 

@@ -29,12 +29,10 @@ class Invoices extends React.Component {
 
     getInvoice = async () => {
         const invoicesList = [];
-        debugger
         const requestOptions = { method: 'GET', headers: authHeader() };
         return fetch(`payment/getUserInvoices`,requestOptions)
             .then(handleResponse)
             .then(response => {
-                debugger
                 response.invoices.map(i =>
                     invoicesList.push({ id: i.id, invoiceNo: i.invoiceNo, invoiceDate: new Date(i.invoiceDate).toDateString(), dueDate: new Date(i.dueDate).toDateString(), invoiceAmount: i.invoiceAmount, invoiceTitle: i.invoiceTitle, invoiceDetails: i.invoiceDetails, status: i.status, invoiceType: i.invoiceType, action: <Link className="btn btn-light" to={createLink('/payment/invoice/:id', { id: i.id })}><i className="icofont icofont-ui-note"></i></Link> })
                 )

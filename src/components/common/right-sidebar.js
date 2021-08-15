@@ -1,108 +1,93 @@
 import React from 'react';
-import one from '../../assets/images/user/1.jpg';
-import two from '../../assets/images/user/2.png';
-import eight from '../../assets/images/user/8.jpg';
-import four from '../../assets/images/user/4.jpg';
-import five from '../../assets/images/user/5.jpg';
-import six from '../../assets/images/user/6.jpg';
-import seven from '../../assets/images/user/7.jpg';
-import {Link} from 'react-router-dom'
-import {FRIENDLIST,Online,VincentPorter,EricaHughes,AinChavez,HileriJecno,GingerJohnston,PrasanthAnand,KoriThomas} from '../../constant'
+import { handleResponse, authHeader } from "../../services/service.backend";
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import { UncontrolledTooltip } from 'reactstrap';
+import createLink from '../../helpers/createLink';
+class RightSidebar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            weekDays: []
+        };
+    }
 
-const RightSidebar = () => {
+    componentDidMount = async () => {
+        await this.getTodayTimeTable();
+    }
+
+    getTodayTimeTable = async () => {
+        const WeekdayList = [];
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`setting/getTodayTimeTable`, requestOptions)
+            .then(handleResponse)
+            .then(response => {
+                response.weekDays.map(i =>
+
+                    WeekdayList.push({
+                        Weekday: i.Weekday, TimeTables: i.TimeTables
+                    })
+                )
+                this.setState({
+                    weekDays: WeekdayList
+                });
+            });
+    }
+    handleTimeTable = (refVal) => {
+        return (
+            <li className="clearfix">
+                <div className="about">
+                    <div className="name">{refVal.subject}</div>
+                    <div className="status"> {refVal.fromTime} - {refVal.toTime}</div>
+                </div>
+            </li>
+        );
+    }
+    render() {
+        const roleId = localStorage.getItem('roleId');
+        let weekday = "";
+        let classText = "";
+        const timeTableList = [];
+        this.state.weekDays.forEach(refVal => {
+            weekday = refVal.Weekday;
+            refVal.TimeTables.forEach(refValSub => {
+                classText = refValSub.className;
+                timeTableList.push(
+                    this.handleTimeTable(
+                        refValSub
+                    )
+                );
+            });
+        });
         return (
             <div>
                 <div className="right-sidebar" id="right_side_bar">
                     <div className="container p-0">
                         <div className="modal-header p-l-20 p-r-20">
+
                             <div className="col-sm-8 p-0">
-                                <h6 className="modal-title font-weight-bold">{FRIENDLIST}</h6>
+                                <p className="modal-title font-weight-bold">{roleId != 2 ? classText : ""}{" Time Table"}</p>
                             </div>
+
                             <div className="col-sm-4 text-right p-0"><i className="mr-2" data-feather="settings"></i></div>
                         </div>
-                    </div>
-                    <div className="friend-list-search mt-0">
-                        <input type="text" placeholder="search friend" /><i className="fa fa-search"></i>
+                        <div className="modal-header p-l-20 p-r-20">
+                            <div className="col-sm-8 p-0">
+                                <p className="modal-title">{weekday}</p>
+                            </div>
+                        </div>
                     </div>
                     <div className="chat-box custom-scrollbar">
                         <div className="people-list friend-list">
                             <ul className="list">
-                                <li className="clearfix">
-                                    <Link to={`${process.env.PUBLIC_URL}/chat-app/chat`}>
-                                        <img className="rounded-circle user-image" src={one} alt="" />
-                                        <div className="status-circle online"></div>
-                                        <div className="about">
-                                            <div className="name">{VincentPorter}</div>
-                                            <div className="status"> {Online}</div>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="clearfix">
-                                    <Link to={`${process.env.PUBLIC_URL}/chat-app/chat`}>
-                                        <img className="rounded-circle user-image" src={two} alt="" />
-                                        <div className="status-circle away"></div>
-                                        <div className="about">
-                                            <div className="name">{AinChavez}</div>
-                                            <div className="status"> {"28 minutes ago"}</div>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="clearfix">
-                                    <Link to={`${process.env.PUBLIC_URL}/chat-app/chat`}>
-                                        <img className="rounded-circle user-image" src={eight} alt="" />
-                                        <div className="status-circle online"></div>
-                                        <div className="about">
-                                            <div className="name">{KoriThomas}</div>
-                                            <div className="status"> {Online}</div>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="clearfix">
-                                    <Link to={`${process.env.PUBLIC_URL}/chat-app/chat`}>
-                                        <img className="rounded-circle user-image" src={four} alt="" />
-                                        <div className="status-circle online"></div>
-                                        <div className="about">
-                                            <div className="name">{EricaHughes}</div>
-                                            <div className="status"> {Online}</div>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="clearfix">
-                                    <Link to={`${process.env.PUBLIC_URL}/chat-app/chat`}>
-                                        <img className="rounded-circle user-image" src={five} alt="" />
-                                        <div className="status-circle offline"></div>
-                                        <div className="about">
-                                            <div className="name">{GingerJohnston}</div>
-                                            <div className="status"> {"2 minutes ago"}</div>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="clearfix">
-                                    <Link to={`${process.env.PUBLIC_URL}/chat-app/chat`}>
-                                        <img className="rounded-circle user-image" src={six} alt="" />
-                                        <div className="status-circle away"></div>
-                                        <div className="about">
-                                            <div className="name">{PrasanthAnand}</div>
-                                            <div className="status"> {"2 hour ago"}</div>
-                                        </div>
-                                    </Link>
-                                </li>
-                                <li className="clearfix">
-                                    <Link to={`${process.env.PUBLIC_URL}/chat-app/chat`}>
-                                        <img className="rounded-circle user-image" src={seven} alt="" />
-                                        <div className="status-circle online"></div>
-                                        <div className="about">
-                                            <div className="name">{HileriJecno}</div>
-                                            <div className="status"> {Online}</div>
-                                        </div>
-                                    </Link>
-                                </li>
+                                {timeTableList}
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         )
+    }
 }
 
-export default RightSidebar; 
+export default RightSidebar;

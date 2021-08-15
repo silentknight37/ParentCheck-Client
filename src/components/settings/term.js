@@ -80,7 +80,6 @@ class Term extends React.Component {
         this.setState({
             isSubmited: true
         });
-        debugger
         if (this.validate()) {
             const currentUser = localStorage.getItem('token');
             await fetch("setting/saveAcademicTerm", {

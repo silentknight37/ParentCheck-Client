@@ -34,12 +34,13 @@ const Signin = ({ history }) => {
         return fetch(`user/authenticate`, requestOptions)
             .then(handleResponse)
             .then(response => {
-                debugger
                 if (response.user.isValid) {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     setValue(man);
                     localStorage.setItem('token', response.user.token);
                     localStorage.setItem('roleId', response.user.roleId);
+                    localStorage.setItem('image', response.user.image);
+                    localStorage.setItem('email', response.user.email);
                     localStorage.setItem('fullName', response.user.fullName);
                     localStorage.setItem('instituteId', response.user.instituteId);
                     window.location.href = `${process.env.PUBLIC_URL}/dashboard`

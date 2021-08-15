@@ -83,7 +83,6 @@ class StudentManagment extends React.Component {
     }
 
     handleChange = async (changeObject) => {
-        debugger
         this.setState(changeObject);
         this.setState({
             isSubmited: false
@@ -134,7 +133,6 @@ class StudentManagment extends React.Component {
         this.setState({
             isSubmited: true
         });
-        debugger
         if (this.validate()) {
             const currentUser = localStorage.getItem('token');
             await fetch("setting/saveStudentEnroll", {

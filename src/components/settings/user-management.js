@@ -14,12 +14,8 @@ class UserManagement extends React.Component {
             id: 0,
             firstName: null,
             lastName: null,
-            roleId: null,
-            studentUserId: null,
-            parentUserid: null,
-            classTeacherUserId: null,
-            headTeacherUserId: null,
-            communicationGroup: null,
+            roleId: 0,
+            studentUserid: 0,
             username: null,
             dateOfBirth: null,
             isActive: true,
@@ -27,13 +23,16 @@ class UserManagement extends React.Component {
             isValidSubmit: false,
             instituteUsers: [],
             isTemplateEditorOpen: false,
-            communicationGroup: []
+            students: [],
+            roles: [],
+            isEdit:false
         };
     }
 
     componentDidMount = async () => {
         await this.getInstituteUsers();
-        await this.getCommunicationGroup(3);
+        await this.getRole(7);
+        await this.getStudent(11);
     }
 
     getInstituteUsers = async () => {
@@ -51,18 +50,34 @@ class UserManagement extends React.Component {
             });
     }
 
-    getCommunicationGroup = async (id) => {
-        const communicationGroupList = [];
+    getRole = async (id) => {
+        const roleList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getReference?id=${id}`,requestOptions)
+        return fetch(`reference/getReference?id=${id}`, requestOptions)
             .then(handleResponse)
             .then(response => {
 
                 response.references.map(i =>
-                    communicationGroupList.push({ id: i.id, value: i.value })
+                    roleList.push({ id: i.id, value: i.value })
                 )
                 this.setState({
-                    communicationGroup: communicationGroupList,
+                    roles: roleList,
+                });
+            });
+    }
+
+    getStudent = async (id) => {
+        const studentList = [];
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`reference/getReference?id=${id}`, requestOptions)
+            .then(handleResponse)
+            .then(response => {
+
+                response.references.map(i =>
+                    studentList.push({ id: i.id, value: i.value })
+                )
+                this.setState({
+                    students: studentList,
                 });
             });
     }
@@ -70,12 +85,14 @@ class UserManagement extends React.Component {
     selectedTemplate = (data) => {
         this.setState({
             id: data.id,
-            name: data.name,
-            isSenderTemplate: data.isSenderTemplate,
-            isActive: data.isActive
+            firstName: data.firstName,
+            lastName: data.lastName,
+            roleId: data.role,
+            studentUserid: data.studentUserid,
+            isActive: data.isActive,
+            isEdit:true
         });
 
-        this.stateText.value = data.content;
         this.openModalToggle();
     }
     submitInstituteUser = async (e) => {
@@ -86,7 +103,7 @@ class UserManagement extends React.Component {
 
         if (this.validate()) {
             const currentUser = localStorage.getItem('token');
-            await fetch("communication/saveCommunicationTemplate", {
+            await fetch("setting/saveUsers", {
                 "method": "POST",
                 "headers": {
                     "content-type": "application/json",
@@ -95,9 +112,12 @@ class UserManagement extends React.Component {
                 },
                 "body": JSON.stringify({
                     Id: this.state.id,
-                    name: this.state.name,
-                    content: this.stateText.value,
-                    isSenderTemplate: this.state.isSenderTemplate,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    roleId: +this.state.roleId,
+                    studentUserid: +this.state.studentUserid,
+                    username: this.state.username,
+                    dateOfBirth: this.state.dateOfBirth,
                     isActive: this.state.isActive
                 })
             })
@@ -115,7 +135,16 @@ class UserManagement extends React.Component {
 
                     this.setState({
                         isSubmited: false,
-                        isSmsSendOpen: false
+                        isSmsSendOpen: false,
+                        id: 0,
+                        firstName: null,
+                        lastName: null,
+                        roleId: null,
+                        studentUserid: null,
+                        username: null,
+                        dateOfBirth: null,
+                        isActive: true,
+                        isEdit:false
                     });
                 })
                 .catch(err => {
@@ -133,7 +162,16 @@ class UserManagement extends React.Component {
     handleModalToggle = () => {
         this.setState({
             isSmsSendOpen: false,
-            isSubmited: false
+            isSubmited: false,
+            id: 0,
+            firstName: null,
+            lastName: null,
+            roleId: null,
+            studentUserid: null,
+            username: null,
+            dateOfBirth: null,
+            isActive: true,
+            isEdit:false
         });
     }
 
@@ -146,11 +184,23 @@ class UserManagement extends React.Component {
 
 
     validate = () => {
-        if (this.state.subject === null || this.state.subject === "") {
+        if (this.state.firstName === null || this.state.firstName === "") {
             return false;
         }
 
-        if (this.stateText.value === null || this.stateText.value === "") {
+        if (this.state.lastName === null || this.state.lastName === "") {
+            return false;
+        }
+
+        if (this.state.roleId === null || this.state.roleId === 0) {
+            return false;
+        }
+
+        if (this.state.username === null || this.state.username === "") {
+            return false;
+        }
+
+        if (this.state.dateOfBirth === null || this.state.dateOfBirth === "") {
             return false;
         }
 
@@ -169,9 +219,18 @@ class UserManagement extends React.Component {
 
     render() {
 
-        const communicationGroupList = [];
-        this.state.communicationGroup.forEach(refVal => {
-            communicationGroupList.push(
+        const studentsList = [];
+        this.state.students.forEach(refVal => {
+            studentsList.push(
+                this.handleSelectOptions(
+                    refVal
+                )
+            );
+        });
+
+        const rolesList = [];
+        this.state.roles.forEach(refVal => {
+            rolesList.push(
                 this.handleSelectOptions(
                     refVal
                 )
@@ -241,15 +300,16 @@ class UserManagement extends React.Component {
                                                             <div className="form-row">
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="firstName">{"First Name"}</label>
-                                                                    <input className="form-control" id="firstName" type="text" aria-describedby="firstName" value={this.state.firstName} onChange={e => this.handleChange({ firstName: e.target.value })} placeholder="First Name" />
+                                                                    <input className="form-control" id="firstName" type="text" aria-describedby="firstName" disabled={this.state.isEdit} value={this.state.firstName} onChange={e => this.handleChange({ firstName: e.target.value })} placeholder="First Name" />
                                                                     <span>{this.state.isSubmited && !this.state.firstName && 'First Name is required'}</span>
                                                                 </div>
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="lastName">{"Last Name"}</label>
-                                                                    <input className="form-control" id="lastName" type="text" aria-describedby="lastName" value={this.state.lastName} onChange={e => this.handleChange({ lastName: e.target.value })} placeholder="Last Name" />
+                                                                    <input className="form-control" id="lastName" type="text" aria-describedby="lastName" disabled={this.state.isEdit} value={this.state.lastName} onChange={e => this.handleChange({ lastName: e.target.value })} placeholder="Last Name" />
                                                                     <span>{this.state.isSubmited && !this.state.lastName && 'Last Name is required'}</span>
                                                                 </div>
                                                             </div>
+                                                            {!this.state.isEdit && (
                                                             <div className="form-row">
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="dateOfBirth">{"Date Of Birth"}</label>
@@ -262,21 +322,25 @@ class UserManagement extends React.Component {
                                                                     <span>{this.state.isSubmited && !this.state.username && 'User Name is required'}</span>
                                                                 </div>
                                                             </div>
+                                                            )}
                                                             <div className="form-row">
                                                                 <div className="form-group col-6">
-                                                                    <label htmlFor="communicationGroup">{'Communication Group'}</label>
-                                                                    <select onChange={e => this.handleChange({ communicationGroup: e.target.value })} className="form-control digits" defaultValue="0">
+                                                                    <label htmlFor="roleId">{'Role'}</label>
+                                                                    <select className="form-control digits" onChange={e => this.handleChange({ roleId: e.target.value })} defaultValue={this.state.roleId}>
                                                                         <option value={0}>All</option>
-                                                                        {communicationGroupList}
+                                                                        {rolesList}
                                                                     </select>
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (!this.state.roleId || this.state.roleId==0) && 'Role is required'}</span>
                                                                 </div>
-                                                                <div className="form-group col-6">
-                                                                    <label htmlFor="exampleFormControlSelect9">{'Terms'}</label>
-                                                                    <select className="form-control digits" defaultValue="0">
-                                                                        <option value={0}>All</option>
-                                                                        {communicationGroupList}
-                                                                    </select>
-                                                                </div>
+                                                                {this.state.roleId == 3 && (
+                                                                    <div className="form-group col-6">
+                                                                        <label htmlFor="studentUserid">{'Associate Student'}</label>
+                                                                        <select onChange={e => this.handleChange({ studentUserid: e.target.value })} className="form-control digits" defaultValue={this.state.studentUserid}>
+                                                                            <option value={0}>All</option>
+                                                                            {studentsList}
+                                                                        </select>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
