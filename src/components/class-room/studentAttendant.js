@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import { handleResponse,authHeader } from "../../services/service.backend";
+import { handleResponse, authHeader } from "../../services/service.backend";
 import createLink from '../../helpers/createLink';
 import { Link } from 'react-router-dom';
 import { Col, Card, CardBody } from 'reactstrap';
@@ -28,7 +28,7 @@ class StudentAttendant extends React.Component {
     getClass = async (id) => {
         const classList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getReference?id=${id}`,requestOptions)
+        return fetch(`reference/getReference?id=${id}`, requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -64,11 +64,28 @@ class StudentAttendant extends React.Component {
 
         if (this.validate()) {
             const requestOptions = { method: 'GET', headers: authHeader() };
-            return fetch(`classRoom/getClassStudentAttendances?classId=${this.state.classId}&recordDate=${this.state.recordDate}`,requestOptions)
+            return fetch(`classRoom/getClassStudentAttendances?classId=${this.state.classId}&recordDate=${this.state.recordDate}`, requestOptions)
                 .then(handleResponse)
                 .then(response => {
                     response.studentAttendances.map(i =>
-                        classStudentAttendanceList.push({ id: i.id, attendance: i.isMarked ? i.isAttendance ? <i className="icofont  icofont-check" style={{ color: "#18c435", fontSize: "25px" }}></i> : <i className="icofont  icofont-close" style={{ color: "#c41835", fontSize: "25px" }}></i> : <div><Button className="btn btn-success mr-2" onClick={() => this.SaveAttendance(true, i.instituteUserId, i.instituteClassId)}><i className="icofont icofont-check" style={{ fontSize: "25px" }}></i></Button><Button className="btn btn-danger" onClick={() => this.SaveAttendance(false, i.instituteUserId, i.instituteClassId)}><i className="icofont icofont-close" style={{ fontSize: "25px" }}></i></Button></div>, isMarked: i.isMarked, recordDate: new Date(i.recordDate).toDateString(), studentUserName: i.studentUserName, className: i.className })
+                        classStudentAttendanceList.push({
+                            id: i.id, attendance: i.isMarked ? i.isAttendance ?
+                                <div>
+                                    <i className="icofont  icofont-check mr-2" style={{ color: "#18c435", fontSize: "25px" }}></i>
+                                    <Button className="btn btn-warning" onClick={() => this.SaveAttendance(false, i.instituteUserId, i.instituteClassId,true)}><i className="icofont icofont-refresh" style={{ fontSize: "20px" }}></i></Button>
+                                </div>
+                                :
+                                <div>
+                                    <i className="icofont  icofont-close mr-2" style={{ color: "#c41835", fontSize: "25px" }}></i>
+                                    <Button className="btn btn-warning" onClick={() => this.SaveAttendance(false, i.instituteUserId, i.instituteClassId,true)}><i className="icofont icofont-refresh" style={{ fontSize: "20px" }}></i></Button>
+                                </div>
+                                :
+                                <div>
+                                    <Button className="btn btn-success mr-2" onClick={() => this.SaveAttendance(true, i.instituteUserId, i.instituteClassId,false)}><i className="icofont icofont-check" style={{ fontSize: "20px" }}></i></Button>
+                                    <Button className="btn btn-danger mr-2" onClick={() => this.SaveAttendance(false, i.instituteUserId, i.instituteClassId,false)}><i className="icofont icofont-close" style={{ fontSize: "20px" }}></i></Button>
+                                </div>
+                            , isMarked: i.isMarked, recordDate: new Date(i.recordDate).toDateString(), studentUserName: i.studentUserName, className: i.className
+                        })
                     )
                     this.setState({
                         classStudentAttendances: classStudentAttendanceList,
@@ -101,7 +118,7 @@ class StudentAttendant extends React.Component {
         );
     }
 
-    SaveAttendance = async (isAttendance, instituteUserId, instituteClassId) => {
+    SaveAttendance = async (isAttendance, instituteUserId, instituteClassId,isReset) => {
         const currentUser = localStorage.getItem('token');
         await fetch("classRoom/saveClassStudentAttendance", {
             "method": "POST",
@@ -115,6 +132,7 @@ class StudentAttendant extends React.Component {
                 instituteClassId: instituteClassId,
                 isAttendance: isAttendance,
                 recordDate: this.state.recordDate,
+                isReset:isReset
             })
         })
             .then(response => response.json())

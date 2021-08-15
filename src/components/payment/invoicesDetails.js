@@ -60,7 +60,7 @@ class InvoiceDetails extends React.Component {
                                             <div className="row">
                                                 <div className="col-6">
                                                     <p><b>Invoice No</b> : {this.state.InvoiceDetail.invoiceNo}</p>
-                                                    <p><b>Invoice To</b> : {this.state.InvoiceDetail.invoiceTo}</p>
+                                                    <p><b>Invoiced To</b> : {this.state.InvoiceDetail.invoiceTo}</p>
                                                 </div>
                                                 <div className="col-6">
                                                     <p><b>Invoice Date</b> : {new Date(this.state.InvoiceDetail.invoiceDate).toDateString()}</p>

@@ -30,18 +30,13 @@ class Calender extends React.Component {
             isSubmited: false,
             isValidSubmit: false,
             eventDate: new Date().toDateString(),
-            isEmailSendOpen: false,
-            isGroup: false,
-            searchUser: null,
-            toUsers: [],
-            toGroups: [],
-            userContact: []
+            
         };
     }
 
     componentDidMount = async () => {
         await this.getEvent(new Date().toDateString());
-        await this.getToUsers();
+        
     }
     getEvent = async (date) => {
 
@@ -62,36 +57,7 @@ class Calender extends React.Component {
                 });
             });
     }
-    getToUsers = async () => {
-        const userContactList = [];
-        const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getAllUserContacts?sendType=${1}`,requestOptions)
-            .then(handleResponse)
-            .then(response => {
-                response.userContacts.map(i =>
-                    userContactList.push({ id: i.id, fullName: i.fullName, email: i.email, mobile: i.mobile })
-                )
-                this.setState({
-                    userContact: userContactList,
-                });
-            });
-    }
-
-    getToGroups = async () => {
-        const groupList = [];
-        const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getReference?id=${3}`,requestOptions)
-            .then(handleResponse)
-            .then(response => {
-
-                response.references.map(i =>
-                    groupList.push({ id: i.id, value: i.value })
-                )
-                this.setState({
-                    userContact: groupList,
-                });
-            });
-    }
+    
     eventClick = event => {
         this.setState({
             isEventOpen: true,
@@ -104,44 +70,14 @@ class Calender extends React.Component {
             isEmailSendOpen: true
         });
     }
-    handleEmailSendModalToggle = () => {
-        this.setState({
-            isEmailSendOpen: false,
-            isSubmited: false
-        });
-    }
+    
     handleModalToggle = () => {
         this.setState({
             isEventOpen: false
         });
     }
 
-    handleRadioChange = async (changeObject, getType) => {
-        if (!getType) {
-            await this.getToUsers();
-        }
-        else if (getType) {
-            await this.getToGroups();
-        }
-        this.setState(changeObject);
-    }
-
-    handleToChange(e) {
-        if (!this.state.isGroup) {
-            this.setState({
-                toUsers: e["e"]
-            });
-        }
-        else if (this.state.isGroup) {
-            this.setState({
-                toGroups: e["e"]
-            });
-        }
-
-        this.setState({
-            isSubmited: false
-        });
-    }
+    
 
     handlePeronalModalToggle = () => {
         this.setState({
@@ -353,35 +289,6 @@ class Calender extends React.Component {
 
         return true;
     }
-
-    validateEvent = () => {
-        if (this.state.fromDate === null || this.state.fromDate === "") {
-            return false;
-        }
-
-        if (this.state.toDate === null || this.state.toDate === "") {
-            return false;
-        }
-
-        if (new Date(this.state.toDate).getTime() < new Date(this.state.fromDate).getTime()) {
-            return false;
-        }
-
-        if (this.state.subject === null || this.state.subject === "") {
-            return false;
-        }
-
-        this.setState({
-            isValidSubmit: true
-        });
-
-        return true;
-    }
-
-    stateText = {
-        value: ""
-    }
-
     getEventForMonth = (newDate, view, action) => {
         this.getEvent(newDate.toDateString());
     }
@@ -391,12 +298,8 @@ class Calender extends React.Component {
         );
     }
     render() {
-        const onChange = (evt) => {
-            const newContent = evt.editor.getData();
-            if (!(newContent == "" && this.stateText.value == "")) {
-                this.stateText.value = newContent;
-            }
-        }
+        const roleId = localStorage.getItem('roleId');
+        
         return (
             <div>
                 <Fragment>
@@ -407,99 +310,9 @@ class Calender extends React.Component {
                                 <div className="card">
                                     <div className="card-header">
                                         <Button color="primary mr-2" onClick={this.openPeronalModalToggle}>Add Personal Tasks</Button>
-                                        <Button color="primary " onClick={this.openModalToggle}>Add Event</Button>
+                                        
                                     </div>
-                                    {
-                                        <Modal isOpen={this.state.isEmailSendOpen} toggle={this.handleEmailSendModalToggle} size="lg">
-                                            <ModalHeader toggle={this.handleEmailSendModalToggle}>
-
-                                            </ModalHeader>
-                                            <ModalBody>
-                                                <div className="card-body">
-                                                    <form className="theme-form needs-validation" noValidate="">
-                                                        <div className="card-body">
-                                                            <div className="form-row">
-                                                                <div className="form-group col-12">
-
-                                                                    <label htmlFor="option-user">
-                                                                        <input className="radio_animated" id="option-user" type="radio" name="rdo-ani" defaultChecked onChange={e => this.handleRadioChange({ isGroup: false }, false)} />
-                                                                        {Option} {"To Users"}
-                                                                    </label>
-                                                                    <br />
-                                                                    <label htmlFor="option-group">
-                                                                        <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
-                                                                        {Option} {"To Groups"}
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    {!this.state.isGroup && (
-                                                                        <Typeahead
-                                                                            id="user-typeahead"
-                                                                            labelKey="fullName"
-                                                                            multiple
-                                                                            options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
-                                                                            onChange={e => this.handleToChange({ e })}
-                                                                        />
-                                                                    )}
-                                                                    {this.state.isGroup && (
-                                                                        <Typeahead
-                                                                            id="group-typeahead"
-                                                                            labelKey="value"
-                                                                            multiple
-                                                                            options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
-                                                                            onChange={e => this.handleToChange({ e })}
-                                                                        />
-                                                                    )}
-                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-row">
-                                                                <div className="form-group">
-                                                                    <label className="col-form-label pt-0" htmlFor="fromDate">{"From Date"}</label>
-                                                                    <input className="form-control" id="fromDate" onChange={e => this.handleChange({ fromDate: e.target.value })} type="datetime-local" aria-describedby="fromDate" placeholder="Enter From Date" />
-                                                                    <span>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-row">
-                                                                <div className="form-group">
-                                                                    <label className="col-form-label pt-0" htmlFor="toDate">{"To Date"}</label>
-                                                                    <input className="form-control" id="toDate" type="datetime-local" aria-describedby="toDate" onChange={e => this.handleChange({ toDate: e.target.value })} placeholder="Enter To Date" />
-                                                                    <span>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
-                                                                    <span>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
-                                                                    <span>{this.state.isSubmited && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="subject">{"Subject"}</label>
-                                                                    <input className="form-control" id="subject" type="text" aria-describedby="subject" onChange={e => this.handleChange({ subject: e.target.value })} placeholder="Subject" />
-                                                                    <span>{this.state.isSubmited && !this.state.subject && 'Subject is required'}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-row">
-                                                                <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="message">{"Message"}</label>
-                                                                    <CKEditors id="message"
-                                                                        events={{
-                                                                            "change": onChange
-                                                                        }}
-                                                                    />
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </ModalBody>
-                                            <ModalFooter>
-                                                <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={() => this.submitCommunicationEvent()}>{'Submit'}</button>
-                                            </ModalFooter>
-                                        </Modal>
-                                    }
+                                    
                                     <div className="card-body">
                                         <Calendar
                                             onNavigate={(newDate, view, action) => this.getEventForMonth(newDate, view, action)}

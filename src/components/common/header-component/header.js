@@ -1,18 +1,20 @@
-import React, { useState ,Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import logo from '../../../assets/images/logo/compact-logo.png';
 import Language from './language';
 import UserMenu from './userMenu';
 import Notification from './notification';
 import SearchHeader from './searchHeader';
 import { Link } from 'react-router-dom';
-import { AlignLeft, Maximize, Bell, MoreHorizontal } from 'react-feather';
-import {Institute} from '../../../constant'
+import { AlignLeft, Maximize, FileText, MoreHorizontal } from 'react-feather';
+import { Institute } from '../../../constant'
 
 const Header = () => {
+  const roleId = localStorage.getItem('roleId');
   const [sidebar, setSidebar] = useState(false);
+  const [rightSidebar, setRightSidebar] = useState(true);
   const [headerbar, setHeaderbar] = useState(true);
 
- const openCloseSidebar = () => {
+  const openCloseSidebar = () => {
     if (sidebar) {
       setSidebar(!sidebar)
       document.querySelector(".page-main-header").classList.remove('open');
@@ -20,7 +22,16 @@ const Header = () => {
     } else {
       setSidebar(!sidebar)
       document.querySelector(".page-main-header").classList.add('open');
-      document.querySelector(".page-sidebar").classList.add('open'); 
+      document.querySelector(".page-sidebar").classList.add('open');
+    }
+  }
+  function showRightSidebar() {
+    if (rightSidebar) {
+      setRightSidebar(!rightSidebar)
+      document.querySelector(".right-sidebar").classList.add('show');
+    } else {
+      setRightSidebar(!rightSidebar)
+      document.querySelector(".right-sidebar").classList.remove('show');
     }
   }
 
@@ -76,20 +87,17 @@ const Header = () => {
                   <Maximize />
                 </a>
               </li>
-              {/* <li className="onhover-dropdown">
-                <a className="txt-dark" href="#javascript">
-                  <h6>{Institute}</h6></a>
-                <Language />
-              </li> */}
-              {/* <li className="onhover-dropdown">
-                <Notification />
-                <Bell />
-                <span className="dot"></span>
-                <Notification />
-              </li> */}
+              {roleId != 4 && (
+                <li>
+                  <a href="#javascript" onClick={showRightSidebar}>
+                    <FileText />
+                    <span className="dot"></span>
+                  </a>
+                </li>
+              )}
               <UserMenu />
             </ul>
-            <div className="d-lg-none mobile-toggle pull-right" onClick={() => setHeaderbar(!headerbar)}><MoreHorizontal/></div>
+            <div className="d-lg-none mobile-toggle pull-right" onClick={() => setHeaderbar(!headerbar)}><MoreHorizontal /></div>
           </div>
           <script id="result-template" type="text/x-handlebars-template">
             <div className="ProfileCard u-cf">

@@ -146,7 +146,7 @@ class InvoiceType extends React.Component {
                 wrap: true
             },
             {
-                name: 'Is Active',
+                name: 'Active',
                 selector: 'isActive',
                 sortable: true,
                 wrap: true
@@ -198,7 +198,7 @@ class InvoiceType extends React.Component {
                                                                 <div className="form-group col-12">
                                                                     <label className="d-block" htmlFor="isActive">
                                                                         <input checked={this.state.isActive} className="checkbox_animated" id="isActive" type="checkbox" onChange={e => this.handleChange({ isActive: !this.state.isActive })} />
-                                                                        {Option} {"Is Active"}
+                                                                        {Option} {"Active"}
                                                                     </label>
                                                                 </div>
                                                             </div>

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../../common/breadcrumb';
-import { handleResponse,authHeader } from "../../../services/service.backend";
+import { handleResponse, authHeader } from "../../../services/service.backend";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toast } from 'react-toastify';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -46,7 +46,7 @@ class Email extends React.Component {
     getTemplate = async () => {
         const templatesList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`communication/getCommunicationTemplate`,requestOptions)
+        return fetch(`communication/getCommunicationTemplate`, requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.templates.map(i =>
@@ -61,7 +61,7 @@ class Email extends React.Component {
     getInbox = async () => {
         const messagesList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`communication/getCommunicationInbox`,requestOptions)
+        return fetch(`communication/getCommunicationInbox`, requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
@@ -76,7 +76,7 @@ class Email extends React.Component {
     getOutbox = async () => {
         const messagesList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`communication/getCommunicationOutbox`,requestOptions)
+        return fetch(`communication/getCommunicationOutbox`, requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
@@ -92,7 +92,7 @@ class Email extends React.Component {
     getToUsers = async () => {
         const userContactList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getAllUserContacts?sendType=${1}`,requestOptions)
+        return fetch(`reference/getAllUserContacts?sendType=${1}`, requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
@@ -107,7 +107,7 @@ class Email extends React.Component {
     getToGroups = async () => {
         const groupList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getReference?id=${3}`,requestOptions)
+        return fetch(`reference/getReference?id=${3}`, requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -414,7 +414,7 @@ class Email extends React.Component {
 
 
     render() {
-
+        const roleId = localStorage.getItem('roleId');
         const inboxList = [];
         const outboxList = [];
 
@@ -456,7 +456,7 @@ class Email extends React.Component {
                                 <div className="card-body">
                                     <div className="card-header">
                                         <Button color="primary mr-2" onClick={this.openModalToggle}>Send Email</Button>
-                                        <Button color="primary" onClick={this.openRequestFormModalToggle}>Send Request Form</Button>
+                                        {(roleId == 2 || roleId == 4 || roleId == 5) && (<Button color="primary" onClick={this.openRequestFormModalToggle}>Send Request Form</Button>)}
                                     </div>
                                     <div className="email-wrap">
                                         <div className="row">
@@ -552,16 +552,19 @@ class Email extends React.Component {
                                                         <div className="card-body">
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-
-                                                                    <label htmlFor="option-user">
-                                                                        <input className="radio_animated" id="option-user" type="radio" name="rdo-ani" defaultChecked onChange={e => this.handleRadioChange({ isGroup: false }, false)} />
-                                                                        {Option} {"To Users"}
-                                                                    </label>
-                                                                    <br />
-                                                                    <label htmlFor="option-group">
-                                                                        <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
-                                                                        {Option} {"To Groups"}
-                                                                    </label>
+                                                                    {(roleId == 2 || roleId == 4 || roleId == 5) && (
+                                                                        <div>
+                                                                            <label htmlFor="option-user">
+                                                                                <input className="radio_animated" id="option-user" type="radio" name="rdo-ani" defaultChecked onChange={e => this.handleRadioChange({ isGroup: false }, false)} />
+                                                                                {Option} {"To Users"}
+                                                                            </label>
+                                                                            <br />
+                                                                            <label htmlFor="option-group">
+                                                                                <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
+                                                                                {Option} {"To Group"}
+                                                                            </label>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                             <div className="form-row">
@@ -636,7 +639,7 @@ class Email extends React.Component {
                                                                     <br />
                                                                     <label htmlFor="option-group">
                                                                         <input className="radio_animated" id="option-group" type="radio" name="rdo-ani" onChange={e => this.handleRadioChange({ isGroup: true }, true)} />
-                                                                        {Option} {"To Groups"}
+                                                                        {Option} {"To Group"}
                                                                     </label>
                                                                 </div>
                                                             </div>

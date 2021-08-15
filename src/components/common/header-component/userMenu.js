@@ -37,7 +37,7 @@ const UserMenu = ({ history }) => {
         <Fragment>
             <li className="onhover-dropdown">
                 <div className="media align-items-center">
-                    <img className="align-self-center pull-right img-50 rounded-circle blur-up lazyloaded" src={authenticated ? auth0_profile.picture : profile} alt="header-user" />
+                    <img className="align-self-center pull-right img-50 rounded-circle blur-up lazyloaded" src={authenticated ? localStorage.getItem('image') : localStorage.getItem('image')} alt="header-user" />
                     <div className="dotted-animation">
                         <span className="animate-circle"></span>
                         <span className="main-circle"></span>
@@ -46,8 +46,6 @@ const UserMenu = ({ history }) => {
                 <ul className="profile-dropdown onhover-show-div p-20 profile-dropdown-hover">
                     <li><Link to={`${process.env.PUBLIC_URL}/users/userEdit`}><User />{EditProfile}</Link></li>
                     <li><Link to={`${process.env.PUBLIC_URL}/communication/email`}><Mail />{Inbox}</Link></li>
-                    {/* <li><Link to={`${process.env.PUBLIC_URL}/pages/unlockUser`}><Lock />{LockScreen}</Link></li> */}
-                    {/* <li><a href="#javascript"><Settings />{"Settings"}</a></li> */}
                     <li><a onClick={authenticated ? Logout_From_Auth0 : Logout_From_Firebase} href="#javascript" ><LogOut /> {"Log out"}</a></li>
                 </ul>
             </li>

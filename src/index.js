@@ -20,12 +20,15 @@ import Project from './components/dashboard/project/project';
 // class-room
 import ClassRoomOverview from './components/class-room/class-room-overview';
 import StudentAttendant from './components/class-room/studentAttendant';
+import StudentAttendantCheck from './components/class-room/studentAttendantCheck';
 import Subjects from './components/class-room/subjects';
 import Chapters from './components/class-room/chapters';
 import TopicContent from './components/class-room/topicContent';
+import TimeTable from './components/class-room/timeTable';
 
 // Calender
 import Calender from './components/calender/calender';
+import GenerateEvent from './components/calender/generateEvent';
 
 // pages 
 import UnlockUser from './pages/unlockUser';
@@ -57,6 +60,16 @@ import InvoiceDetails from './components/payment/invoicesDetails';
 import GenerateInvoiceDetails from './components/payment/generateinvoiceDetails';
 
 import UserManagement from './components/settings/user-management';
+import AcademicYear from './components/settings/academic';
+import Term from './components/settings/term';
+import InstituteClass from './components/settings/instituteClass';
+import ClassSubjectStudentManagment from './components/settings/classSubjectManagment';
+import Subject from './components/settings/subject';
+import StudentManagment from './components/settings/studentManagment';
+import UserClassSubject from './components/settings/userClassSubject';
+import SubjectChapter from './components/settings/subjectChapter';
+import ChapterTopic from './components/settings/chapterTopic';
+import TopicContents from './components/settings/topicContents';
 
 
 //config data
@@ -123,10 +136,12 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/subjects`} component={Subjects} />
                                     <Route path={`${process.env.PUBLIC_URL}/content/:topicId`} component={TopicContent} />
                                     <Route path={`${process.env.PUBLIC_URL}/chapters/:subjectId`} component={Chapters} />
+                                    <Route path={`${process.env.PUBLIC_URL}/timetable`} component={TimeTable} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/library`} component={Library} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/calendar`} component={Calender} />
+                                    <Route path={`${process.env.PUBLIC_URL}/event-management`} component={GenerateEvent} />
                                     <Route path={`${process.env.PUBLIC_URL}/advance/sweetAlert`} component={SweetAlert} />
                                     <Route path={`${process.env.PUBLIC_URL}/base/modalComponent`} component={ModalComponent} />
 
@@ -141,7 +156,8 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/communication/template`} component={Template} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/incident-report`} component={IncidentReport} />
-                                    <Route path={`${process.env.PUBLIC_URL}/student-attendant`} component={StudentAttendant} />
+                                    <Route path={`${process.env.PUBLIC_URL}/students-attendant`} component={StudentAttendant} />
+                                    <Route path={`${process.env.PUBLIC_URL}/student-attendant`} component={StudentAttendantCheck} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/payment/invoiceType`} component={InvoiceType} />
                                     <Route path={`${process.env.PUBLIC_URL}/payment/invoices`} component={Invoices} />
@@ -150,6 +166,16 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/payment/generate-invoice/:id`} component={GenerateInvoiceDetails} />
 
                                     <Route path={`${process.env.PUBLIC_URL}/user-management`} component={UserManagement} />
+                                    <Route path={`${process.env.PUBLIC_URL}/academic-year-management`} component={AcademicYear} />
+                                    <Route path={`${process.env.PUBLIC_URL}/term-management`} component={Term} />
+                                    <Route path={`${process.env.PUBLIC_URL}/class-management`} component={InstituteClass} />
+                                    <Route path={`${process.env.PUBLIC_URL}/class-subject-management/:id`} component={ClassSubjectStudentManagment} />
+                                    <Route path={`${process.env.PUBLIC_URL}/subject-management`} component={Subject} />
+                                    <Route path={`${process.env.PUBLIC_URL}/enroll-management`} component={StudentManagment} />
+                                    <Route path={`${process.env.PUBLIC_URL}/chapter-management`} component={UserClassSubject} />
+                                    <Route path={`${process.env.PUBLIC_URL}/subject-chapter-management/:id`} component={SubjectChapter} />
+                                    <Route path={`${process.env.PUBLIC_URL}/chapter-topic-management/:subjectChapter/:id`} component={ChapterTopic} />
+                                    <Route path={`${process.env.PUBLIC_URL}/topic-content-management/:subjectChapter/:chapterTopic/:id`} component={TopicContents} />
 
 
                                 </App>

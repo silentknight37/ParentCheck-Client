@@ -3,7 +3,8 @@ export const configureBackend = () => {
     let users = [{ email: 'test@gmail.com', password: 'test123'}];
     let realFetch = window.fetch;
     window.fetch = function (url, opts) {
-        url=`https://localhost:44357/api/${url}`
+        url=`https://api.parentcheck.lk/api/${url}`
+        //url=`https://localhost:44357/api/${url}`
         const isLoggedIn = true;//opts.headers['Authorization'] === `Bearer ${Jwt_token}`;
         return new Promise((resolve, reject) => {
             // wrap in timeout to simulate server api call
@@ -51,7 +52,12 @@ export function handleResponse(response) {
             if ([401, 403].indexOf(response.status) !== -1) {
                 // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
                 localStorage.removeItem('token')
+                localStorage.removeItem('roleId')
+                localStorage.removeItem('fullName')
+                localStorage.removeItem('instituteId')
                 localStorage.removeItem('profileURL')
+
+                window.location.href = `${process.env.PUBLIC_URL}/login`
             }
         }
         return data;

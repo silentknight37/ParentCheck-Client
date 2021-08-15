@@ -92,6 +92,7 @@ class MySupportTickets extends React.Component {
     }
 
     render() {
+        const roleId = localStorage.getItem('roleId');
         const openDataColumns = [
             {
                 name: 'Open Date',
@@ -168,9 +169,10 @@ class MySupportTickets extends React.Component {
                                                     <NavItem>
                                                         <NavLink href="#javascript" className={this.state.iconWithTab === '1' ? 'active' : ''} onClick={() => this.setIconWithTab('1')}><i className="icofont icofont-ticket"></i>{'Open'}</NavLink>
                                                     </NavItem>
+                                                    {(roleId==2 || roleId==4 || roleId==5) && (
                                                     <NavItem>
                                                         <NavLink href="#javascript" className={this.state.iconWithTab === '21' ? 'active' : ''} onClick={() => this.setIconWithTab('2')}><i className="icofont icofont-anchor"></i>{'Assign'}</NavLink>
-                                                    </NavItem>
+                                                    </NavItem>)}
                                                     <NavItem>
                                                         <NavLink href="#javascript" className={this.state.iconWithTab === '3' ? 'active' : ''} onClick={() => this.setIconWithTab('3')}><i className="icofont icofont-verification-check"></i>{'Close'}</NavLink>
                                                     </NavItem>

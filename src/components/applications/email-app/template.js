@@ -30,7 +30,7 @@ class Template extends React.Component {
     getTemplate = async () => {
         const templatesList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`communication/getAllCommunicationTemplate`)
+        return fetch(`communication/getAllCommunicationTemplate`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.templates.map(i =>
@@ -155,13 +155,13 @@ class Template extends React.Component {
                 sortable: true
             },
             {
-                name: 'Is Sender Template',
+                name: 'Sender Template',
                 selector: 'isSenderTemplate',
                 sortable: true,
                 wrap: true
             },
             {
-                name: 'Is Active',
+                name: 'Active',
                 selector: 'isActive',
                 sortable: true,
                 wrap: true
@@ -218,7 +218,7 @@ class Template extends React.Component {
                                                                 <div className="form-group col-12">
                                                                     <label className="d-block" htmlFor="isSenderTemplate">
                                                                         <input checked={this.state.isSenderTemplate} className="checkbox_animated" id="isSenderTemplate" type="checkbox" onChange={e => this.handleChange({ isSenderTemplate: !this.state.isSenderTemplate })} />
-                                                                        {Option} {"Is Sender Template"}
+                                                                        {Option} {"Sender Template"}
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -226,7 +226,7 @@ class Template extends React.Component {
                                                                 <div className="form-group col-12">
                                                                     <label className="d-block" htmlFor="isActive">
                                                                         <input checked={this.state.isActive} className="checkbox_animated" id="isActive" type="checkbox" onChange={e => this.handleChange({ isActive: !this.state.isActive })} />
-                                                                        {Option} {"Is Active"}
+                                                                        {Option} {"Active"}
                                                                     </label>
                                                                 </div>
                                                             </div>
