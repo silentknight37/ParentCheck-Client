@@ -44,7 +44,7 @@ const UserMenu = ({ history }) => {
                     </div>
                 </div>
                 <ul className="profile-dropdown onhover-show-div p-20 profile-dropdown-hover">
-                    <li><Link to={`${process.env.PUBLIC_URL}/users/userEdit`}><User />{EditProfile}</Link></li>
+                    <li><Link to={`${process.env.PUBLIC_URL}/users/userEdit`}><User />{"Profile"}</Link></li>
                     <li><Link to={`${process.env.PUBLIC_URL}/communication/email`}><Mail />{Inbox}</Link></li>
                     <li><a onClick={authenticated ? Logout_From_Auth0 : Logout_From_Firebase} href="#javascript" ><LogOut /> {"Log out"}</a></li>
                 </ul>

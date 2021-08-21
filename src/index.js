@@ -70,6 +70,10 @@ import UserClassSubject from './components/settings/userClassSubject';
 import SubjectChapter from './components/settings/subjectChapter';
 import ChapterTopic from './components/settings/chapterTopic';
 import TopicContents from './components/settings/topicContents';
+import TimeTableManagment from './components/settings/time-table-managment';
+import AddUser from './components/settings/add-user';
+
+import UserEdit from './components/users/userEdit';
 
 
 //config data
@@ -140,6 +144,8 @@ const Root = () => {
 
                                     <Route path={`${process.env.PUBLIC_URL}/library`} component={Library} />
 
+                                    <Route path={`${process.env.PUBLIC_URL}/users/userEdit`} component={UserEdit} />
+
                                     <Route path={`${process.env.PUBLIC_URL}/calendar`} component={Calender} />
                                     <Route path={`${process.env.PUBLIC_URL}/event-management`} component={GenerateEvent} />
                                     <Route path={`${process.env.PUBLIC_URL}/advance/sweetAlert`} component={SweetAlert} />
@@ -168,6 +174,7 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/user-management`} component={UserManagement} />
                                     <Route path={`${process.env.PUBLIC_URL}/academic-year-management`} component={AcademicYear} />
                                     <Route path={`${process.env.PUBLIC_URL}/term-management`} component={Term} />
+                                    <Route path={`${process.env.PUBLIC_URL}/time-table-management/:id`} component={TimeTableManagment} />
                                     <Route path={`${process.env.PUBLIC_URL}/class-management`} component={InstituteClass} />
                                     <Route path={`${process.env.PUBLIC_URL}/class-subject-management/:id`} component={ClassSubjectStudentManagment} />
                                     <Route path={`${process.env.PUBLIC_URL}/subject-management`} component={Subject} />
@@ -176,6 +183,7 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/subject-chapter-management/:id`} component={SubjectChapter} />
                                     <Route path={`${process.env.PUBLIC_URL}/chapter-topic-management/:subjectChapter/:id`} component={ChapterTopic} />
                                     <Route path={`${process.env.PUBLIC_URL}/topic-content-management/:subjectChapter/:chapterTopic/:id`} component={TopicContents} />
+                                    <Route path={`${process.env.PUBLIC_URL}/add-user/:id`} component={AddUser} />
 
 
                                 </App>

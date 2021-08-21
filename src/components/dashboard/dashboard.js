@@ -90,7 +90,7 @@ class Dashboard extends React.Component {
                 <div className="container-fluid">
                     <div className="row">
 
-                        {(roleId != 2 && roleId != 4) && (
+                        {(roleId != 2 && roleId != 4 && roleId != 5) && (
                             <div className="col-xl-3 col-sm-6">
                                 <div className="card">
                                     <div className="card-body">
@@ -108,7 +108,7 @@ class Dashboard extends React.Component {
                                 </div>
                             </div>
                         )}
-                        {(roleId != 2 && roleId != 4)  && (
+                        {(roleId != 2 && roleId != 4 && roleId != 5)  && (
                             <div className="col-xl-3 col-sm-6">
                                 <div className="card">
                                     <div className="card-body">

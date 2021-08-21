@@ -77,7 +77,7 @@ class GenerateInvoices extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
-                    userContactList.push({ id: i.id, fullName: i.fullName, email: i.email, mobile: i.mobile })
+                    userContactList.push({ id: i.id, fullName: `${i.fullName} (${i.email})`, email: i.email, mobile: i.mobile })
                 )
                 this.setState({
                     userContact: userContactList,
@@ -369,12 +369,12 @@ class GenerateInvoices extends React.Component {
                                                             <div className="form-row">
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="invoiceDate">{"Invoice Date"}</label>
-                                                                    <input className="form-control" id="invoiceDate" onChange={e => this.handleChange({ invoiceDate: e.target.value })} type="datetime-local" aria-describedby="invoiceDate" placeholder="Enter Invoice Date" />
+                                                                    <input className="form-control" id="invoiceDate" onChange={e => this.handleChange({ invoiceDate: e.target.value })} type="date" aria-describedby="invoiceDate" placeholder="Enter Invoice Date" />
                                                                     <span>{this.state.isSubmited && !this.state.invoiceDate && 'Invoice Date is required'}</span>
                                                                 </div>
                                                                 <div className="form-group col-6">
-                                                                    <label className="col-form-label pt-0" htmlFor="dueDate">{"To Date"}</label>
-                                                                    <input className="form-control" id="dueDate" type="datetime-local" aria-describedby="dueDate" onChange={e => this.handleChange({ dueDate: e.target.value })} placeholder="Enter Due Date" />
+                                                                    <label className="col-form-label pt-0" htmlFor="dueDate">{"Due Date"}</label>
+                                                                    <input className="form-control" id="dueDate" type="date" aria-describedby="dueDate" onChange={e => this.handleChange({ dueDate: e.target.value })} placeholder="Enter Due Date" />
                                                                     <span>{this.state.isSubmited && !this.state.dueDate && 'Due Date is required'}</span>
                                                                     <span>{this.state.isSubmited && this.state.dueDate && !this.state.invoiceDate && 'Invoice Date select first'}</span>
                                                                     <span>{this.state.isSubmited && this.state.dueDate < this.state.invoiceDate && 'Invoice Date less than Due Date'}</span>

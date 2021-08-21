@@ -5,6 +5,7 @@ import { handleResponse, authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { wrap } from 'lodash';
 class Subject extends React.Component {
     constructor(props) {
         super(props);
@@ -137,13 +138,15 @@ class Subject extends React.Component {
             {
                 name: 'Subject',
                 selector: 'subject',
-                sortable: true
+                sortable: true,
+                wrap: true
             },
             {
                 name: 'Description',
                 selector: 'descriptionText',
                 sortable: true,
-                wrap: true
+                width:"600px",
+                wrap:true
             },
             {
                 name: 'Active',
@@ -215,7 +218,6 @@ class Subject extends React.Component {
                                         columns={openDataColumns}
                                         data={this.state.subjects}
                                         striped={true}
-                                        pagination
                                         responsive={true}
                                     />
                                 </div>

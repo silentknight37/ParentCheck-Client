@@ -34,7 +34,7 @@ class Template extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.templates.map(i =>
-                    templatesList.push({ id: i.id, name: i.name, content: i.content, isSenderTemplate: i.isSenderTemplate ? "True" : "False", isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-note"></i></Link> })
+                    templatesList.push({ id: i.id, name: i.name, content: i.content,lastUpdatedBy:i.lastUpdatedBy, isSenderTemplate: i.isSenderTemplate ? "True" : "False", isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-note"></i></Link> })
                 )
                 this.setState({
                     templates: templatesList,
@@ -163,6 +163,12 @@ class Template extends React.Component {
             {
                 name: 'Active',
                 selector: 'isActive',
+                sortable: true,
+                wrap: true
+            },            
+            {
+                name: 'Last Updated By',
+                selector: 'lastUpdatedBy',
                 sortable: true,
                 wrap: true
             },

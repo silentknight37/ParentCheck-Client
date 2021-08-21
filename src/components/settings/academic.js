@@ -36,7 +36,7 @@ class Academic extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.academics.map(i =>
-                    academicYearList.push({ id: i.id, yearAcademic: i.yearAcademic, fromDate: new Date(i.fromDate).toDateString(), toDate: new Date(i.toDate).toDateString(), isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
+                    academicYearList.push({ id: i.id, yearAcademic: i.yearAcademic, fromDate: new Date(i.fromDate).toDateString(),fromDateFormated:i.fromDateFormated, toDate: new Date(i.toDate).toDateString(),toDateFormated:i.toDateFormated, isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
                 )
                 this.setState({
                     academicYear: academicYearList,
@@ -158,13 +158,13 @@ class Academic extends React.Component {
             },
             {
                 name: 'From Date',
-                selector: 'fromDate',
+                selector: 'fromDateFormated',
                 sortable: true,
                 wrap: true
             },
             {
                 name: 'To Date',
-                selector: 'toDate',
+                selector: 'toDateFormated',
                 sortable: true,
                 wrap: true
             },
@@ -206,30 +206,30 @@ class Academic extends React.Component {
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
                                                                     <label className="col-form-label pt-0" htmlFor="yearAcademic">{"Academic Year"}</label>
-                                                                    <input className="form-control" id="yearAcademic" disabled={this.state.isEdit} type="number" aria-describedby="yearAcademic" value={this.state.yearAcademic} onChange={e => this.handleChange({ yearAcademic: e.target.value })} placeholder="Academic Year" />
+                                                                    <input className="form-control" id="yearAcademic" type="number" aria-describedby="yearAcademic" value={this.state.yearAcademic} onChange={e => this.handleChange({ yearAcademic: e.target.value })} placeholder="Academic Year" />
                                                                     <span>{this.state.isSubmited && !this.state.yearAcademic && 'Academic Year is required'}</span>
                                                                 </div>
                                                             </div>
-                                                            {!this.state.isEdit && (
+                                                           
                                                                 <div>
                                                                     <div className="form-row">
                                                                         <div className="form-group">
                                                                             <label className="col-form-label pt-0" htmlFor="fromDate">{"From Date"}</label>
-                                                                            <input className="form-control" id="fromDate" onChange={e => this.handleChange({ fromDate: e.target.value })} type="date" aria-describedby="fromDate" defaultValue={this.state.fromDate} />
+                                                                            <input className="form-control" defaultValue={this.state.fromDate==null?"":new Date(this.state.fromDate).toISOString().substr(0,10)}  id="fromDate" onChange={e => this.handleChange({ fromDate: e.target.value })} type="date" aria-describedby="fromDate"  />
                                                                             <span>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
                                                                         </div>
                                                                     </div>
                                                                     <div className="form-row">
                                                                         <div className="form-group">
                                                                             <label className="col-form-label pt-0" htmlFor="toDate">{"To Date"}</label>
-                                                                            <input className="form-control" id="toDate" type="date" aria-describedby="toDate" onChange={e => this.handleChange({ toDate: e.target.value })} defaultValue={this.state.fromDate} />
+                                                                            <input className="form-control" defaultValue={this.state.toDate==null?"":new Date(this.state.toDate).toISOString().substr(0,10)} id="toDate" type="date" aria-describedby="toDate" onChange={e => this.handleChange({ toDate: e.target.value })}/>
                                                                             <span>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
                                                                             <span>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
                                                                             <span>{this.state.isSubmited && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            )}
+                                                          
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
                                                                     <label className="d-block" htmlFor="isActive">

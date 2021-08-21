@@ -57,7 +57,7 @@ class IncidentReport extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
-                    userContactList.push({ id: i.id, fullName: i.fullName, email: i.email, mobile: i.mobile })
+                    userContactList.push({ id: i.id, fullName: `${i.fullName} (${i.email})`, email: i.email, mobile: i.mobile })
                 )
                 this.setState({
                     userContact: userContactList,

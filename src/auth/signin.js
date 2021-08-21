@@ -42,6 +42,8 @@ const Signin = ({ history }) => {
                     localStorage.setItem('image', response.user.image);
                     localStorage.setItem('email', response.user.email);
                     localStorage.setItem('fullName', response.user.fullName);
+                    localStorage.setItem('dob', response.user.dob);
+                    localStorage.setItem('studentName', response.user.studentName);
                     localStorage.setItem('instituteId', response.user.instituteId);
                     window.location.href = `${process.env.PUBLIC_URL}/dashboard`
                     return response;

@@ -6,7 +6,7 @@ import { MENUITEMS } from '../../../components/common/sidebar-component/menu';
 import { Link } from 'react-router-dom';
 import { translate } from 'react-switch-lang';
 import configDB from '../../../data/customizer/config';
-
+import UserPanel from './userPanel';
 const Sidebar = (props) => {
     const [margin, setMargin] = useState(0);
     const [width, setWidth] = useState(0);
@@ -187,7 +187,7 @@ const Sidebar = (props) => {
                     </div>
                 </div>
                 <div className="sidebar custom-scrollbar">
-                    
+                <UserPanel />
                     <ul
                         className="sidebar-menu"
                         id="myDIV"

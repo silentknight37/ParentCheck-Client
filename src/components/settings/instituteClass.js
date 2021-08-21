@@ -41,18 +41,22 @@ class InstituteClass extends React.Component {
             .then(response => {
                 response.academicClasses.map(i =>
                     academicClassList.push({
-                        id: i.id, className: i.className, yearAcademic: i.yearAcademic, responsibleUserId: i.responsibleUserId, responsibleUser: i.responsibleUser, isActive: i.isActive ? "True" : "False", action: 
-                        <div>
-                            <Link className="btn btn-light" id="btn_Edit" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link>
-                            <UncontrolledTooltip placement="top" target="btn_Edit">
-                                {"Edit"}
-                            </UncontrolledTooltip>
-                            
-                            <Link className="btn btn-light" id="btn_time_table" to={createLink('/class-subject-management/:id', { id: i.id })}><i className="icofont icofont-book-alt"></i></Link>
-                            <UncontrolledTooltip placement="top" target="btn_time_table">
-                                {"Setup Subjects"}
-                            </UncontrolledTooltip>
-                        </div>
+                        id: i.id, className: i.className,yearAcademicId:i.yearAcademicId, yearAcademic: i.yearAcademic, yearAcademicDetail: i.yearAcademicDetail, responsibleUserId: i.responsibleUserId, responsibleUser: i.responsibleUser, isActive: i.isActive ? "True" : "False", action:
+                            <div>
+                                <Link className="btn btn-light" id="btn_Edit" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link>
+                                <UncontrolledTooltip placement="top" target="btn_Edit">
+                                    {"Edit"}
+                                </UncontrolledTooltip>
+
+                                <Link className="btn btn-light" id="btn_subject" to={createLink('/class-subject-management/:id', { id: i.id })}><i className="icofont icofont-book-alt"></i></Link>
+                                <UncontrolledTooltip placement="top" target="btn_subject">
+                                    {"Setup Subjects"}
+                                </UncontrolledTooltip>
+                                <Link className="btn btn-light" id="btn_time_table" to={createLink('/time-table-management/:id', { id: i.id })}><i className="icofont icofont-clock-time"></i></Link>
+                                <UncontrolledTooltip placement="top" target="btn_time_table">
+                                    {"Setup TimeTable"}
+                                </UncontrolledTooltip>
+                            </div>
                     })
                 )
                 this.setState({
@@ -97,7 +101,7 @@ class InstituteClass extends React.Component {
         this.setState({
             id: data.id,
             academicClass: data.className,
-            yearAcademic: data.yearAcademic,
+            yearAcademic: data.yearAcademicId,
             responsibleUserId: data.responsibleUserId,
             isActive: data.isActive,
             isEdit: true
@@ -142,6 +146,10 @@ class InstituteClass extends React.Component {
                     this.setState({
                         isSubmited: false,
                         isSmsSendOpen: false,
+                        yearAcademic: null,
+                        academicClass: null,
+                        responsibleUserId: 0,
+                        isActive: true,
                         isEdit: false
                     });
                 })
@@ -161,6 +169,10 @@ class InstituteClass extends React.Component {
         this.setState({
             isSmsSendOpen: false,
             isSubmited: false,
+            yearAcademic: null,
+            academicClass: null,
+            responsibleUserId: 0,
+            isActive: true,
             isEdit: false
         });
     }
@@ -195,12 +207,11 @@ class InstituteClass extends React.Component {
 
     handleSelectOptions = (refVal) => {
         return (
-            <option value={refVal.id}>{refVal.value}</option>
+            <option value={refVal.id} >{refVal.value}</option>
         );
     }
 
     render() {
-
         const yearAcademicList = [];
         this.state.yearAcademics.forEach(refVal => {
             yearAcademicList.push(
@@ -232,9 +243,17 @@ class InstituteClass extends React.Component {
                 wrap: true
             },
             {
+                name: 'Academic Year',
+                selector: 'yearAcademicDetail',
+                sortable: true,
+                wrap:true,
+                wrap: true
+            },
+            {
                 name: 'Active',
                 selector: 'isActive',
                 sortable: true,
+                width:"200px",
                 wrap: true
             },
             {
@@ -270,24 +289,23 @@ class InstituteClass extends React.Component {
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
                                                                     <label className="col-form-label pt-0" htmlFor="academicClass">{"Academic Class"}</label>
-                                                                    <input className="form-control" id="academicClass" disabled={this.state.isEdit} type="text" aria-describedby="academicClass" value={this.state.academicClass} onChange={e => this.handleChange({ academicClass: e.target.value })} placeholder="Academic Class" />
+                                                                    <input className="form-control" id="academicClass" type="text" aria-describedby="academicClass" value={this.state.academicClass} onChange={e => this.handleChange({ academicClass: e.target.value })} placeholder="Academic Class" />
                                                                     <span>{this.state.isSubmited && !this.state.academicClass && 'Academic Class is required'}</span>
                                                                 </div>
                                                             </div>
-                                                            {!this.state.isEdit && (
-                                                                <div>
-                                                                    <div className="form-row">
-                                                                        <div className="form-group col-12">
-                                                                            <label className="col-form-label pt-0" htmlFor="yearAcademic">{"Academic Year"}</label>
-                                                                            <select onChange={e => this.handleChange({ yearAcademic: e.target.value })} className="form-control digits" defaultValue="0">
-                                                                                <option value={0}>All</option>
-                                                                                {yearAcademicList}
-                                                                            </select>
-                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.yearAcademic && 'Academic Year is required'}</span>
-                                                                        </div>
+
+                                                            <div>
+                                                                <div className="form-row">
+                                                                    <div className="form-group col-12">
+                                                                        <label className="col-form-label pt-0" htmlFor="yearAcademic">{"Academic Year"}</label>
+                                                                        <select onChange={e => this.handleChange({ yearAcademic: e.target.value })} className="form-control digits" defaultValue={this.state.yearAcademic}>
+                                                                            <option value={0}>All</option>
+                                                                            {yearAcademicList}
+                                                                        </select>
+                                                                        <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.yearAcademic && 'Academic Year is required'}</span>
                                                                     </div>
                                                                 </div>
-                                                            )}
+                                                            </div>
 
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">

@@ -189,7 +189,7 @@ class InvoiceType extends React.Component {
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="name">{"Name"}</label>
+                                                                    <label className="col-form-label pt-0" htmlFor="name">{"Terms"}</label>
                                                                     <input className="form-control" id="terms" type="number" min="0" max="12" aria-describedby="terms" value={this.state.terms} onChange={e => this.handleChange({ terms: e.target.value })} placeholder="Number Of Terms" />
                                                                     <span>{this.state.isSubmited && !this.state.terms && 'terms is required'}</span>
                                                                 </div>
