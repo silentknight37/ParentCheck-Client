@@ -1,13 +1,9 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import DataTable from 'react-data-table-component'
-import { Card, CardBody } from 'reactstrap'
 import { handleResponse, authHeader } from "../../services/service.backend";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 import createLink from '../../helpers/createLink';
 import { Redirect } from 'react-router-dom';
 class AddUser extends React.Component {
@@ -43,7 +39,7 @@ class AddUser extends React.Component {
     }
 
     componentDidMount = async () => {
-       
+
         await this.getRole(17);
     }
 
@@ -281,8 +277,15 @@ class AddUser extends React.Component {
                                                 </div>
                                                 <div className="form-group col-6">
                                                     <label className="col-form-label pt-0" htmlFor="mobile">{"Mobile"}</label>
-                                                    <input className="form-control" id="mobile" type="tel" aria-describedby="mobile" value={this.state.mobile} onChange={e => this.handleChange({ mobile: e.target.value })} placeholder="Mobile" />
-                                                    <span>{this.state.isSubmited && !this.state.mobile && 'Mobile is required'}</span>
+                                                    <PhoneInput
+                                                        placeholder="Enter phone number"
+                                                        value={this.state.mobile}
+                                                        inputClass="form-control"
+                                                        country={'lk'}
+                                                        enableSearch={true}
+                                                        countryCodeEditable={false}
+                                                        onChange={e => this.handleChange({ mobile: e })} />
+                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.mobile && 'Mobile is required'}</span>
                                                 </div>
                                             </div>
                                             <div className="form-row">

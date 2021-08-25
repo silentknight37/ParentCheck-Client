@@ -9,7 +9,8 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import createLink from '../../helpers/createLink';
-import { Redirect } from 'react-router-dom';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 class EditUser extends React.Component {
     constructor(props) {
         super(props);
@@ -102,7 +103,7 @@ class EditUser extends React.Component {
         this.setState({
             isSubmited: true
         });
-debugger
+        debugger
         if (this.validate()) {
             const currentUser = localStorage.getItem('token');
             await fetch("setting/saveUsers", {
@@ -303,7 +304,7 @@ debugger
                 )
             );
         });
-        
+
 
         return (
             <Fragment>
@@ -350,8 +351,15 @@ debugger
                                                 </div>
                                                 <div className="form-group col-6">
                                                     <label className="col-form-label pt-0" htmlFor="mobile">{"Mobile"}</label>
-                                                    <input className="form-control" id="mobile" type="tel" aria-describedby="mobile" value={this.state.mobile} onChange={e => this.handleChange({ mobile: e.target.value })} placeholder="Mobile" />
-                                                    <span>{this.state.isSubmited && !this.state.mobile && 'Mobile is required'}</span>
+                                                    <PhoneInput
+                                                        placeholder="Enter phone number"
+                                                        value={this.state.mobile}
+                                                        inputClass="form-control"
+                                                        country={'lk'}
+                                                        enableSearch={true}
+                                                        countryCodeEditable={false}
+                                                        onChange={e => this.handleChange({ mobile: e })} />
+                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.mobile && 'Mobile is required'}</span>
                                                 </div>
                                             </div>
                                             <div className="form-row">
@@ -398,8 +406,15 @@ debugger
                                                         </div>
                                                         <div className="form-group col-6">
                                                             <label className="col-form-label pt-0" htmlFor="parentMobile">{"Mobile"}</label>
-                                                            <input className="form-control" id="parentMobile" type="tel" aria-describedby="parentMobile" value={this.state.parentMobile} onChange={e => this.handleChange({ parentMobile: e.target.value })} placeholder="Mobile" />
-                                                            <span>{this.state.isSubmited && this.state.roleId == 1 && !this.state.parentMobile && 'Mobile is required'}</span>
+                                                            <PhoneInput
+                                                                placeholder="Enter phone number"
+                                                                value={this.state.parentMobile}
+                                                                inputClass="form-control"
+                                                                country={'lk'}
+                                                                enableSearch={true}
+                                                                countryCodeEditable={false}
+                                                                onChange={e => this.handleChange({ parentMobile: e })} />
+                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.roleId == 1 && !this.state.parentMobile && 'Mobile is required'}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -413,7 +428,7 @@ debugger
                                                 </div>
                                             </div>
                                             <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submit(e)}>{'Submit'}</button>
-                                            {this.state.id>0 && (<button className="btn btn-primary mr-1" disabled={this.state.isSubmited} type="button" onClick={(e) => this.resetPassword(this.state.id)}>{`${this.state.role} Reset Password`}</button>)}
+                                            {this.state.id > 0 && (<button className="btn btn-primary mr-1" disabled={this.state.isSubmited} type="button" onClick={(e) => this.resetPassword(this.state.id)}>{`${this.state.role} Reset Password`}</button>)}
                                             {this.state.roleId == 1 && (<button className="btn btn-primary mr-1" disabled={this.state.isSubmited} type="button" onClick={(e) => this.resetPassword(this.state.parentId)}>{`Parent Reset Password`}</button>)}
                                         </div>
                                     </form>
