@@ -234,6 +234,7 @@ class InstituteClass extends React.Component {
             {
                 name: 'Class',
                 selector: 'className',
+                width:"150px",
                 sortable: true
             },
             {

@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import createLink from '../../helpers/createLink';
 import { Redirect } from 'react-router-dom';
-class AddUser extends React.Component {
+class EditUser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,6 +19,7 @@ class AddUser extends React.Component {
             firstName: null,
             lastName: null,
             roleId: 0,
+            role: null,
             studentUserid: 0,
             username: null,
             admission: null,
@@ -37,16 +38,48 @@ class AddUser extends React.Component {
             isTemplateEditorOpen: false,
             students: [],
             roles: [],
-            isEdit: false,
-            redirectToReturlUrl: false
+            isEdit: false
         };
     }
 
     componentDidMount = async () => {
-       
+        await this.getInstituteUsers(this.props.id);
         await this.getRole(17);
     }
 
+    getInstituteUsers = async (id) => {
+        const instituteUserList = [];
+        const requestOptions = { method: 'GET', headers: authHeader() };
+        return fetch(`setting/getUserById?id=${id}`, requestOptions)
+            .then(handleResponse)
+            .then(response => {
+                response.instituteUsers.map(i =>
+                    instituteUserList.push({ id: i.id, firstName: i.firstName, lastName: i.lastName, role: i.role, roleId: i.roleId, dateOfBirth: new Date(i.dateOfBirth), parentDateOfBirth: new Date(i.parentDateOfBirth), parentId: i.parentId, parentFirstName: i.parentFirstName, parentLastName: i.parentLastName, parentUsername: i.parentUsername, parentMobile: i.parentMobile, admission: i.admission, username: i.userName, mobile: i.mobile, isActive: i.isActive })
+                )
+
+                if (instituteUserList.length == 1) {
+                    this.setState({
+                        id: instituteUserList[0].id,
+                        firstName: instituteUserList[0].firstName,
+                        lastName: instituteUserList[0].lastName,
+                        dateOfBirth: instituteUserList[0].dateOfBirth,
+                        admission: instituteUserList[0].admission,
+                        username: instituteUserList[0].username,
+                        mobile: instituteUserList[0].mobile,
+                        roleId: instituteUserList[0].roleId,
+                        role: instituteUserList[0].role,
+                        parentId: instituteUserList[0].parentId,
+                        parentFirstName: instituteUserList[0].parentFirstName,
+                        parentLastName: instituteUserList[0].parentLastName,
+                        parentDateOfBirth: instituteUserList[0].parentDateOfBirth,
+                        parentUsername: instituteUserList[0].parentUsername,
+                        parentMobile: instituteUserList[0].parentMobile,
+                        isActive: instituteUserList[0].isActive,
+                    });
+                }
+
+            });
+    }
 
     getRole = async (id) => {
         const roleList = [];
@@ -69,7 +102,7 @@ class AddUser extends React.Component {
         this.setState({
             isSubmited: true
         });
-
+debugger
         if (this.validate()) {
             const currentUser = localStorage.getItem('token');
             await fetch("setting/saveUsers", {
@@ -80,7 +113,7 @@ class AddUser extends React.Component {
                     "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
-                    Id: this.state.id,
+                    id: this.state.id,
                     firstName: this.state.firstName,
                     lastName: this.state.lastName,
                     roleId: +this.state.roleId,
@@ -111,13 +144,51 @@ class AddUser extends React.Component {
                     toast.success(response.Value.SuccessMessage);
 
                     this.setState({
-                        redirectToReturlUrl: true
+                        isSubmited: false
                     });
                 })
                 .catch(err => {
                     toast.error(err)
                 });
         }
+    }
+
+    resetPassword = async (id) => {
+        this.setState({
+            isSubmited: true
+        });
+        const currentUser = localStorage.getItem('token');
+        await fetch("setting/resetPasswordUsers", {
+            "method": "POST",
+            "headers": {
+                "content-type": "application/json",
+                "accept": "application/json",
+                "Authorization": `Bearer ${currentUser}`
+            },
+            "body": JSON.stringify({
+                Id: id
+            })
+        })
+            .then(response => response.json())
+            .then(async (response) => {
+
+                if (!response.Value.Created) {
+                    toast.error(response.Value.Error.Message);
+                    this.setState({
+                        isSubmited: false
+                    });
+                    return;
+                }
+
+                toast.success(response.Value.SuccessMessage);
+
+                this.setState({
+                    isSubmited: false
+                });
+            })
+            .catch(err => {
+                toast.error(err)
+            });
     }
 
     openModalToggle = () => {
@@ -232,9 +303,7 @@ class AddUser extends React.Component {
                 )
             );
         });
-        if (this.state.redirectToReturlUrl) {
-            return <Redirect to={createLink('/user-management')} />;
-        }
+        
 
         return (
             <Fragment>
@@ -344,6 +413,8 @@ class AddUser extends React.Component {
                                                 </div>
                                             </div>
                                             <button className="btn btn-primary mr-1" disabled={this.state.isSubmited && this.state.isValidSubmit} type="button" onClick={(e) => this.submit(e)}>{'Submit'}</button>
+                                            {this.state.id>0 && (<button className="btn btn-primary mr-1" disabled={this.state.isSubmited} type="button" onClick={(e) => this.resetPassword(this.state.id)}>{`${this.state.role} Reset Password`}</button>)}
+                                            {this.state.roleId == 1 && (<button className="btn btn-primary mr-1" disabled={this.state.isSubmited} type="button" onClick={(e) => this.resetPassword(this.state.parentId)}>{`Parent Reset Password`}</button>)}
                                         </div>
                                     </form>
                                 </div>
@@ -356,5 +427,14 @@ class AddUser extends React.Component {
         );
     }
 };
+const mapStateToProps = (state, params) => {
+    return {
+        id: params.match.params.id
+    };
+};
 
-export default AddUser;
+const mapDispatchToProps = (dispatch, params) => ({
+
+});
+export default withRouter(
+    connect(mapStateToProps, mapDispatchToProps)(EditUser));

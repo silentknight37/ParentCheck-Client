@@ -72,6 +72,7 @@ import ChapterTopic from './components/settings/chapterTopic';
 import TopicContents from './components/settings/topicContents';
 import TimeTableManagment from './components/settings/time-table-managment';
 import AddUser from './components/settings/add-user';
+import EditUser from './components/settings/edit-user';
 
 import UserEdit from './components/users/userEdit';
 
@@ -183,7 +184,8 @@ const Root = () => {
                                     <Route path={`${process.env.PUBLIC_URL}/subject-chapter-management/:id`} component={SubjectChapter} />
                                     <Route path={`${process.env.PUBLIC_URL}/chapter-topic-management/:subjectChapter/:id`} component={ChapterTopic} />
                                     <Route path={`${process.env.PUBLIC_URL}/topic-content-management/:subjectChapter/:chapterTopic/:id`} component={TopicContents} />
-                                    <Route path={`${process.env.PUBLIC_URL}/add-user/:id`} component={AddUser} />
+                                    <Route path={`${process.env.PUBLIC_URL}/add-user`} component={AddUser} />
+                                    <Route path={`${process.env.PUBLIC_URL}/edit-user/:id`} component={EditUser} />
 
 
                                 </App>

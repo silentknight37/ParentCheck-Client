@@ -111,7 +111,7 @@ class GenerateEvent extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
-                    userContactList.push({ id: i.id, fullName: i.fullName, email: i.email, mobile: i.mobile })
+                    userContactList.push({ id: i.id, toValue: i.fullName, email: i.email, mobile: i.mobile })
                 )
                 this.setState({
                     userContact: userContactList,
@@ -127,7 +127,7 @@ class GenerateEvent extends React.Component {
             .then(response => {
 
                 response.references.map(i =>
-                    groupList.push({ id: i.id, value: i.value })
+                    groupList.push({ id: i.id, toValue: i.value , email:"", mobile: ""})
                 )
                 this.setState({
                     userContact: groupList,
@@ -345,26 +345,14 @@ class GenerateEvent extends React.Component {
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    {!this.state.isGroup && (
                                                                         <Typeahead
                                                                             id="user-typeahead"
-                                                                            labelKey="fullName"
+                                                                            labelKey="toValue"
                                                                             multiple
                                                                             options={this.state.userContact}
                                                                             placeholder="Choose a users..."
                                                                             onChange={e => this.handleToChange({ e })}
                                                                         />
-                                                                    )}
-                                                                    {this.state.isGroup && (
-                                                                        <Typeahead
-                                                                            id="group-typeahead"
-                                                                            labelKey="value"
-                                                                            multiple
-                                                                            options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
-                                                                            onChange={e => this.handleToChange({ e })}
-                                                                        />
-                                                                    )}
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
                                                                 </div>
                                                             </div>

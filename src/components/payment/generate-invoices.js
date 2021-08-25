@@ -46,7 +46,7 @@ class GenerateInvoices extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.invoices.map(i =>
-                    invoicesList.push({ id: i.id, invoiceNo: i.invoiceNo, invoiceDate: new Date(i.invoiceDate).toDateString(), dueDate: new Date(i.dueDate).toDateString(), invoiceAmount: i.invoiceAmount, invoiceTitle: i.invoiceTitle, invoiceDetails: i.invoiceDetails, status: i.status, invoiceType: i.invoiceType, action: <Link className="btn btn-light" to={createLink('/payment/generate-invoice/:id', { id: i.id })}><i className="icofont icofont-ui-note"></i></Link> })
+                    invoicesList.push({ id: i.id, invoiceNo: i.invoiceNo, invoiceDate: i.invoiceDate, dueDate: new Date(i.dueDate).toDateString(), invoiceAmount: i.invoiceAmount, invoiceTitle: i.invoiceTitle, invoiceDetails: i.invoiceDetails, status: i.status, invoiceType: i.invoiceType, action: <Link className="btn btn-light" to={createLink('/payment/generate-invoice/:id', { id: i.id })}><i className="icofont icofont-ui-note"></i></Link> })
                 )
                 this.setState({
                     invoices: invoicesList,
@@ -77,7 +77,7 @@ class GenerateInvoices extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
-                    userContactList.push({ id: i.id, fullName: `${i.fullName} (${i.email})`, email: i.email, mobile: i.mobile })
+                    userContactList.push({ id: i.id, toValue: `${i.fullName} (${i.email})`, email: i.email, mobile: i.mobile })
                 )
                 this.setState({
                     userContact: userContactList,
@@ -93,7 +93,7 @@ class GenerateInvoices extends React.Component {
             .then(response => {
 
                 response.references.map(i =>
-                    groupList.push({ id: i.id, value: i.value })
+                    groupList.push({ id: i.id, toValue: i.value , email: "", mobile: ""})
                 )
                 this.setState({
                     userContact: groupList,
@@ -343,26 +343,15 @@ class GenerateInvoices extends React.Component {
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    {!this.state.isGroup && (
                                                                         <Typeahead
                                                                             id="multiple-typeahead"
-                                                                            labelKey="fullName"
+                                                                            labelKey="toValue"
                                                                             multiple
                                                                             options={this.state.userContact}
                                                                             placeholder="Choose a users..."
                                                                             onChange={e => this.handleToChange({ e })}
                                                                         />
-                                                                    )}
-                                                                    {this.state.isGroup && (
-                                                                        <Typeahead
-                                                                            id="multiple-typeahead"
-                                                                            labelKey="value"
-                                                                            multiple
-                                                                            options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
-                                                                            onChange={e => this.handleToChange({ e })}
-                                                                        />
-                                                                    )}
+                                                                    
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
                                                                 </div>
                                                             </div>

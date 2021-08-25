@@ -21,7 +21,8 @@ class SMS extends React.Component {
             searchUser: null,
             toUsers: [],
             toGroups: [],
-            userContact: []
+            userContact: [],
+            isLoading:false
         };
     }
 
@@ -37,7 +38,7 @@ class SMS extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
-                    messagesList.push({ id: i.id, date: new Date(i.date).toDateString(), subject: i.subject, message: i.message, toUser: i.toUser })
+                    messagesList.push({ id: i.id, date: i.date, subject: i.subject, message: i.message, toUser: i.toUser })
                 )
                 this.setState({
                     messagesTickets: messagesList,
@@ -46,21 +47,28 @@ class SMS extends React.Component {
     }
 
     getToUsers = async () => {
+        this.setState({
+            isLoading: true,
+        });
         const userContactList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
         return fetch(`reference/getAllUserContacts?sendType=${2}`,requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
-                    userContactList.push({ id: i.id, fullName: `${i.fullName} (${i.mobile})`, email: i.email, mobile: i.mobile })
+                    userContactList.push({ id: i.id, toValue: `${i.fullName} (${i.mobile})`, email: i.email, mobile: i.mobile })
                 )
                 this.setState({
                     userContact: userContactList,
+                    isLoading: false,
                 });
             });
     }
 
     getToGroups = async () => {
+        this.setState({
+            isLoading: true,
+        });
         const groupList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
         return fetch(`reference/getReference?id=${3}`,requestOptions)
@@ -68,10 +76,11 @@ class SMS extends React.Component {
             .then(response => {
 
                 response.references.map(i =>
-                    groupList.push({ id: i.id, value: i.value })
+                    groupList.push({ id: i.id, toValue: i.value, email:"", mobile: ""})
                 )
                 this.setState({
                     userContact: groupList,
+                    isLoading: false,
                 });
             });
     }
@@ -114,6 +123,8 @@ class SMS extends React.Component {
 
                     this.setState({
                         isSubmited: false,
+                        toUsers:[],
+                        toGroups:[],
                         isSmsSendOpen: false
                     });
                 })
@@ -256,26 +267,15 @@ class SMS extends React.Component {
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    {!this.state.isGroup && (
                                                                         <Typeahead
                                                                             id="multiple-typeahead"
-                                                                            labelKey="fullName"
+                                                                            labelKey="toValue"
                                                                             multiple
+                                                                            disabled={this.state.isLoading}
                                                                             options={this.state.userContact}
                                                                             placeholder="Choose a users..."
                                                                             onChange={e => this.handleToChange({ e })}
                                                                         />
-                                                                    )}
-                                                                    {this.state.isGroup && (
-                                                                        <Typeahead
-                                                                            id="multiple-typeahead"
-                                                                            labelKey="value"
-                                                                            multiple
-                                                                            options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
-                                                                            onChange={e => this.handleToChange({ e })}
-                                                                        />
-                                                                    )}
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
                                                                 </div>
                                                             </div>

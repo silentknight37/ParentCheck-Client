@@ -36,29 +36,9 @@ class TimeTableManagment extends React.Component {
             isTemplateEditorOpen: false,
             isEdit: false,
             subjects: [],
-            weekDays: [],
-
-            1: {
-                hour,
-                minute,
-                meridiem,
-                focused,
-                timezone,
-                showTimezone,
-            },
-            2: {
-                hour,
-                minute,
-                meridiem,
-                focused,
-                timezone,
-                showTimezone,
-            }
+            weekDays: []
+        
         };
-
-        this.onFocusChange = this.onFocusChange.bind(this);
-        this.onTimeChange = this.onTimeChange.bind(this);
-        this.handleFocusedChange = this.handleFocusedChange.bind(this);
     }
 
     componentDidMount = async () => {
@@ -124,10 +104,8 @@ class TimeTableManagment extends React.Component {
             isSubmited: true
         });
 
-        
+
         if (this.validate()) {
-            var fromTime=`${this.state[1].hour}:${this.state[1].minute}`;
-            var toTime=`${this.state[2].hour}:${this.state[2].minute}`;
             const currentUser = localStorage.getItem('token');
             await fetch("setting/saveTimeTable", {
                 "method": "POST",
@@ -140,8 +118,8 @@ class TimeTableManagment extends React.Component {
                     id: this.state.id,
                     classId: +this.props.id,
                     subjectId: +this.state.subjectId,
-                    fromTime: fromTime,
-                    toTime: toTime,
+                    fromTime: this.state.fromTime,
+                    toTime: this.state.toTime,
                     weekDayId: +this.state.weekDayId,
                 })
             })
@@ -160,7 +138,13 @@ class TimeTableManagment extends React.Component {
                     this.setState({
                         isSubmited: false,
                         isSmsSendOpen: false,
-                        isEdit: false
+                        isEdit: false,
+                        subjectId: 0,
+                        classId: 0,
+                        weekdayId: 0,
+                        fromTime: null,
+                        toTime: null,
+                        isActive: true
                     });
                 })
                 .catch(err => {
@@ -197,14 +181,14 @@ class TimeTableManagment extends React.Component {
             return false;
         }
 
-        if ((this.state[1].hour === null || this.state[1].hour === "") || (this.state[1].minute === null || this.state[1].minute === "")) {
+        if ((this.state.fromTime === null || this.state.fromTime === "")) {
             return false;
         }
 
-        if ((this.state[2].hour === null || this.state[2].hour === "") || (this.state[2].minute === null || this.state[2].minute === "")) {
+        if ((this.state.toTime === null || this.state.toTime === "")) {
             return false;
         }
-        
+
         this.setState({
             isValidSubmit: true
         });
@@ -424,15 +408,15 @@ class TimeTableManagment extends React.Component {
                                                             <div className="form-row">
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="fromTime">{"From Time"}</label>
-                                                                    {/* <input className="form-control digits" type="time" name="time" id="fromTime" aria-describedby="fromTime" value={this.state.fromTime} onChange={e => this.handleChange({ fromTime: e.target.value })} /> */}
-                                                                    {this.renderTrigger(1)}
-                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && ((!this.state[1].hour || !this.state[1].minute) || (this.state[1].hour=="" || this.state[1].minute=="")) && 'From Time is required'}</span>
+                                                                    <input className="form-control digits" type="time" name="time" id="fromTime" aria-describedby="fromTime" value={this.state.fromTime} onChange={e => this.handleChange({ fromTime: e.target.value })} />
+                                                                    {/* {this.renderTrigger(1)} */}
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (!this.state.fromTime || this.state.fromTime == "") && 'From Time is required'}</span>
                                                                 </div>
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="toTime">{"To Time"}</label>
-                                                                    {/* <input className="form-control digits" type="time" name="time" id="toTime" aria-describedby="toTime" value={this.state.toTime} onChange={e => this.handleChange({ toTime: e.target.value })} /> */}
-                                                                    {this.renderTrigger(2)}
-                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && ((!this.state[2].hour || !this.state[2].minute) || (this.state[2].hour=="" || this.state[2].minute=="")) && 'To Time is required'}</span>
+                                                                    <input className="form-control digits" type="time" name="time" id="toTime" aria-describedby="toTime" value={this.state.toTime} onChange={e => this.handleChange({ toTime: e.target.value })} />
+                                                                    {/* {this.renderTrigger(2)} */}
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (!this.state.toTime || this.state.toTime == "") && 'To Time is required'}</span>
                                                                 </div>
                                                             </div>
                                                         </div>

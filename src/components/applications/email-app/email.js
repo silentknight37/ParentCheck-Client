@@ -65,7 +65,7 @@ class Email extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
-                    messagesList.push({ id: i.id, date: new Date(i.date).toDateString(), subject: i.subject, message: i.message, toUser: i.toUser, fromUser: i.fromUser, type: i.type, templateId: i.templateId, templateName: i.templateName, templateContent: i.templateContent })
+                    messagesList.push({ id: i.id, date: i.date, subject: i.subject, message: i.message, toUser: i.toUser, fromUser: i.fromUser, type: i.type, templateId: i.templateId, templateName: i.templateName, templateContent: i.templateContent })
                 )
                 this.setState({
                     messageInbox: messagesList,
@@ -80,7 +80,7 @@ class Email extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.messages.map(i =>
-                    messagesList.push({ id: i.id, date: new Date(i.date).toDateString(), subject: i.subject, message: i.message, toUser: i.toUser, fromUser: i.fromUser, type: i.type })
+                    messagesList.push({ id: i.id, date: i.date, subject: i.subject, message: i.message, toUser: i.toUser, fromUser: i.fromUser, type: i.type })
                 )
                 this.setState({
                     messageOutbox: messagesList,
@@ -96,7 +96,7 @@ class Email extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>
-                    userContactList.push({ id: i.id, fullName: `${i.fullName} (${i.email})`, email: i.email, mobile: i.mobile })
+                    userContactList.push({ id: i.id, toValue: `${i.fullName} (${i.email})`, email: i.email, mobile: i.mobile })
                 )
                 this.setState({
                     userContact: userContactList,
@@ -112,7 +112,7 @@ class Email extends React.Component {
             .then(response => {
 
                 response.references.map(i =>
-                    groupList.push({ id: i.id, value: i.value })
+                    groupList.push({ id: i.id, toValue: i.value , email: "", mobile: "" })
                 )
                 this.setState({
                     userContact: groupList,
@@ -569,26 +569,16 @@ class Email extends React.Component {
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    {!this.state.isGroup && (
+                                                                    
                                                                         <Typeahead
                                                                             id="user-typeahead"
-                                                                            labelKey="fullName"
+                                                                            labelKey="toValue"
                                                                             multiple
                                                                             options={this.state.userContact}
                                                                             placeholder="Choose a users..."
                                                                             onChange={e => this.handleToChange({ e })}
                                                                         />
-                                                                    )}
-                                                                    {this.state.isGroup && (
-                                                                        <Typeahead
-                                                                            id="group-typeahead"
-                                                                            labelKey="value"
-                                                                            multiple
-                                                                            options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
-                                                                            onChange={e => this.handleToChange({ e })}
-                                                                        />
-                                                                    )}
+                                                                    
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
                                                                 </div>
                                                             </div>
@@ -645,26 +635,14 @@ class Email extends React.Component {
                                                             </div>
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    {!this.state.isGroup && (
                                                                         <Typeahead
                                                                             id="user-typeahead"
-                                                                            labelKey="fullName"
+                                                                            labelKey="toValue"
                                                                             multiple
                                                                             options={this.state.userContact}
                                                                             placeholder="Choose a users..."
                                                                             onChange={e => this.handleToChange({ e })}
                                                                         />
-                                                                    )}
-                                                                    {this.state.isGroup && (
-                                                                        <Typeahead
-                                                                            id="group-typeahead"
-                                                                            labelKey="value"
-                                                                            multiple
-                                                                            options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
-                                                                            onChange={e => this.handleToChange({ e })}
-                                                                        />
-                                                                    )}
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
                                                                 </div>
                                                             </div>
