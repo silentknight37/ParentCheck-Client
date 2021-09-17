@@ -57,9 +57,6 @@ class Subjects extends React.Component {
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-lg-12">
-                            <div className="header-faq">
-                                <h5 className="mb-0">{this.state.userClass}</h5>
-                            </div>
                             <div className="row">
                                 {this.state.subjects.map(i => this.generateSubjectList(i))}
                             </div>

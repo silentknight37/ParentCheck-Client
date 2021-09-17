@@ -1,14 +1,15 @@
 import React, { Fragment } from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import { handleResponse,authHeader } from "../../services/service.backend";
+import { handleResponse, authHeader } from "../../services/service.backend";
 import createLink from '../../helpers/createLink';
 import { Link } from 'react-router-dom';
 import { Col, Card, CardBody } from 'reactstrap';
 import { Accordion } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import { toast } from 'react-toastify';
-
+import * as moment from 'moment';
+import DatePicker from "react-datepicker";
 class ClassRoomOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -46,8 +47,8 @@ class ClassRoomOverview extends React.Component {
                 "Authorization": `Bearer ${currentUser}`
             },
             "body": JSON.stringify({
-                fromDate: this.state.fromDate,
-                toDate: this.state.toDate,
+                fromDate: this.state.fromDate ? moment(this.state.fromDate).format('DD/MM/yyyy') : "",
+                toDate: this.state.toDate ? moment(this.state.toDate).format('DD/MM/yyyy') : "",
                 subjectId: this.state.subjectId,
                 instituteTermsId: this.state.instituteTermsId,
                 isToday: this.state.isToday,
@@ -78,7 +79,7 @@ class ClassRoomOverview extends React.Component {
     getSubjects = async (id) => {
         const subjectsList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getReference?id=${id}`,requestOptions)
+        return fetch(`reference/getReference?id=${id}`, requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -94,7 +95,7 @@ class ClassRoomOverview extends React.Component {
     getInstituteTerms = async (id) => {
         const instituteTermsList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getReference?id=${id}`,requestOptions)
+        return fetch(`reference/getReference?id=${id}`, requestOptions)
             .then(handleResponse)
             .then(response => {
 
@@ -175,8 +176,8 @@ class ClassRoomOverview extends React.Component {
                     "Authorization": `Bearer ${currentUser}`
                 },
                 "body": JSON.stringify({
-                    fromDate: this.state.fromDate,
-                    toDate: this.state.toDate,
+                    fromDate: this.state.fromDate ? moment(this.state.fromDate).format('DD/MM/yyyy') : "",
+                    toDate: this.state.toDate ? moment(this.state.toDate).format('DD/MM/yyyy') : "",
                     subjectId: this.state.subjectId,
                     instituteTermsId: this.state.instituteTermsId,
                     isToday: this.state.isToday,
@@ -209,11 +210,11 @@ class ClassRoomOverview extends React.Component {
 
     validate = () => {
         if (this.state.isCustom) {
-            if (this.state.fromDate === null || this.state.fromDate === "") {
+            if (this.state.fromDate === null || this.state.fromDate === "" || new Date(this.state.fromDate) > new Date("9999/12/31")) {
                 return false;
             }
 
-            if (this.state.toDate === null || this.state.toDate === "") {
+            if (this.state.toDate === null || this.state.toDate === "" || new Date(this.state.toDate) > new Date("9999/12/31")) {
                 return false;
             }
 
@@ -322,15 +323,17 @@ class ClassRoomOverview extends React.Component {
                                                                             <div className="form-row">
                                                                                 <div className="form-group col-6">
                                                                                     <label className="col-form-label pt-0" htmlFor="fromDate">{"From Date"}</label>
-                                                                                    <input className="form-control" data-date-format="YYYY MMMM DD" id="fromDate" onChange={e => this.handleChange({ fromDate: e.target.value })} type="date" aria-describedby="fromDate" placeholder="Enter From Date" />
-                                                                                    <span>{this.state.isSubmited && this.state.isCustom && !this.state.fromDate && 'From Date is required'}</span>
+                                                                                    <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.fromDate} onChange={e => this.handleChange({ fromDate: e })} />
+                                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
+                                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.fromDate && new Date(this.state.fromDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                                 </div>
                                                                                 <div className="form-group col-6">
                                                                                     <label className="col-form-label pt-0" htmlFor="toDate">{"To Date"}</label>
-                                                                                    <input className="form-control" id="toDate" type="date" aria-describedby="toDate" onChange={e => this.handleChange({ toDate: e.target.value })} placeholder="Enter To Date" />
-                                                                                    <span>{this.state.isSubmited && this.state.isCustom && !this.state.toDate && 'To Date is required'}</span>
-                                                                                    <span>{this.state.isSubmited && this.state.isCustom && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
-                                                                                    <span>{this.state.isSubmited && this.state.isCustom && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
+                                                                                    <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.toDate} onChange={e => this.handleChange({ toDate: e })} />
+                                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
+                                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
+                                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.toDate && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
+                                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.fromDate && this.state.toDate && new Date(this.state.toDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                                 </div>
                                                                             </div>
                                                                         )

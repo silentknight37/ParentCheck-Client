@@ -53,7 +53,7 @@ class IncidentReport extends React.Component {
     getToUsers = async () => {
         const userContactList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
-        return fetch(`reference/getAllUserContacts?sendType=${1}`, requestOptions)
+        return fetch(`reference/getStudentUserContacts?sendType=${1}`, requestOptions)
             .then(handleResponse)
             .then(response => {
                 response.userContacts.map(i =>

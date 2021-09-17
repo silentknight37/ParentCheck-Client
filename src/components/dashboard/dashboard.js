@@ -3,12 +3,14 @@ import Countup from 'react-countup';
 import { HelpCircle, Mic, Zap } from 'react-feather';
 import teamsLogo from '../../assets/images/teamsLogo.png';
 import Breadcrumb from '../common/breadcrumb';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { DemoContent, QuizCompition, SingingCompition, DiwaliCelebration, Notifications } from '../../constant'
 import { handleResponse, authHeader } from "../../services/service.backend";
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isEventOpen: false,
             performances: [],
             calenderEvents: []
         };
@@ -50,6 +52,12 @@ class Dashboard extends React.Component {
                 this.setState({
                     calenderEvents: calenderEventsList,
                 });
+
+                if(calenderEventsList.length>0){
+                    this.setState({
+                        isEventOpen: true
+                    });
+                }
             });
     }
 
@@ -68,12 +76,16 @@ class Dashboard extends React.Component {
             </div>
         );
     }
-
+    handleEventModalToggle = () => {
+        this.setState({
+            isEventOpen: false
+        });
+    }
     render() {
         const roleId = localStorage.getItem('roleId');
         var Knob = require('knob')// browserify require
         var primary = localStorage.getItem('primary_color') || '#4466f2';
-        const assignmentPerformance =  this.state.performances.filter(i => i.performanceType == "Assignment");
+        const assignmentPerformance = this.state.performances.filter(i => i.performanceType == "Assignment");
 
         const calenderEventsList = [];
         this.state.calenderEvents.forEach(refVal => {
@@ -89,7 +101,18 @@ class Dashboard extends React.Component {
                 <Breadcrumb parent="Dashboard" title="Dashboard" />
                 <div className="container-fluid">
                     <div className="row">
+                        {
+                            <Modal isOpen={this.state.isEventOpen} toggle={this.handleEventModalToggle} size="lg">
+                                <ModalHeader toggle={this.handleEventModalToggle}>
 
+                                </ModalHeader>
+                                <ModalBody>
+                                    <div className="card-body">
+                                        {calenderEventsList}
+                                    </div>
+                                </ModalBody>
+                            </Modal>
+                        }
                         {(roleId != 2 && roleId != 4 && roleId != 5) && (
                             <div className="col-xl-3 col-sm-6">
                                 <div className="card">
@@ -108,7 +131,7 @@ class Dashboard extends React.Component {
                                 </div>
                             </div>
                         )}
-                        {(roleId != 2 && roleId != 4 && roleId != 5)  && (
+                        {(roleId != 2 && roleId != 4 && roleId != 5) && (
                             <div className="col-xl-3 col-sm-6">
                                 <div className="card">
                                     <div className="card-body">

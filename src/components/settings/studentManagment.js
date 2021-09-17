@@ -99,7 +99,7 @@ class StudentManagment extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.studentEnrolls.map(i =>
-                    classStudentList.push({ id: i.id, studentUserName: i.studentUserName, studentUserId: i.studentUserId, className: i.className, academicYear: i.academicYear, classId: i.classId, action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
+                    classStudentList.push({ id: i.id, studentUserName: i.studentUserName, studentUserId: i.studentUserId, className: i.className, academicYear: i.academicYear, classId: i.classId,indexNo:i.indexNo, action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
                 )
                 this.setState({
                     classStudents: classStudentList,
@@ -160,11 +160,13 @@ class StudentManagment extends React.Component {
 
                     toast.success(response.Value.SuccessMessage)
                     this.setState({
+                        id:0,
                         isSubmited: false,
                         isSmsSendOpen: false,
                         classId: 0,
                         academicYear: 0,
                         studentId: 0,
+                        isActive:true,
                         isEdit: false
                     });
                     await this.GetClassStudentAttendances();
@@ -216,6 +218,11 @@ class StudentManagment extends React.Component {
     render() {
 
         const openDataColumns = [
+            {
+                name: 'Index/Admission No',
+                selector: 'indexNo',
+                sortable: true
+            },
             {
                 name: 'Student Name',
                 selector: 'studentUserName',

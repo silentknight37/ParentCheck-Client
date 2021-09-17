@@ -35,6 +35,7 @@
   .card-body{
     padding: $card-padding;
     background-color: $card-body-bg-color;
+    min-height: 270px;
     p{
       &:last-child{
         margin-bottom: 0;

@@ -640,7 +640,7 @@ class Email extends React.Component {
                                                                             labelKey="toValue"
                                                                             multiple
                                                                             options={this.state.userContact}
-                                                                            placeholder="Choose a users..."
+                                                                            placeholder="Choose a user..."
                                                                             onChange={e => this.handleToChange({ e })}
                                                                         />
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && (this.state.toUsers.length === 0 && this.state.toGroups.length === 0) && 'Sending participant is required'}</span>
@@ -660,7 +660,7 @@ class Email extends React.Component {
                                                                         id="template-typeahead"
                                                                         labelKey="name"
                                                                         options={this.state.templates}
-                                                                        placeholder="Choose a users..."
+                                                                        placeholder="Choose a form..."
                                                                         onChange={e => this.handleTemplateChange({ e })}
                                                                     />
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.template == null && 'Request Form is required'}</span>

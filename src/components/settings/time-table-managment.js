@@ -10,7 +10,9 @@ import { Container, Row, Col, Card, CardHeader, CardBody } from 'reactstrap'
 import { Accordion } from 'react-bootstrap';
 import createLink from '../../helpers/createLink';
 import TimePicker from 'react-times';
-
+import { Link } from 'react-router-dom';
+import { UncontrolledTooltip } from 'reactstrap';
+import SweetAlert from 'sweetalert2'
 // use material theme
 import 'react-times/css/material/default.css';
 // or you can use classic theme
@@ -37,7 +39,7 @@ class TimeTableManagment extends React.Component {
             isEdit: false,
             subjects: [],
             weekDays: []
-        
+
         };
     }
 
@@ -49,22 +51,75 @@ class TimeTableManagment extends React.Component {
 
     getTimeTable = async (id) => {
         const timeTableList = [];
+        let timeList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
         return fetch(`setting/getAllTimeTable?classId=${id}`, requestOptions)
             .then(handleResponse)
             .then(response => {
-                response.weekDays.map(i =>
+                response.weekDays.map(i => {
+                    timeList = [];
+                    i.TimeTables.map(x => {
+                        timeList.push({
+                            subject: x.subject, fromTime: x.fromTime, toTime: x.toTime, action:
+                                <div>
+                                    <Link className="btn btn-light" id="btn_Edit" onClick={() => this.removeItem(x)}><i className="icofont icofont-ui-close"></i></Link>
+                                    <UncontrolledTooltip placement="top" target="btn_Edit">
+                                        {"Remove"}
+                                    </UncontrolledTooltip>
 
-                    timeTableList.push({
-                        Weekday: i.Weekday, TimeTables: i.TimeTables
+                                </div>
+                        })
                     })
-                )
+                    timeTableList.push({
+                        Weekday: i.Weekday, TimeTables: timeList
+                    })
+                })
                 this.setState({
                     timeTables: timeTableList
                 });
             });
     }
+    removeItem = async (item) => {
+        SweetAlert.fire({
+            title: "Are you sure you want remove timeslot?",
+            cancelButtonText: "No",
+            confirmButtonText: "Yes",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.handleDelete(item);
+            }
+        });
+    }
 
+    handleDelete = async (item) => {
+        const currentUser = localStorage.getItem('token');
+
+        await fetch("setting/removeTimeSlot", {
+            "method": "POST",
+            "headers": {
+                "content-type": "application/json",
+                "accept": "application/json",
+                "Authorization": `Bearer ${currentUser}`
+            },
+            "body": JSON.stringify({
+                id: item.id
+            })
+        })
+            .then(response => response.json())
+            .then(async (response) => {
+                if (!response.Value.Created) {
+                    toast.error(response.Value.Error.Message)
+                    return;
+                }
+
+                toast.success(response.Value.SuccessMessage)
+                await this.getTimeTable(this.props.id);
+            })
+            .catch(err => {
+                toast.error(err)
+            })
+    }
     getWeekDays = async (id) => {
         const weekDaysList = [];
         const requestOptions = { method: 'GET', headers: authHeader() };
@@ -206,6 +261,31 @@ class TimeTableManagment extends React.Component {
         )
     }
     generateTimeTableList = (weekDay) => {
+        const openDataColumns = [
+            {
+                name: 'Subject',
+                selector: 'subject',
+                sortable: true,
+                wrap: true
+            },
+            {
+                name: 'From Time',
+                selector: 'fromTime',
+                sortable: true,
+                wrap: true
+            },
+            {
+                name: 'To Time',
+                selector: 'toTime',
+                sortable: true,
+                wrap: true
+            },
+            {
+                name: 'Action',
+                selector: 'action',
+                center: true
+            }
+        ];
         return (
             <Card style={{ textAlign: "center" }}>
                 <CardHeader >
@@ -216,9 +296,14 @@ class TimeTableManagment extends React.Component {
                     </h5>
                 </CardHeader>
                 <Accordion.Collapse eventKey={weekDay.Weekday}>
-                    <CardBody>
-                        {weekDay.TimeTables.map(i => this.generateSubjectTableList(i))}
-                    </CardBody>
+
+                    <DataTable
+                        columns={openDataColumns}
+                        data={weekDay.TimeTables}
+                        striped={true}
+                        persistTableHead
+                        responsive={true}
+                    />
                 </Accordion.Collapse>
             </Card>
         )
@@ -428,8 +513,8 @@ class TimeTableManagment extends React.Component {
                                             </ModalFooter>
                                         </Modal>
                                     }
-                                    <Accordion className="col-6">
-                                        <div className="default-according col-12" id="accordionclose">
+                                    <Accordion className="col-12">
+                                        <div className="default-according" id="accordionclose">
 
                                             {this.state.timeTables.map(i => this.generateTimeTableList(i))}
 

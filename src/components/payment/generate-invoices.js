@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 import createLink from '../../helpers/createLink';
 import { Link } from 'react-router-dom';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import * as moment from 'moment';
+import DatePicker from "react-datepicker";
 class GenerateInvoices extends React.Component {
     constructor(props) {
         super(props);
@@ -46,7 +48,7 @@ class GenerateInvoices extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.invoices.map(i =>
-                    invoicesList.push({ id: i.id, invoiceNo: i.invoiceNo, invoiceDate: i.invoiceDate, dueDate: new Date(i.dueDate).toDateString(), invoiceAmount: i.invoiceAmount, invoiceTitle: i.invoiceTitle, invoiceDetails: i.invoiceDetails, status: i.status, invoiceType: i.invoiceType, action: <Link className="btn btn-light" to={createLink('/payment/generate-invoice/:id', { id: i.id })}><i className="icofont icofont-ui-note"></i></Link> })
+                    invoicesList.push({ id: i.id, invoiceNo: i.invoiceNo, invoiceDate: i.invoiceDate, dueDate: i.dueDate, invoiceAmount: i.invoiceAmount, invoiceTitle: i.invoiceTitle, invoiceDetails: i.invoiceDetails, status: i.status, invoiceType: i.invoiceType, action: <Link className="btn btn-light" to={createLink('/payment/generate-invoice/:id', { id: i.id })}><i className="icofont icofont-ui-note"></i></Link> })
                 )
                 this.setState({
                     invoices: invoicesList,
@@ -148,8 +150,8 @@ class GenerateInvoices extends React.Component {
                     toUsers: this.state.toUsers,
                     toGroups: this.state.toGroups,
                     isGroup: this.state.isGroup,
-                    dueDate: this.state.dueDate,
-                    invoiceDate: this.state.invoiceDate,
+                    dueDate: moment(this.state.dueDate).format('DD/MM/yyyy'),
+                    invoiceDate: moment(this.state.invoiceDate).format('DD/MM/yyyy'),
                     invoiceAmount: parseFloat(this.state.invoiceAmount),
                     invoiceTypeId: parseInt(this.state.invoiceTypeId),
                 })
@@ -215,11 +217,11 @@ class GenerateInvoices extends React.Component {
             return false;
         }
 
-        if (this.state.dueDate === null || this.state.dueDate === "") {
+        if (this.state.dueDate === null || this.state.dueDate === "" || new Date(this.state.dueDate) > new Date("9999/12/31")) {
             return false;
         }
 
-        if (this.state.invoiceDate === null || this.state.invoiceDate === "") {
+        if (this.state.invoiceDate === null || this.state.invoiceDate === "" || new Date(this.state.invoiceDate) > new Date("9999/12/31")) {
             return false;
         }
 
@@ -358,15 +360,17 @@ class GenerateInvoices extends React.Component {
                                                             <div className="form-row">
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="invoiceDate">{"Invoice Date"}</label>
-                                                                    <input className="form-control" id="invoiceDate" onChange={e => this.handleChange({ invoiceDate: e.target.value })} type="date" aria-describedby="invoiceDate" placeholder="Enter Invoice Date" />
-                                                                    <span>{this.state.isSubmited && !this.state.invoiceDate && 'Invoice Date is required'}</span>
+                                                                    <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.invoiceDate} onChange={e => this.handleChange({ invoiceDate: e })} />
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.invoiceDate && 'Invoice Date is required'}</span>
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.invoiceDate && new Date(this.state.invoiceDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                 </div>
                                                                 <div className="form-group col-6">
                                                                     <label className="col-form-label pt-0" htmlFor="dueDate">{"Due Date"}</label>
-                                                                    <input className="form-control" id="dueDate" type="date" aria-describedby="dueDate" onChange={e => this.handleChange({ dueDate: e.target.value })} placeholder="Enter Due Date" />
-                                                                    <span>{this.state.isSubmited && !this.state.dueDate && 'Due Date is required'}</span>
-                                                                    <span>{this.state.isSubmited && this.state.dueDate && !this.state.invoiceDate && 'Invoice Date select first'}</span>
-                                                                    <span>{this.state.isSubmited && this.state.dueDate < this.state.invoiceDate && 'Invoice Date less than Due Date'}</span>
+                                                                    <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.dueDate} onChange={e => this.handleChange({ dueDate: e })} />
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.dueDate && 'Due Date is required'}</span>
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.dueDate && !this.state.invoiceDate && 'Invoice Date select first'}</span>
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.dueDate && this.state.dueDate < this.state.invoiceDate && 'Invoice Date less than Due Date'}</span>
+                                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.dueDate && this.state.invoiceDate && new Date(this.state.dueDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                 </div>
                                                             </div>
                                                             <div className="form-row">

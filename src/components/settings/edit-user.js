@@ -9,8 +9,10 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import createLink from '../../helpers/createLink';
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
+import PhoneInput from 'react-phone-input-2';
+import * as moment from 'moment';
+import 'react-phone-input-2/lib/style.css';
+import DatePicker from "react-datepicker";
 class EditUser extends React.Component {
     constructor(props) {
         super(props);
@@ -103,8 +105,7 @@ class EditUser extends React.Component {
         this.setState({
             isSubmited: true
         });
-        debugger
-        if (this.validate()) {
+        if (this.validate()) {            
             const currentUser = localStorage.getItem('token');
             await fetch("setting/saveUsers", {
                 "method": "POST",
@@ -119,7 +120,7 @@ class EditUser extends React.Component {
                     lastName: this.state.lastName,
                     roleId: +this.state.roleId,
                     username: this.state.username,
-                    dateOfBirth: this.state.dateOfBirth,
+                    dateOfBirth: moment(this.state.dateOfBirth).format('DD/MM/yyyy'),
                     admission: this.state.admission,
                     mobile: this.state.mobile,
                     parentId: this.state.parentId,
@@ -127,7 +128,7 @@ class EditUser extends React.Component {
                     parentLastName: this.state.parentLastName,
                     parentUsername: this.state.parentUsername,
                     parentMobile: this.state.parentMobile,
-                    parentDateOfBirth: this.state.parentDateOfBirth,
+                    parentDateOfBirth: this.state.parentDateOfBirth == null ? "" : moment(this.state.parentDateOfBirth).format('DD/MM/yyyy'),
                     isActive: this.state.isActive
                 })
             })
@@ -227,7 +228,6 @@ class EditUser extends React.Component {
         });
     }
 
-
     validate = () => {
         if (this.state.firstName === null || this.state.firstName === "") {
             return false;
@@ -245,11 +245,11 @@ class EditUser extends React.Component {
             return false;
         }
 
-        if (this.state.dateOfBirth === null || this.state.dateOfBirth === "") {
+        if (this.state.dateOfBirth === null || this.state.dateOfBirth === "" || new Date(this.state.dateOfBirth) > new Date("9999/12/31")) {
             return false;
         }
 
-        if (this.state.mobile === null || this.state.mobile === "") {
+        if (this.state.mobile === null || this.state.mobile === "" || this.state.mobile.length < 10) {
             return false;
         }
 
@@ -265,11 +265,11 @@ class EditUser extends React.Component {
             return false;
         }
 
-        if (this.state.roleId == 1 && (this.state.parentMobile === null || this.state.parentMobile === "")) {
+        if (this.state.roleId == 1 && (this.state.parentMobile === null || this.state.parentMobile === "" || this.state.parentMobile.length < 10)) {
             return false;
         }
 
-        if (this.state.roleId == 1 && (this.state.parentDateOfBirth === null || this.state.parentDateOfBirth === "")) {
+        if (this.state.roleId == 1 && (this.state.parentDateOfBirth === null || this.state.parentDateOfBirth === "" || new Date(this.state.parentDateOfBirth) > new Date("9999/12/31"))) {
             return false;
         }
 
@@ -332,8 +332,9 @@ class EditUser extends React.Component {
                                             <div className="form-row">
                                                 <div className="form-group col-6">
                                                     <label className="col-form-label pt-0" htmlFor="dateOfBirth">{"Date Of Birth"}</label>
-                                                    <input className="form-control" defaultValue={this.state.dateOfBirth == null ? "" : new Date(this.state.dateOfBirth).toISOString().substr(0, 10)} data-date-format="YYYY MMMM DD" id="dateOfBirth" onChange={e => this.handleChange({ dateOfBirth: e.target.value })} type="date" aria-describedby="dateOfBirth" placeholder="Date Of Birth" />
-                                                    <span>{this.state.isSubmited && !this.state.dateOfBirth && 'Date of birth is required'}</span>
+                                                    <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.dateOfBirth} onChange={e => this.handleChange({ dateOfBirth: e })} />
+                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.dateOfBirth && 'Date of birth is required'}</span>
+                                                    <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.dateOfBirth && new Date(this.state.dateOfBirth) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                 </div>
                                                 <div className="form-group col-6">
                                                     <label className="col-form-label pt-0" htmlFor="admission">{"Index/Admission No"}</label>
@@ -357,7 +358,7 @@ class EditUser extends React.Component {
                                                         inputClass="form-control"
                                                         country={'lk'}
                                                         enableSearch={true}
-                                                        countryCodeEditable={false}
+                                                        countryCodeEditable={true}
                                                         onChange={e => this.handleChange({ mobile: e })} />
                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.mobile && 'Mobile is required'}</span>
                                                 </div>
@@ -393,8 +394,9 @@ class EditUser extends React.Component {
                                                     <div className="form-row">
                                                         <div className="form-group col-6">
                                                             <label className="col-form-label pt-0" htmlFor="parentDateOfBirth">{"Date Of Birth"}</label>
-                                                            <input className="form-control" defaultValue={this.state.parentDateOfBirth == null ? "" : new Date(this.state.parentDateOfBirth).toISOString().substr(0, 10)} data-date-format="YYYY MMMM DD" id="parentDateOfBirth" onChange={e => this.handleChange({ parentDateOfBirth: e.target.value })} type="date" aria-describedby="parentDateOfBirth" placeholder="Date Of Birth" />
-                                                            <span>{this.state.isSubmited && this.state.roleId == 1 && !this.state.parentDateOfBirth && 'Date Of Birth is required'}</span>
+                                                            <DatePicker className="form-control" showYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.parentDateOfBirth} onChange={e => this.handleChange({ parentDateOfBirth: e })} />
+                                                            <span>{this.state.isSubmited && this.state.roleId == 1 && !this.state.parentDateOfBirth && 'Date of birth is required'}</span>
+                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.roleId == 1 && this.state.parentDateOfBirth && new Date(this.state.parentDateOfBirth) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                         </div>
                                                     </div>
                                                     <div className="form-row">
@@ -412,7 +414,7 @@ class EditUser extends React.Component {
                                                                 inputClass="form-control"
                                                                 country={'lk'}
                                                                 enableSearch={true}
-                                                                countryCodeEditable={false}
+                                                                countryCodeEditable={true}
                                                                 onChange={e => this.handleChange({ parentMobile: e })} />
                                                             <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.roleId == 1 && !this.state.parentMobile && 'Mobile is required'}</span>
                                                         </div>

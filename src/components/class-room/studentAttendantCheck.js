@@ -32,7 +32,7 @@ class StudentAttendantCheck extends React.Component {
             .then(response => {
                 response.studentAttendances.map(i =>
                     classStudentAttendanceList.push({
-                        id: i.id, attendance: i.isAttendance ?
+                        id: i.id,indexNo:i.indexNo, attendance: i.isAttendance ?
                             <div>
                                 <i className="icofont  icofont-check mr-2" style={{ color: "#18c435", fontSize: "25px" }}></i>
                             </div>
@@ -41,7 +41,7 @@ class StudentAttendantCheck extends React.Component {
                                 <i className="icofont  icofont-close mr-2" style={{ color: "#c41835", fontSize: "25px" }}></i>
                             </div>
 
-                        , isMarked: i.isMarked, recordDate: new Date(i.recordDate).toDateString(), studentUserName: i.studentUserName, className: i.className
+                        , isMarked: i.isMarked, recordDate: new Date(i.recordDate).toDateString(), studentUserName: `${i.indexNo} - ${i.studentUserName}`, className: i.className
                     })
                 )
                 this.setState({

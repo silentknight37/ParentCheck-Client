@@ -85,14 +85,16 @@ class TopicContents extends React.Component {
     }
 
     selectedTemplate = (data) => {
+        debugger
         this.setState({
             id: data.id,
             contentText: data.contentText,
             contentTypeId: data.contentTypeId,
+            orderId:data.orderId,
             isActive: data.isActive,
             isEdit: true
         });
-
+        this.stateRequestFormText.value=data.contentText;
         this.openModalToggle();
     }
 
@@ -402,7 +404,7 @@ class TopicContents extends React.Component {
                                 <div className="card-body">
                                     <div className="card-header">
                                         <Button color="primary mr-2" onClick={this.openModalToggle}>Add Content</Button>
-                                        <Link className="btn btn-primary" target="_blank" to={createLink('/content/:topicId', { topicId: this.props.chapterTopicId })}> Content Preview</Link>
+                                        <Link className="btn btn-primary" target="_blank" to={createLink('/content/:topicId', { topicId: this.props.id })}> Content Preview</Link>
                                     </div>
                                     {
                                         <Modal isOpen={this.state.isSmsSendOpen} toggle={this.handleModalToggle} size="lg">
@@ -415,8 +417,8 @@ class TopicContents extends React.Component {
                                                         <div className="card-body">
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
-                                                                    <label className="col-form-label pt-0" htmlFor="topic">{"Topic"}</label>
-                                                                    <select onChange={e => this.handleChange({ contentTypeId: e.target.value })} className="form-control digits" defaultValue="0">
+                                                                    <label className="col-form-label pt-0" htmlFor="topic">{"Content Type"}</label>
+                                                                    <select onChange={e => this.handleChange({ contentTypeId: e.target.value })} className="form-control digits" defaultValue={this.state.contentTypeId}>
                                                                         <option value={0}>Select Content Type</option>
                                                                         <option value={1}>Text</option>
                                                                         <option value={2}>Video</option>
@@ -442,7 +444,7 @@ class TopicContents extends React.Component {
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
                                                                     <label className="col-form-label pt-0" htmlFor="contentText">{"Order Sequence"}</label>
-                                                                    <input className="form-control" id="orderId" type="number" aria-describedby="orderId" value={this.state.orderId} min="0" max={this.state.orderNo + 1} onChange={e => this.handleChange({ orderId: e.target.value })} placeholder="Order Sequence" />
+                                                                    <input className="form-control" id="orderId" type="number" aria-describedby="orderId" value={this.state.orderId} min="1" max={this.state.orderNo + 1} onChange={e => this.handleChange({ orderId: e.target.value })} placeholder="Order Sequence" />
                                                                     <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.orderId && 'Order Sequence is required'}</span>
                                                                 </div>
                                                             </div>

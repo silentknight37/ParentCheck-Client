@@ -6,6 +6,8 @@ import { handleResponse, authHeader } from "../../services/service.backend";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import * as moment from 'moment';
+import DatePicker from "react-datepicker";
 class Term extends React.Component {
     constructor(props) {
         super(props);
@@ -67,8 +69,8 @@ class Term extends React.Component {
             id: data.id,
             term: data.term,
             yearAcademic: data.yearAcademicId,
-            fromDate: data.fromDate,
-            toDate: data.toDate,
+            fromDate: new Date(data.fromDate),
+            toDate: new Date(data.toDate),
             isActive: data.isActive,
             isEdit: true
         });
@@ -93,8 +95,8 @@ class Term extends React.Component {
                     id: this.state.id,
                     term: this.state.term,
                     yearAcademic: +this.state.yearAcademic,
-                    fromDate: this.state.fromDate,
-                    toDate: this.state.toDate,
+                    fromDate:moment(this.state.fromDate).format('DD/MM/yyyy'),
+                    toDate:moment(this.state.toDate).format('DD/MM/yyyy'),
                     isActive: this.state.isActive
                 })
             })
@@ -153,11 +155,11 @@ class Term extends React.Component {
             return false;
         }
 
-        if (this.state.fromDate === null || this.state.fromDate === "") {
+        if (this.state.fromDate === null || this.state.fromDate === "" || new Date(this.state.fromDate) > new Date("9999/12/31")) {
             return false;
         }
 
-        if (this.state.toDate === null || this.state.toDate === "") {
+        if (this.state.toDate === null || this.state.toDate === "" || new Date(this.state.toDate) > new Date("9999/12/31")) {
             return false;
         }
 
@@ -268,17 +270,19 @@ class Term extends React.Component {
                                                                     <div className="form-row">
                                                                         <div className="form-group">
                                                                             <label className="col-form-label pt-0" htmlFor="fromDate">{"From Date"}</label>
-                                                                            <input className="form-control" id="fromDate" onChange={e => this.handleChange({ fromDate: e.target.value })} type="date" aria-describedby="fromDate" defaultValue={this.state.fromDate==null?"":new Date(this.state.fromDate).toISOString().substr(0,10)}  />
-                                                                            <span>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
+                                                                            <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.fromDate} onChange={e => this.handleChange({ fromDate: e })} />
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.fromDate && new Date(this.state.fromDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                         </div>
                                                                     </div>
                                                                     <div className="form-row">
                                                                         <div className="form-group">
                                                                             <label className="col-form-label pt-0" htmlFor="toDate">{"To Date"}</label>
-                                                                            <input className="form-control" id="toDate" type="date" aria-describedby="toDate" onChange={e => this.handleChange({ toDate: e.target.value })} defaultValue={this.state.toDate==null?"":new Date(this.state.toDate).toISOString().substr(0,10)}  />
-                                                                            <span>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
-                                                                            <span>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
-                                                                            <span>{this.state.isSubmited && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
+                                                                            <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.toDate} onChange={e => this.handleChange({ toDate: e })} />
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.toDate && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.fromDate && this.state.toDate && new Date(this.state.toDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>

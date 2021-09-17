@@ -8,8 +8,8 @@ import { Accordion } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { Button } from 'reactstrap';
 import { toast } from 'react-toastify';
+import * as moment from 'moment';
 import DatePicker from "react-datepicker";
-
 class StudentAttendant extends React.Component {
     constructor(props) {
         super(props);
@@ -64,12 +64,12 @@ class StudentAttendant extends React.Component {
 
         if (this.validate()) {
             const requestOptions = { method: 'GET', headers: authHeader() };
-            return fetch(`classRoom/getClassStudentAttendances?classId=${this.state.classId}&recordDate=${this.state.recordDate}`, requestOptions)
+            return fetch(`classRoom/getClassStudentAttendances?classId=${this.state.classId}&recordDate=${moment(this.state.recordDate).format('DD/MM/yyyy')}`, requestOptions)
                 .then(handleResponse)
                 .then(response => {
                     response.studentAttendances.map(i =>
                         classStudentAttendanceList.push({
-                            id: i.id, attendance: i.isMarked ? i.isAttendance ?
+                            id: i.id,indexNo:i.indexNo, attendance: i.isMarked ? i.isAttendance ?
                                 <div>
                                     <i className="icofont  icofont-check mr-2" style={{ color: "#18c435", fontSize: "25px" }}></i>
                                     <Button className="btn btn-warning" onClick={() => this.SaveAttendance(false, i.instituteUserId, i.instituteClassId,true)}><i className="icofont icofont-refresh" style={{ fontSize: "20px" }}></i></Button>
@@ -84,7 +84,7 @@ class StudentAttendant extends React.Component {
                                     <Button className="btn btn-success mr-2" onClick={() => this.SaveAttendance(true, i.instituteUserId, i.instituteClassId,false)}><i className="icofont icofont-check" style={{ fontSize: "20px" }}></i></Button>
                                     <Button className="btn btn-danger mr-2" onClick={() => this.SaveAttendance(false, i.instituteUserId, i.instituteClassId,false)}><i className="icofont icofont-close" style={{ fontSize: "20px" }}></i></Button>
                                 </div>
-                            , isMarked: i.isMarked, recordDate: new Date(i.recordDate).toDateString(), studentUserName: i.studentUserName, className: i.className
+                            , isMarked: i.isMarked, recordDate: new Date(i.recordDate).toDateString(), studentUserName: `${i.indexNo} - ${i.studentUserName}`, className: i.className
                         })
                     )
                     this.setState({
@@ -97,7 +97,7 @@ class StudentAttendant extends React.Component {
 
     validate = () => {
 
-        if (this.state.recordDate === null || this.state.recordDate === "") {
+        if (this.state.recordDate === null || this.state.recordDate === "" || new Date(this.state.recordDate) > new Date("9999/12/31")) {
             return false;
         }
 
@@ -131,7 +131,7 @@ class StudentAttendant extends React.Component {
                 instituteUserId: instituteUserId,
                 instituteClassId: instituteClassId,
                 isAttendance: isAttendance,
-                recordDate: this.state.recordDate,
+                recordDate: moment(this.state.recordDate).format('DD/MM/yyyy'),
                 isReset:isReset
             })
         })
@@ -194,8 +194,9 @@ class StudentAttendant extends React.Component {
                                                                         </div>
                                                                         <div className="form-group col-6">
                                                                             <label className="col-form-label pt-0" htmlFor="recordDate">{"Record Date"}</label>
-                                                                            <input className="form-control" data-date-format="YYYY MMMM DD" id="recordDate" onChange={e => this.handleChange({ recordDate: e.target.value })} type="date" aria-describedby="fromDate" placeholder="Enter From Date" />
-                                                                            <span>{this.state.isSubmited && !this.state.recordDate && 'Date is required'}</span>
+                                                                            <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.recordDate} onChange={e => this.handleChange({ recordDate: e })} />
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.recordDate && 'Date is required'}</span>
+                                                                            <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.recordDate && new Date(this.state.recordDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                         </div>
                                                                     </div>
                                                                 </form>

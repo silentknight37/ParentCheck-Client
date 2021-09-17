@@ -170,12 +170,6 @@ class SubjectChapter extends React.Component {
                 wrap: true
             },
             {
-                name: 'Is Assignment Assigned',
-                selector: 'isAssignmentAssigned',
-                sortable: true,
-                wrap: true
-            },
-            {
                 name: 'Action',
                 selector: 'action',
                 center: true

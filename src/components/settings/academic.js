@@ -7,6 +7,8 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { toast } from 'react-toastify';
 import CKEditors from "react-ckeditor-component";
 import { Link } from 'react-router-dom';
+import * as moment from 'moment';
+import DatePicker from "react-datepicker";
 class Academic extends React.Component {
     constructor(props) {
         super(props);
@@ -36,7 +38,7 @@ class Academic extends React.Component {
             .then(handleResponse)
             .then(response => {
                 response.academics.map(i =>
-                    academicYearList.push({ id: i.id, yearAcademic: i.yearAcademic, fromDate: new Date(i.fromDate).toDateString(),fromDateFormated:i.fromDateFormated, toDate: new Date(i.toDate).toDateString(),toDateFormated:i.toDateFormated, isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
+                    academicYearList.push({ id: i.id, yearAcademic: i.yearAcademic, fromDate: new Date(i.fromDate).toDateString(), fromDateFormated: i.fromDateFormated, toDate: new Date(i.toDate).toDateString(), toDateFormated: i.toDateFormated, isActive: i.isActive ? "True" : "False", action: <Link className="btn btn-light" onClick={() => this.selectedTemplate(i)}><i className="icofont icofont-ui-edit"></i></Link> })
                 )
                 this.setState({
                     academicYear: academicYearList,
@@ -48,8 +50,8 @@ class Academic extends React.Component {
         this.setState({
             id: data.id,
             yearAcademic: data.yearAcademic,
-            fromDate: data.fromDate,
-            toDate: data.toDate,
+            fromDate: new Date(data.fromDate),
+            toDate: new Date(data.toDate),
             isActive: data.isActive,
             isEdit: true
         });
@@ -73,8 +75,8 @@ class Academic extends React.Component {
                 "body": JSON.stringify({
                     id: this.state.id,
                     yearAcademic: +this.state.yearAcademic,
-                    fromDate: this.state.fromDate,
-                    toDate: this.state.toDate,
+                    fromDate:moment(this.state.fromDate).format('DD/MM/yyyy'),
+                    toDate:moment(this.state.toDate).format('DD/MM/yyyy'),
                     isActive: this.state.isActive
                 })
             })
@@ -112,7 +114,7 @@ class Academic extends React.Component {
         this.setState({
             isSmsSendOpen: false,
             isSubmited: false,
-            isEdit:false
+            isEdit: false
         });
     }
 
@@ -129,11 +131,11 @@ class Academic extends React.Component {
             return false;
         }
 
-        if (this.state.fromDate === null || this.state.fromDate === "") {
+        if (this.state.fromDate === null || this.state.fromDate === "" || new Date(this.state.fromDate) > new Date("9999/12/31")) {
             return false;
         }
 
-        if (this.state.toDate === null || this.state.toDate === "") {
+        if (this.state.toDate === null || this.state.toDate === "" || new Date(this.state.toDate) > new Date("9999/12/31")) {
             return false;
         }
 
@@ -210,26 +212,28 @@ class Academic extends React.Component {
                                                                     <span>{this.state.isSubmited && !this.state.yearAcademic && 'Academic Year is required'}</span>
                                                                 </div>
                                                             </div>
-                                                           
-                                                                <div>
-                                                                    <div className="form-row">
-                                                                        <div className="form-group">
-                                                                            <label className="col-form-label pt-0" htmlFor="fromDate">{"From Date"}</label>
-                                                                            <input className="form-control" defaultValue={this.state.fromDate==null?"":new Date(this.state.fromDate).toISOString().substr(0,10)}  id="fromDate" onChange={e => this.handleChange({ fromDate: e.target.value })} type="date" aria-describedby="fromDate"  />
-                                                                            <span>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="form-row">
-                                                                        <div className="form-group">
-                                                                            <label className="col-form-label pt-0" htmlFor="toDate">{"To Date"}</label>
-                                                                            <input className="form-control" defaultValue={this.state.toDate==null?"":new Date(this.state.toDate).toISOString().substr(0,10)} id="toDate" type="date" aria-describedby="toDate" onChange={e => this.handleChange({ toDate: e.target.value })}/>
-                                                                            <span>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
-                                                                            <span>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
-                                                                            <span>{this.state.isSubmited && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
-                                                                        </div>
+
+                                                            <div>
+                                                                <div className="form-row">
+                                                                    <div className="form-group">
+                                                                        <label className="col-form-label pt-0" htmlFor="fromDate">{"From Date"}</label>
+                                                                        <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.fromDate} onChange={e => this.handleChange({ fromDate: e })} />
+                                                                        <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.fromDate && 'From Date is required'}</span>
+                                                                        <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.fromDate && new Date(this.state.fromDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
                                                                     </div>
                                                                 </div>
-                                                          
+                                                                <div className="form-row">
+                                                                    <div className="form-group">
+                                                                        <label className="col-form-label pt-0" htmlFor="toDate">{"To Date"}</label>
+                                                                        <DatePicker className="form-control" showYearDropdown={true} scrollableYearDropdown={true} dateFormat="dd/MM/yyyy" selected={this.state.toDate} onChange={e => this.handleChange({ toDate: e })} />
+                                                                        <span style={{ color: "#ff5370" }}>{this.state.isSubmited && !this.state.toDate && 'To Date is required'}</span>
+                                                                        <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.toDate && !this.state.fromDate && 'From Date select first'}</span>
+                                                                        <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.toDate && this.state.toDate < this.state.fromDate && 'From Date less than To Date'}</span>
+                                                                        <span style={{ color: "#ff5370" }}>{this.state.isSubmited && this.state.fromDate && this.state.toDate && new Date(this.state.toDate) > new Date("9999/12/31") && 'Invalid Date'}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
                                                             <div className="form-row">
                                                                 <div className="form-group col-12">
                                                                     <label className="d-block" htmlFor="isActive">
